@@ -8,7 +8,7 @@ describe("List Todos", () => {
 
     const todos = await listTodos.execute();
 
-    expect(todos).toEqual([]);
+    expect(todos.getOrThrow()).toEqual([]);
   });
 
   describe("When a todo is already stored", () => {
@@ -20,7 +20,7 @@ describe("List Todos", () => {
 
       const todos = await listTodos.execute();
 
-      expect(todos).toEqual([
+      expect(todos.getOrThrow()).toEqual([
         { uuid: "someUuid", description: "My description" },
       ]);
     });

@@ -1,8 +1,8 @@
 import * as Yup from "yup";
 
-export const todoDtoSchema = Yup.object({
+export type TodoDto = { uuid: string; description: string };
+
+export const todoDtoSchema: Yup.SchemaOf<TodoDto> = Yup.object({
   uuid: Yup.string().required(),
   description: Yup.string().required(),
 }).required();
-
-export type TodoDto = Yup.InferType<typeof todoDtoSchema>;

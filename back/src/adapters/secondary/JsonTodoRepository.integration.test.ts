@@ -21,10 +21,13 @@ describe("JsonTodoRepository", () => {
 
   describe("save", () => {
     it("adds the Todo to the json file when empty", async () => {
-      const todoEntity = TodoEntity.create({
-        uuid: "someUuid",
-        description: "my csv description",
-      }, clock);
+      const todoEntity = TodoEntity.create(
+        {
+          uuid: "someUuid",
+          description: "my csv description",
+        },
+        clock
+      ).getOrThrow();
       await csvTodoRepository.save(todoEntity);
       await expectDataToBe([todoEntity]);
     });
@@ -34,10 +37,13 @@ describe("JsonTodoRepository", () => {
         { uuid: "alreadyThereUuid", description: "Already there description" },
       ]);
 
-      const todoEntity = TodoEntity.create({
-        uuid: "newlyAddedUuid",
-        description: "Newly added description",
-      }, clock);
+      const todoEntity = TodoEntity.create(
+        {
+          uuid: "newlyAddedUuid",
+          description: "Newly added description",
+        },
+        clock
+      ).getOrThrow();
 
       await csvTodoRepository.save(todoEntity);
       await expectDataToBe([
@@ -50,10 +56,13 @@ describe("JsonTodoRepository", () => {
       fillJsonWith([
         { uuid: "existingUuid", description: "Already there description" },
       ]);
-      const todoEntity = TodoEntity.create({
-        uuid: "existingUuid",
-        description: "Newly added description",
-      }, clock);
+      const todoEntity = TodoEntity.create(
+        {
+          uuid: "existingUuid",
+          description: "Newly added description",
+        },
+        clock
+      ).getOrThrow();
 
       await expectPromiseToFailWith(
         csvTodoRepository.save(todoEntity),

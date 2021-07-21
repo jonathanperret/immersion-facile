@@ -1,3 +1,4 @@
+import { chain, fromPromise, fromResult, ResultAsync } from "ts-option-result";
 import { UseCase } from "../../core/UseCase";
 import { TodoEntity } from "../entities/TodoEntity";
 import { TodoRepository } from "../ports/TodoRepository";
@@ -15,8 +16,13 @@ export class AddTodo implements UseCase<TodoDto> {
     this.clock = clock;
   }
 
-  public async execute(params: TodoDto) {
-    const todo = TodoEntity.create(params, this.clock);
-    await this.todoRepository.save(todo);
+  public execute(params: TodoDto) {
+    return chain(
+      TodoEntity.create(params, this.clock),
+      fromResult,
+      ResultAsync.flatMap((todo) =>
+        fromPromise<void, Error>(this.todoRepository.save(todo))
+      )
+    );
   }
 }

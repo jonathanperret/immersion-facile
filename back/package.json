@@ -35,6 +35,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "ts-node": "^10.1.0",
+    "ts-option-result": "^0.0.7",
     "uuid": "^8.3.2",
     "yup": "^0.32.9"
   }
