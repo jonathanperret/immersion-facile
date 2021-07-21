@@ -36,7 +36,9 @@ describe("Add Todo", () => {
           uuid: "alreadyExistingUuid",
           description: "My description",
         }),
-        new Error("A Todo with the same uuid already exists")
+        new Error(
+          "A Todo with the same uuid already exists (uuid: alreadyExistingUuid)"
+        )
       );
     });
   });

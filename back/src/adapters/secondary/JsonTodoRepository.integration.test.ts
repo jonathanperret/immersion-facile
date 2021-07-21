@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as util from "util";
 import { TodoRepository } from "../../domain/todos/ports/TodoRepository";
 import { CustomClock } from "../../domain/todos/ports/Clock";
-import { expectPromiseToFailWith } from "../../utils/test.helpers";
+import { expectResultAsyncToBeErr } from "../../utils/test.helpers";
 
 const readFile = util.promisify(fs.readFile);
 
@@ -64,9 +64,11 @@ describe("JsonTodoRepository", () => {
         clock
       ).getOrThrow();
 
-      await expectPromiseToFailWith(
+      await expectResultAsyncToBeErr(
         csvTodoRepository.save(todoEntity),
-        "A Todo with the same uuid already exists"
+        new Error(
+          "A Todo with the same uuid already exists (uuid: existingUuid)"
+        )
       );
     });
   });
@@ -74,7 +76,7 @@ describe("JsonTodoRepository", () => {
   describe("getAllTodos", () => {
     it("gets empty array when no Todos are stored", async () => {
       const todos = await csvTodoRepository.getAllTodos();
-      expect(todos).toEqual([]);
+      expect(todos.getOrThrow()).toEqual([]);
     });
 
     it("gets the Todos stored", async () => {
@@ -84,7 +86,7 @@ describe("JsonTodoRepository", () => {
       ];
       fillJsonWith(expectedTodos);
       const todos = await csvTodoRepository.getAllTodos();
-      expect(todos).toEqual(expectedTodos);
+      expect(todos.getOrThrow()).toEqual(expectedTodos);
     });
   });
 

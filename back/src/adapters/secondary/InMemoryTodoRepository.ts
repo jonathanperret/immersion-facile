@@ -1,21 +1,27 @@
-import { TodoRepository } from "../../domain/todos/ports/TodoRepository";
+import {
+  PersistenceError,
+  TodoAlreadyExistsError,
+  TodoRepository,
+} from "../../domain/todos/ports/TodoRepository";
 import { TodoEntity } from "../../domain/todos/entities/TodoEntity";
-
+import { errAsync, okAsync, ResultAsync } from "ts-option-result";
 export class InMemoryTodoRepository implements TodoRepository {
   private _todos: TodoEntity[] = [];
 
-  public async save(todoEntity: TodoEntity) {
+  public save(
+    todoEntity: TodoEntity
+  ): ResultAsync<void, TodoAlreadyExistsError> {
     const todoAlreadyExists = this._todos.some(
       ({ uuid }) => uuid === todoEntity.uuid
     );
-    if (todoAlreadyExists) {
-      throw new Error("A Todo with the same uuid already exists");
-    }
+    if (todoAlreadyExists)
+      return errAsync(new TodoAlreadyExistsError(todoEntity.uuid));
     this._todos.push(todoEntity);
+    return okAsync(undefined);
   }
 
-  public async getAllTodos() {
-    return this._todos;
+  public getAllTodos(): ResultAsync<TodoEntity[], PersistenceError> {
+    return okAsync(this._todos);
   }
 
   get todos() {

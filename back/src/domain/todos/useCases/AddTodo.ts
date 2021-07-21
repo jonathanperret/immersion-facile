@@ -20,9 +20,7 @@ export class AddTodo implements UseCase<TodoDto> {
     return chain(
       TodoEntity.create(params, this.clock),
       fromResult,
-      ResultAsync.flatMap((todo) =>
-        fromPromise<void, Error>(this.todoRepository.save(todo))
-      )
+      ResultAsync.flatMap((todo) => this.todoRepository.save(todo))
     );
   }
 }

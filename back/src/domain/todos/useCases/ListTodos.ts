@@ -9,7 +9,7 @@ export class ListTodos implements UseCase<void, TodoDto[]> {
 
   public execute() {
     return chain(
-      fromPromise<TodoEntity[], Error>(this.todoRepository.getAllTodos()),
+      this.todoRepository.getAllTodos(),
       ResultAsync.map((entities) => entities.map(todoEntityToDto))
     );
   }
