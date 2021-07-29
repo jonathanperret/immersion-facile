@@ -1,17 +1,27 @@
+import { AddFormulaire } from "../../domain/formulaires/useCases/AddFormulaire";
 import { Clock, CustomClock, RealClock } from "../../domain/todos/ports/Clock";
 import { AddTodo } from "../../domain/todos/useCases/AddTodo";
 import { ListTodos } from "../../domain/todos/useCases/ListTodos";
+import { ListFormulaires } from "../../domain/formulaires/useCases/ListFormulaires";
+import { InMemoryFormulaireRepository } from "../secondary/InMemoryFormulaireRepository";
 import { InMemoryTodoRepository } from "../secondary/InMemoryTodoRepository";
 import { JsonTodoRepository } from "../secondary/JsonTodoRepository";
 
 export const getRepositories = () => {
   console.log("Repositories : ", process.env.REPOSITORIES ?? "IN_MEMORY");
 
+  if (process.env.REPOSITORIES === "JSON") {
+    console.log("JSON repository for formulaires isn't implemented yet!!");
+  }
+
   return {
     todo:
       process.env.REPOSITORIES === "JSON"
         ? new JsonTodoRepository(`${__dirname}/../secondary/app-data.json`)
         : new InMemoryTodoRepository(),
+
+    formulaires:
+      new InMemoryFormulaireRepository
   };
 };
 
@@ -35,5 +45,9 @@ export const getUsecases = () => {
       clock: getClock(),
     }),
     listTodos: new ListTodos(repositories.todo),
+    addFormulaire: new AddFormulaire({
+      formulaireRepository: repositories.formulaires
+    }),
+    listFormulaires: new ListFormulaires(repositories.formulaires),
   };
 };
