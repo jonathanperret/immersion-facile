@@ -8,8 +8,8 @@ export const Formulaire = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
-
-  const [phone, setPhone] = useState("");
+  const [startDate, setStartDate] = useState<null | Date>(null);
+  const [endDate, setEndDate] = useState<null | Date>(null);
 
   const emailRegex = /\S+@\S+\.\S+/;
 
@@ -23,27 +23,60 @@ export const Formulaire = () => {
     }
   };
 
-  return (
-    <div className="Formulaire">
+  const readyToSubmit = () => {
+    return isEmailValid && startDate !== null && endDate !== null && (endDate > startDate);
+  }
 
-      <label className="fr-label" htmlFor="text-input-phone">Numero de téléphone</label>
-      <input className="fr-input"
-        type="tel"
-        id="text-input-phone"
-        name="text-input-phone"
-        onChange={(evt) => {
-          setPhone(evt.target.value);
-        }}>
-      </input>
+  return (
+    <div className="Formulaire" id="form-body">
+
+      <div className="fr-input-group">
+        <label className="fr-label" htmlFor="text-input-calendar">
+          Debut de l'immersion
+        </label>
+        <div className="fr-input-wrap fr-fi-calendar-line">
+          <input className="fr-input" type="date" id="text-input-calendar"
+            name="text-input-calendar"
+            onChange={(evt) => {
+              setStartDate(evt.currentTarget.valueAsDate)
+
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="fr-input-group">
+        <label className="fr-label" htmlFor="text-input-calendar">
+          Fin de l'immersion
+        </label>
+        <div className="fr-input-wrap fr-fi-calendar-line">
+          <input className="fr-input" type="date" id="text-input-calendar"
+            name="text-input-calendar"
+            min={startDate?.toISOString().split('T')[0]}
+            value={endDate ? endDate.toISOString().split('T')[0] : ""}
+            onMouseDown={(evt) => {
+              if (startDate && !endDate) {
+                // An immersion often is one month, so prefill the date for convenience.
+                var oneMonthLater = new Date(startDate);
+                oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+                setEndDate(oneMonthLater);
+              }
+            }}
+            onChange={(evt) => {
+              setEndDate(evt.currentTarget.valueAsDate)
+            }}
+          />
+        </div>
+      </div>
 
       <div className={`fr-input-group${isEmailValid ? '' : ' fr-input-group--error'}`}>
         <label className="fr-label" htmlFor="text-input-error">
           Email
         </label>
         <input className={`fr-input${isEmailValid ? '' : ' fr-input--error'}`}
-          aria-describedby="text-input-error-desc-error" 
+          aria-describedby="text-input-error-desc-error"
           type="text"
-          id="text-input-email" 
+          id="text-input-email"
           name="text-input-email"
           onChange={(evt) => {
             validateEmail(evt);
@@ -55,7 +88,9 @@ export const Formulaire = () => {
       </div>
 
 
-      <button className="fr-btn fr-fi-checkbox-circle-line fr-btn--icon-left">
+      <button className="fr-btn fr-fi-checkbox-circle-line fr-btn--icon-left"
+        disabled={!readyToSubmit()}
+      >
         Valider ce formulaire
       </button>
 
