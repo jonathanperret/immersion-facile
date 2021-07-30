@@ -20,23 +20,21 @@ export class FormulaireEntity {
         this.dateEnd = dateEnd;
     }
 
-    public static create(formulaireDto: FormulaireDto) {
-
-        const trimmedEmail = formulaireDto.email.trim();
+    public static create(dto: FormulaireDto) {
         const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(trimmedEmail)) {
-            throw new Error("Email must match the RFC standard.");
+        if (!emailRegex.test(dto.email)) {
+            throw new Error(`Email (${dto.email}) must match the RFC standard.`);
         }
 
-        if (formulaireDto.dateEnd <= formulaireDto.dateStart) {
-            throw new Error("The start date must be before the end date.");
+        if (dto.dateEnd <= dto.dateStart) {
+            throw new Error("The start date (${formulaire}) must be before the end date.");
         }
 
         return new FormulaireEntity({
-            uuid: formulaireDto.uuid,
-            email: formulaireDto.email,
-            dateStart: formulaireDto.dateStart,
-            dateEnd: formulaireDto.dateEnd
+            uuid: dto.uuid,
+            email: dto.email,
+            dateStart: dto.dateStart,
+            dateEnd: dto.dateEnd,
         });
     }
 }

@@ -2,6 +2,7 @@ import { UseCase } from "../../core/UseCase";
 import { FormulaireEntity } from "../entities/FormulaireEntity";
 import { FormulaireRepository } from "../ports/FormulaireRepository";
 import { FormulaireDto } from "../../../shared/FormulaireDto";
+import { validate } from "uuid";
 
 type AddFormulaireDependencies = { formulaireRepository: FormulaireRepository; };
 

@@ -1,57 +1,32 @@
 import { AddFormulaire } from "./AddFormulaire";
 import { v4 as generateUuid } from "uuid";
 import { InMemoryFormulaireRepository } from "../../../adapters/secondary/InMemoryFormulaireRepository";
-import { expectPromiseToFailWith } from "../../../utils/test.helpers";
 
 describe("Add Formulaire", () => {
-    let addFormulaire: AddFormulaire;
-    let formulaireRepository: InMemoryFormulaireRepository;
+  const UUID = generateUuid();
+  const EMAIL = "a@b.com";
+  const DATE_START = new Date(1000);
+  const DATE_END = new Date(1001);
 
-    beforeEach(() => {
-        formulaireRepository = new InMemoryFormulaireRepository();
-        addFormulaire = new AddFormulaire({ formulaireRepository });
+  let addFormulaire: AddFormulaire;
+  let formulaireRepository: InMemoryFormulaireRepository;
+
+  beforeEach(() => {
+    formulaireRepository = new InMemoryFormulaireRepository();
+    addFormulaire = new AddFormulaire({ formulaireRepository });
+  });
+
+  describe("Valid FormulaireDto", () => {
+    test("saves the formulaire in the repository", async () => {
+      await addFormulaire.execute({
+        uuid: UUID,
+        email: EMAIL,
+        dateStart: DATE_START,
+        dateEnd: DATE_END,
+      });
+      expect(await formulaireRepository.getAllFormulaires()).toEqual([
+        { uuid: UUID, email: EMAIL, dateStart: DATE_START, dateEnd: DATE_END },
+      ]);
     });
-
-    describe("Email doesn't match RFC 5322", () => {
-        it("refuses to add the Formulaire with an explicit warning", async () => {
-            await expectPromiseToFailWith(
-                addFormulaire.execute({ uuid: "someUuid", email: "not an email", dateStart: new Date(), dateEnd: new Date(), }),
-                "Email must match the RFC standard."
-            );
-        });
-    });
-
-    describe("Email and dates are fine", () => {
-        it("saves the Formulaire", async () => {
-            const uuid = generateUuid();
-            const email = "a@b.com";
-            const dateStart = new Date();
-            const dateEnd = new Date();
-            dateEnd.setFullYear(9999);
-            await addFormulaire.execute({ uuid, email, dateStart, dateEnd, });
-            expect(formulaireRepository.formulaires).toEqual([{ uuid, email, dateStart, dateEnd }]);
-        });
-    });
-
-    describe("Formulaire with same uuid already exists", () => {
-        it("refuses to add the Formulaire with an explicit warning", async () => {
-            formulaireRepository.setFormulaires([
-                { uuid: "alreadyExistingUuid", email: "foo@bar.com", dateStart: new Date(), dateEnd: new Date() },
-            ]);
-
-            const dateStart = new Date();
-            const dateEnd = new Date();
-            dateEnd.setFullYear(9999);
-
-            await expectPromiseToFailWith(
-                addFormulaire.execute({
-                    uuid: "alreadyExistingUuid",
-                    email: "bar@baz.com",
-                    dateStart: dateStart,
-                    dateEnd: dateEnd,
-                }),
-                "A Formulaire with the same uuid already exists"
-            );
-        });
-    });
+  });
 });
