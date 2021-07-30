@@ -21,7 +21,7 @@ export const getRepositories = () => {
         : new InMemoryTodoRepository(),
 
     formulaires:
-      new InMemoryFormulaireRepository
+      new InMemoryFormulaireRepository(),
   };
 };
 
