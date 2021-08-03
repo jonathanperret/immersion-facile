@@ -3,11 +3,11 @@ import { AddFormulaire } from "../../domain/formulaires/useCases/AddFormulaire";
 import { ListFormulaires } from "../../domain/formulaires/useCases/ListFormulaires";
 import { AddTodo } from "../../domain/todos/useCases/AddTodo";
 import { ListTodos } from "../../domain/todos/useCases/ListTodos";
+import { logger } from "../../utils/logger";
 import { AirtableFormulaireRepository } from "../secondary/AirtableFormulaireRepository";
 import { InMemoryFormulaireRepository } from "../secondary/InMemoryFormulaireRepository";
 import { InMemoryTodoRepository } from "../secondary/InMemoryTodoRepository";
 import { JsonTodoRepository } from "../secondary/JsonTodoRepository";
-import { logger } from "../../utils/logger";
 
 export const getRepositories = () => {
   logger.info("Repositories : " + process.env.REPOSITORIES ?? "IN_MEMORY");
