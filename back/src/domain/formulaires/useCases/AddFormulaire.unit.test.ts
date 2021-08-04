@@ -22,7 +22,7 @@ describe("Add Formulaire", () => {
         dateEnd: DATE_END,
       });
 
-      expect(await repository.getAllFormulaires()).toEqual([
+      expect(repository.getFormulaires()).toEqual([
         { email: EMAIL, dateStart: DATE_START, dateEnd: DATE_END },
       ]);
     });

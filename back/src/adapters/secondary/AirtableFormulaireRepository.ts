@@ -1,6 +1,15 @@
-import Airtable, { Table, FieldSet } from "airtable";
+import Airtable, { Table, FieldSet, Record } from "airtable";
 import moment from "moment";
-import { FormulaireRepository } from "../../domain/formulaires/ports/FormulaireRepository";
+import {
+  err,
+  fromPromise,
+  ok,
+  ResultAsync,
+} from "ts-option-result";
+import {
+  FormulaireRepository,
+  PersistenceError,
+} from "../../domain/formulaires/ports/FormulaireRepository";
 import { FormulaireEntity } from "../../domain/formulaires/entities/FormulaireEntity";
 
 export class AirtableFormulaireRepository implements FormulaireRepository {
@@ -16,7 +25,14 @@ export class AirtableFormulaireRepository implements FormulaireRepository {
     );
   }
 
-  public async save(entity: FormulaireEntity): Promise<void> {
+  public save(entity: FormulaireEntity): ResultAsync<void, PersistenceError> {
+    return fromPromise(
+      this._create(entity),
+      (err) => new PersistenceError((err as any).message)
+    );
+  }
+
+  private async _create(entity: FormulaireEntity) {
     await this.table.create([
       {
         fields: {
@@ -28,34 +44,56 @@ export class AirtableFormulaireRepository implements FormulaireRepository {
     ]);
   }
 
-  public async getAllFormulaires(): Promise<FormulaireEntity[]> {
+  public getAllFormulaires(): ResultAsync<
+    FormulaireEntity[],
+    PersistenceError
+  > {
+    return fromPromise(
+      this._fetchAllPages(),
+      (err) => new PersistenceError((err as any).message)
+    ).flatMap((records) => {
+      const entities: FormulaireEntity[] = [];
+      records.forEach((record) => {
+        if (!(typeof record.fields.email === "string")) {
+          return err(
+            new PersistenceError(
+              `Missing or invalid field 'email' in Airtable record: ${record}`
+            )
+          );
+        }
+        if (!(typeof record.fields.dateStart === "string")) {
+          return err(
+            new PersistenceError(
+              `Missing or invalid field 'dateStart' in Airtable record: ${record}`
+            )
+          );
+        }
+        if (!(typeof record.fields.dateEnd === "string")) {
+          return err(
+            new PersistenceError(
+              `Missing or invalid field 'dateStart' in Airtable record: ${record}`
+            )
+          );
+        }
+        entities.push(
+          FormulaireEntity.create({
+            email: record.fields.email,
+            dateStart: new Date(record.fields.dateStart),
+            dateEnd: new Date(record.fields.dateEnd),
+          })
+        );
+      });
+      return ok(entities);
+    });
+  }
+
+  // TODO: Is there a better way to do this? Check out ts-option-result.
+  private async _fetchAllPages() {
     const allRecords: Airtable.Record<Airtable.FieldSet>[] = [];
     await this.table.select().eachPage((records, fetchNextPage) => {
       records.forEach((record) => allRecords.push(record));
       fetchNextPage();
     });
-
-    return allRecords.map((record) => {
-      if (!(typeof record.fields.email === "string")) {
-        throw new Error(
-          `Missing or invalid field 'email' in Airtable record: ${record}`
-        );
-      }
-      if (!(typeof record.fields.dateStart === "string")) {
-        throw new Error(
-          `Missing or invalid field 'dateStart' in Airtable record: ${record}`
-        );
-      }
-      if (!(typeof record.fields.dateEnd === "string")) {
-        throw new Error(
-          `Missing or invalid field 'dateStart' in Airtable record: ${record}`
-        );
-      }
-      return FormulaireEntity.create({
-        email: record.fields.email,
-        dateStart: new Date(record.fields.dateStart),
-        dateEnd: new Date(record.fields.dateEnd),
-      });
-    });
+    return allRecords;
   }
 }

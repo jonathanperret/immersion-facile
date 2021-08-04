@@ -18,8 +18,8 @@ export class FormulaireEntity {
     }
 
     public static create(dto: FormulaireDto) {
-      // TODO: Find a more precise email validation method. This is a simplified regex that 
-      // accepts some invalid email addresses. 
+      // TODO: Find a more precise email validation method. This is a simplified regex that
+      // accepts some invalid email addresses.
       // For details see https://stackoverflow.com/questions/201323
       const emailRegex = /\S+@\S+\.\S+/;
       if (!emailRegex.test(dto.email)) {

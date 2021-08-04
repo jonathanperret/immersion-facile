@@ -12,8 +12,8 @@ export class AddFormulaire implements UseCase<FormulaireDto> {
         this.formulaireRepository = formulaireRepository;
     }
 
-    public async execute(params: FormulaireDto) {
+    public async execute(params: FormulaireDto): Promise<void> {
         const formulaire = FormulaireEntity.create(params);
-        await this.formulaireRepository.save(formulaire);
+        (await this.formulaireRepository.save(formulaire)).getOrThrow();
     }
 }
