@@ -18,7 +18,23 @@ export const formulaireDtoSchema = Yup.object({
     .required("Obligatoire"),
   dateEnd: Yup.date()
     .required("Obligatoire")
-    .min(Yup.ref('dateStart'), "Date de fin doit être après la date de début"),
+    .min(Yup.ref('dateStart'), "Date de fin doit être après la date de début")
+    .test(
+      'moins-28j',
+      'La durée maximale d\'immersion est de 28 jours',
+      (value, context) => {
+        const startDate = context.parent.dateStart;
+        if (!value || !startDate || !(startDate instanceof Date)) {
+          console.log("Unexpected value or start date")
+          return false;
+        }
+        let maxEndDate = new Date(startDate)
+        maxEndDate.setDate(maxEndDate.getDate() + 28)
+        return value <= maxEndDate;
+      }
+    ),
+
+
 
   siret: Yup.string()
     .required("Obligatoire")
