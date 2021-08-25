@@ -1,10 +1,14 @@
 import React, { Component, useDebugValue, useEffect } from "react";
-import { Formik, Form, useField, FormikState, FieldHookConfig, Field, FormikHelpers } from "formik";
-import { formulaireGateway } from "src/app/main";
+import { Formik, Form, useField, FormikState, FieldHookConfig, Field, FormikHelpers, useFormikContext } from "formik";
+import { inseeGateway, formulaireGateway } from "src/app/main";
 import { FormulaireDto, formulaireDtoSchema } from "src/shared/FormulaireDto"
 import { format, parseISO } from "date-fns";
 
-type MyDateInputProps = { label: string } & FieldHookConfig<string>;
+const fetchCompanyInfoBySiret = (siret: string) : Promise<any> => {
+  return  inseeGateway.getInfo(siret)
+}
+
+
 
 const formatDateInput = (value: Date | string): string => {
   if (typeof value === "string") {
@@ -13,6 +17,37 @@ const formatDateInput = (value: Date | string): string => {
   return format(value, "yyyy-MM-dd");
 };
 
+
+const AutocompletedSiretOrgName = (props : FieldHookConfig<string>) => {
+  const {
+    values: { siret },
+    setFieldValue,
+  } = useFormikContext();
+  const [field, meta] = useField(props);
+
+  React.useEffect(() => {
+    let isCurrent = true;
+    // your business logic around when to fetch goes here.
+    if (siret.length == 14) {
+      fetchCompanyInfoBySiret(siret).then((info: any )=>  {
+      console.log(info);
+      setFieldValue(props.name, info.toString());
+    });
+    }
+    return () => {
+      isCurrent = false;
+    };
+  }, [siret, setFieldValue, props.name]);
+
+  return (
+    <>
+      <input {...props} {...field} />
+      {!!meta.touched && !!meta.error && <div>{meta.error}</div>}
+    </>
+  );
+};
+
+type MyDateInputProps = { label: string } & FieldHookConfig<string>;
 const MyDateInput = (props: MyDateInputProps) => {
   const [field, meta] = useField(props);
   const value: Date = (field.value as unknown) as Date;
@@ -365,6 +400,8 @@ export class Formulaire extends Component<FormulaireProps, FormulaireState> {
                 }
                 setSubmitting(false);
               }}
+
+              
             >
               {props => (
                 <div>
@@ -414,6 +451,9 @@ export class Formulaire extends Component<FormulaireProps, FormulaireState> {
                     />
 
                     <h4><br />Les questions suivantes doivent être complétées avec la personne qui vous accueillera pendant votre immersion</h4>
+
+
+                    <AutocompletedSiretOrgName name="siret"/>
 
                     <MyTextInput
                       label="Indiquez le SIRET de la structure d'accueil *"

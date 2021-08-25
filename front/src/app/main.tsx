@@ -8,6 +8,7 @@ import { configureReduxStore } from "src/core-logic/store/initilizeStore";
 import { App } from "./App";
 import { InMemoryFormulaireGateway } from "src/core-logic/adapters/InMemoryFormulaireGateway";
 import { HttpFormulaireGateway } from "src/core-logic/adapters/HttpFormulaireGateway";
+import { HTTPInseeGateway } from "src/core-logic/adapters/HTTPInseeGateway"
 
 const gateway = import.meta.env.VITE_GATEWAY;
 
@@ -18,6 +19,7 @@ const todoGateway =
 
 // TODO: don't export the gateway, maybe?
 export const formulaireGateway = gateway === "HTTP" ? new HttpFormulaireGateway() : new InMemoryFormulaireGateway();
+export const inseeGateway = new HTTPInseeGateway();
 
 const store = configureReduxStore({ todoGateway });
 
