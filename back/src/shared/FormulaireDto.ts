@@ -1,4 +1,5 @@
 import * as Yup from "../../node_modules/yup";
+import { differenceInCalendarDays } from 'date-fns'
 
 // TODO: find the standard for gouv.fr phone verification
 const phoneRegExp = /\+?[0-9]*/;
@@ -20,17 +21,14 @@ export const formulaireDtoSchema = Yup.object({
     .required("Obligatoire")
     .min(Yup.ref('dateStart'), "Date de fin doit être après la date de début")
     .test(
-      'moins-28j',
-      'La durée maximale d\'immersion est de 28 jours',
+      "moins-28j",
+      "La durée maximale d\'immersion est de 28 jours",
       (value, context) => {
         const startDate = context.parent.dateStart;
         if (!value || !startDate || !(startDate instanceof Date)) {
-          console.log("Unexpected value or start date")
           return false;
         }
-        let maxEndDate = new Date(startDate)
-        maxEndDate.setDate(maxEndDate.getDate() + 28)
-        return value <= maxEndDate;
+        return differenceInCalendarDays(value, startDate) <= 28;
       }
     ),
 
