@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Formik, useFormikContext, useField, FormikState, FieldHookConfig, Field, FormikHelpers } from "formik";
 import { formulaireGateway } from "src/app/main";
-import { FormulaireDto, formulaireDtoSchema, FormulaireStatus } from "src/shared/FormulaireDto"
+import { FormulaireDto, formulaireDtoSchema } from "src/shared/FormulaireDto"
 import { addDays, format, startOfToday } from "date-fns";
 import { AxiosError } from "axios";
 
@@ -346,7 +346,7 @@ export class Formulaire extends Component<FormulaireProps, FormulaireState> {
 
   createInitialValues(): FormulaireDto {
     return {
-      status: FormulaireStatus.DRAFT,
+      status: "DRAFT",
 
       // Participant
       email: "sylvanie@monemail.fr",
@@ -398,7 +398,7 @@ export class Formulaire extends Component<FormulaireProps, FormulaireState> {
     try {
       let response = await formulaireGateway.get(id);
 
-      if (response.status === FormulaireStatus.DRAFT) {
+      if (response.status === "DRAFT") {
         response.dateSubmission = Formulaire.toDateString(startOfToday());
       }
 

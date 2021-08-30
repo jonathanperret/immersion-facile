@@ -1,3 +1,4 @@
+import { stringToFormulaireStatus } from './../../../../../front/src/shared/FormulaireDto';
 import { FormulaireDto, formulaireDtoSchema, FormulaireStatusUtil } from "../../../shared/FormulaireDto";
 
 type FormulaireProps = {
@@ -146,7 +147,7 @@ export const formulaireEntityToDto = (
   entity: FormulaireEntity
 ): FormulaireDto => {
   return {
-    status: FormulaireStatusUtil.fromString(entity.status),
+    status: stringToFormulaireStatus(entity.status),
     email: entity.email,
     phone: entity.phone,
     firstName: entity.firstName,

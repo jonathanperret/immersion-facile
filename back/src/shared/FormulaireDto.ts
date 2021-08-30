@@ -6,25 +6,17 @@ const phoneRegExp = /\+?[0-9]*/;
 // Matches valid dates of the format 'yyyy-mm-dd'.
 const dateRegExp = /\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
 
-export enum FormulaireStatus {
-  UNKNOWN = "UNKNOWN",
-  DRAFT = "DRAFT",
-  FINALIZED = "FINALIZED",
-}
-export class FormulaireStatusUtil {
-  static fromString(s: string): FormulaireStatus {
-    if (
-      Object.values(FormulaireStatus).some((status: string) => status === s)
-    ) {
-      return <FormulaireStatus>s;
-    }
-    return FormulaireStatus.UNKNOWN;
-  }
+type FormulaireStatus = "UNKNOWN" | "DRAFT" | "FINALIZED"
+const formulaireStatuses: FormulaireStatus[] = ["DRAFT", "FINALIZED"]
+
+export const stringToFormulaireStatus = (s: string): FormulaireStatus => {
+  const formulaireStatus = s as FormulaireStatus;
+  return formulaireStatuses.includes(formulaireStatus) ? formulaireStatus : "UNKNOWN";
 }
 
 export const formulaireDtoSchema = Yup.object({
-  status: Yup.mixed<FormulaireStatus>()
-    .oneOf(Object.values(FormulaireStatus))
+  status: Yup.string()
+    .oneOf(formulaireStatuses)
     .required("Obligatoire"),
   email: Yup.string()
     .required("Obligatoire")
@@ -45,7 +37,7 @@ export const formulaireDtoSchema = Yup.object({
       "dateStart-min",
       "La date de démarrage doit étre au moins 2 jours après la saisie.",
       (value, context) => {
-        if (!value || !context.parent.dateSubmission) {
+       if (!value || !context.parent.dateSubmission) {
           return false;
         }
         const startDate = new Date(value);

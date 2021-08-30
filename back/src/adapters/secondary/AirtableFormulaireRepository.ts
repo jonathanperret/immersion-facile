@@ -4,7 +4,7 @@ import { FormulaireRepository } from "../../domain/formulaires/ports/FormulaireR
 import { FormulaireEntity } from "../../domain/formulaires/entities/FormulaireEntity";
 import { FormulaireIdEntity } from "../../domain/formulaires/entities/FormulaireIdEntity";
 import { logger } from "../../utils/logger";
-import { FormulaireStatusUtil } from "../../shared/FormulaireDto";
+import { stringToFormulaireStatus } from "../../shared/FormulaireDto";
 
 export class AirtableFormulaireRepository implements FormulaireRepository {
   private readonly table: Table<FieldSet>;
@@ -254,7 +254,7 @@ export class AirtableFormulaireRepository implements FormulaireRepository {
     }
 
     return FormulaireEntity.create({
-      status: FormulaireStatusUtil.fromString(record.fields.status),
+      status: stringToFormulaireStatus(record.fields.status),
       email: record.fields.email,
       phone: record.fields.phone,
       firstName: record.fields.firstName,
