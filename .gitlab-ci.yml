@@ -14,21 +14,21 @@ cache:
     - front/node_modules/
     - back/node_modules/
 
-#front:
-#  stage: test
-#  script:
-#    - cd front
-#    - npm ci
-#    - npm run test
-#    - npm run build
-#
-#back:
-#  stage: test
-#  script:
-#    - cd back
-#    - npm ci
-#    - npm run test:all
-#    - npm run typecheck
+front:
+  stage: test
+  script:
+    - cd front
+    - npm ci
+    - npm run test
+    - npm run build
+
+back:
+  stage: test
+  script:
+    - cd back
+    - npm ci
+    - npm run test:all
+    - npm run typecheck
 
 sonarqube-check:
   stage: test
@@ -52,8 +52,8 @@ sonarqube-check:
 
 deploy_on_dev:
   cache: []
-#  only:
-#    - dev
+  only:
+    - dev
   image: alpine:latest
   stage: deploy
   environment:
