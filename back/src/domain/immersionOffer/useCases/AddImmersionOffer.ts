@@ -24,6 +24,7 @@ export class AddImmersionOffer
     logger.debug({ dto: dto }, "Execute AddImmersionOffer Use case, with DTO");
 
     immersionOfferSchema.validateSync(dto, { abortEarly: false });
+    logger.debug("Did not validate");
 
     const id = await this.immersionOfferRepository.save(dto);
 

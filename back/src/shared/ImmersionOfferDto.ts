@@ -1,6 +1,6 @@
 import * as Yup from "../../node_modules/yup";
-import { NafDto, nafSchema } from "./naf";
-import { ProfessionDto, professionSchema } from "./rome";
+import { nafSchema } from "./naf";
+import { professionSchema } from "./rome";
 import { Flavor } from "./typeFlavors";
 import { phoneRegExp } from "./utils";
 

@@ -19,8 +19,10 @@ export class RomeSearch
     const results = await this.romeGateway.searchMetier(searchText);
 
     return results.map((result) => ({
-      romeCodeMetier: result.code,
-      description: result.libelle,
+      profession: {
+        description: result.libelle,
+        romeCodeMetier: result.code,
+      },
       matchRanges: findMatchRanges(searchText, result.libelle),
     }));
   }

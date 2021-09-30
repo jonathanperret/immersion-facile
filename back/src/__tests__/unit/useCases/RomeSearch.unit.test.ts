@@ -14,13 +14,17 @@ describe("RomeSearch", () => {
     const response = await romeSearch.execute("vente");
     expect(response).toEqual([
       {
-        romeCodeMetier: "D1106",
-        description: "Vente en alimentation",
+        profession: {
+          romeCodeMetier: "D1106",
+          description: "Vente en alimentation",
+        },
         matchRanges: [{ startIndexInclusive: 0, endIndexExclusive: 5 }],
       },
       {
-        romeCodeMetier: "D1201",
-        description: "Achat vente d'objets d'art, anciens ou d'occasion",
+        profession: {
+          romeCodeMetier: "D1201",
+          description: "Achat vente d'objets d'art, anciens ou d'occasion",
+        },
         matchRanges: [{ startIndexInclusive: 6, endIndexExclusive: 11 }],
       },
     ]);
