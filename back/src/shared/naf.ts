@@ -33,11 +33,11 @@ export type NafSectorCode = keyof typeof nafSectorLabels;
 
 // TODO : add regex for code Naf
 export type NafDto = {
-  code: string;
+  code?: string;
   nomenclature?: string;
 };
 
 export const nafSchema: Yup.SchemaOf<NafDto> = Yup.object({
-  code: Yup.string().trim().required("Obligatoire"),
+  code: Yup.string().trim(),
   nomenclature: Yup.string().trim(),
 });

@@ -22,26 +22,34 @@ export class InMemoryImmersionOfferGateway implements ImmersionOfferGateway {
     await sleep(700);
     return [
       {
-        romeCodeMetier: "A1111",
-        description: "Boulanger",
+        profession: {
+          description: "Boulanger",
+          romeCodeMetier: "A1111",
+        },
         matchRanges: [
           { startIndexInclusive: 0, endIndexExclusive: 3 },
           { startIndexInclusive: 5, endIndexExclusive: 8 },
         ],
       },
       {
-        romeCodeMetier: "B2222",
-        description: "Boucher",
+        profession: {
+          description: "Boucher",
+          romeCodeMetier: "B2222",
+        },
         matchRanges: [{ startIndexInclusive: 0, endIndexExclusive: 3 }],
       },
       {
-        romeCodeMetier: "C3333",
-        description: "Menuisier",
+        profession: {
+          romeCodeMetier: "C3333",
+          description: "Menuisier",
+        },
         matchRanges: [],
       },
       {
-        romeCodeMetier: "D4444",
-        description: "Vendeur",
+        profession: {
+          romeCodeMetier: "D4444",
+          description: "Vendeur",
+        },
         matchRanges: [{ startIndexInclusive: 0, endIndexExclusive: 7 }],
       },
     ];

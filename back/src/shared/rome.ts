@@ -53,4 +53,3 @@ export type RomeSearchRequestDto = Yup.InferType<
 export type RomeSearchResponseDto = RomeSearchMatchDto[];
 export const romeSearchResponseSchema: Yup.SchemaOf<RomeSearchResponseDto> =
   Yup.array(romeSearchMatchSchema).required("Obligatoire");
-

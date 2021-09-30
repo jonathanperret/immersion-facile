@@ -21,7 +21,7 @@ export const Profession = ({ name, label, onDelete }: ProfessionProps) => {
     <div
       style={{
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
         margin: "15px 20px",
       }}
     >
@@ -35,19 +35,12 @@ export const Profession = ({ name, label, onDelete }: ProfessionProps) => {
             newTerm,
           );
 
-          return romeOptions.map(
-            ({ romeCodeMetier, description, matchRanges }) => ({
-              value: { romeCodeMetier, label: description },
-              description,
-              matchRanges,
-            }),
-          );
+          return romeOptions.map(({ matchRanges, profession }) => ({
+            value: profession,
+            description: profession.description,
+            matchRanges,
+          }));
         }}
-      />
-      <TextInput
-        label="Code métier"
-        name={`${name}.${romeCodeField}`}
-        disabled
       />
       <DeleteButton onClick={onDelete} />
     </div>

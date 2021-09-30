@@ -24,10 +24,10 @@ export const ProfessionList = ({ name, title }: ProfessionListProps) => {
     >
       <div style={{ width: "100%" }}>
         {title && <h5 style={{ marginTop: "25px" }}>{title}</h5>}
-        {professions.map(({ label }, index) => (
+        {professions.map(({ description }, index) => (
           <Profession
             name={`${name}[${index}]`}
-            label={label}
+            label={description}
             onDelete={() => onDelete(index)}
             key={index}
           />
@@ -35,7 +35,7 @@ export const ProfessionList = ({ name, title }: ProfessionListProps) => {
       </div>
       <ButtonAdd
         onClick={() =>
-          setValue([...field.value, { romeCodeMetier: "", label: "" }])
+          setValue([...field.value, { romeCodeMetier: "", description: "" }])
         }
       >
         Ajouter un métier
