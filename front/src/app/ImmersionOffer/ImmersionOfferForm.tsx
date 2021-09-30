@@ -17,7 +17,7 @@ import { ENV } from "src/environmentVariables";
 import {
   ContactMethod,
   ImmersionOfferDto,
-  immersionOfferDtoSchema,
+  immersionOfferSchema,
 } from "src/shared/ImmersionOfferDto";
 import { Route } from "type-route";
 import { v4 as uuidV4 } from "uuid";
@@ -119,13 +119,13 @@ export const ImmersionOfferForm = ({ route }: ImmersionOfferFormProps) => {
         <Formik
           enableReinitialize={true}
           initialValues={initialValues}
-          validationSchema={immersionOfferDtoSchema}
+          validationSchema={immersionOfferSchema}
           onSubmit={async (data, { setSubmitting }) => {
             try {
               setIsSuccess(false);
               setSubmitError(null);
 
-              await immersionOfferDtoSchema.validate(data);
+              await immersionOfferSchema.validate(data);
               await immersionOfferGateway.addImmersionOffer(data);
 
               setIsSuccess(true);
