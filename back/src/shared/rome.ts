@@ -11,25 +11,38 @@ export type RomeCodeMetierDto = Yup.InferType<typeof romeSearchResponseSchema>;
 
 const romeCodeAppellationSchema = Yup.string();
 
-export const professionSchema = Yup.object({
-  romeCodeMetier: romeCodeMetierSchema.required("Obligatoire"),
+export type ProfessionDto = {
+  romeCodeMetier: string;
+  romeCodeAppellation?: string;
+  description: string;
+};
+
+export const professionSchema: Yup.SchemaOf<ProfessionDto> = Yup.object({
+  romeCodeMetier: romeCodeMetierSchema,
   romeCodeAppellation: romeCodeAppellationSchema,
   description: Yup.string().required("Obligatoire"),
 });
 
-const matchRangeSchema = Yup.object({
+export type MatchRangeDto = {
+  startIndexInclusive: number;
+  endIndexExclusive: number;
+};
+
+const matchRangeSchema: Yup.SchemaOf<MatchRangeDto> = Yup.object({
   startIndexInclusive: Yup.number().min(0).integer().required("Obligatoire"),
   endIndexExclusive: Yup.number().min(0).integer().required("Obligatoire"),
 });
 
-export const romeSearchMatchSchema = Yup.object({
-  profession: professionSchema.required("Obligatoire"),
-  matchRanges: Yup.array().of(matchRangeSchema).required("Obligatoire"),
-});
+export type RomeSearchMatchDto = {
+  profession: ProfessionDto;
+  matchRanges: MatchRangeDto[];
+};
 
-export type RomeSearchMatchDto = Yup.InferType<typeof romeSearchMatchSchema>;
-
-export type ProfessionDto = Yup.InferType<typeof professionSchema>;
+export const romeSearchMatchSchema: Yup.SchemaOf<RomeSearchMatchDto> =
+  Yup.object({
+    profession: professionSchema.required("Obligatoire"),
+    matchRanges: Yup.array().of(matchRangeSchema).required("Obligatoire"),
+  });
 
 export const romeSearchRequestSchema = Yup.string().required("Obligatoire");
 
@@ -37,12 +50,7 @@ export type RomeSearchRequestDto = Yup.InferType<
   typeof romeSearchRequestSchema
 >;
 
-export const romeSearchResponseSchema = Yup.array(
-  romeSearchMatchSchema,
-).required("Obligatoire");
+export type RomeSearchResponseDto = RomeSearchMatchDto[];
+export const romeSearchResponseSchema: Yup.SchemaOf<RomeSearchResponseDto> =
+  Yup.array(romeSearchMatchSchema).required("Obligatoire");
 
-export type RomeSearchResponseDto = Yup.InferType<
-  typeof romeSearchResponseSchema
->;
-
-export type MatchRangeDto = Yup.InferType<typeof matchRangeSchema>;

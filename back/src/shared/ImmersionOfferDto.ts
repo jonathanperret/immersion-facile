@@ -1,6 +1,6 @@
 import * as Yup from "../../node_modules/yup";
-import { nafSchema } from "./naf";
-import { professionSchema } from "./rome";
+import { NafDto, nafSchema } from "./naf";
+import { ProfessionDto, professionSchema } from "./rome";
 import { Flavor } from "./typeFlavors";
 import { phoneRegExp } from "./utils";
 
@@ -22,6 +22,8 @@ export type BusinessContactDto = Yup.InferType<typeof businessContactSchema>;
 
 export type ContactMethod = "UNKNOWN" | "EMAIL" | "PHONE" | "IN_PERSON";
 const validContactMethods: ContactMethod[] = ["EMAIL", "PHONE", "IN_PERSON"];
+
+export type ImmersionOfferDto = Yup.InferType<typeof immersionOfferSchema>;
 
 export const immersionOfferSchema = Yup.object({
   id: Yup.mixed<ImmersionOfferId>()
@@ -51,8 +53,6 @@ export const immersionOfferSchema = Yup.object({
     .max(1, "Spécifiez au plus 1 mode de contact")
     .required("Obligatoire"),
 }).required("Obligatoire");
-
-export type ImmersionOfferDto = Yup.InferType<typeof immersionOfferSchema>;
 
 export const addImmersionOfferResponseSchema =
   Yup.mixed<ImmersionOfferId>().required("Obligatoire");
