@@ -6,7 +6,7 @@ import {
   ImmersionOfferDto,
   ImmersionOfferId,
 } from "../../shared/ImmersionOfferDto";
-import { NafSectorCode } from "../../shared/naf";
+import { NafDto } from "../../shared/naf";
 import { ProfessionDto } from "../../shared/rome";
 import Airtable, { FieldSet, Record, Table } from "airtable";
 import { ConflictError } from "../primary/helpers/sendHttpResponse";
@@ -56,6 +56,17 @@ const readJobsFromJSON = (
   }
 };
 
+const readNafFromJson = (fields: FieldSet, fieldName: string): NafDto => {
+  const value = fields[fieldName] || "";
+  if (typeof value !== "string")
+    throw new Error(`Invalid field "${fieldName}": ${value}`);
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    throw new Error("String is not a valid JSON for a NAF");
+  }
+};
+
 const readContactMethodFromJSON = (
   fields: FieldSet,
   fieldName: string,
@@ -95,10 +106,7 @@ export const immersionOfferDataConverter: AirtableImmersionOfferDataConverterWit
           fields,
           "preferredContactMethods",
         ),
-        businessSectorCode: readString(
-          fields,
-          "businessSectorCode",
-        ) as NafSectorCode,
+        naf: readNafFromJson(fields, "naf"),
         professions: readJobsFromJSON(fields, "professions"),
       };
       return immersionDto;

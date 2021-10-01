@@ -31,13 +31,9 @@ export const validNafSectorCodes = Object.keys(nafSectorLabels).filter(
 
 export type NafSectorCode = keyof typeof nafSectorLabels;
 
-// TODO : add regex for code Naf
-export type NafDto = {
-  code?: string;
-  nomenclature?: string;
-};
+export type NafDto = Yup.InferType<typeof nafSchema>;
 
-export const nafSchema: Yup.SchemaOf<NafDto> = Yup.object({
+export const nafSchema = Yup.object({
   code: Yup.string().trim(),
   nomenclature: Yup.string().trim(),
 });
