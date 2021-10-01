@@ -1,5 +1,4 @@
-import { romeCodeMetierSchema } from "./../../shared/rome";
-import { professionSchema } from "./../../../../front/src/shared/rome";
+import { professionSchema } from "../../shared/rome";
 
 describe("professionSchema", () => {
   test("must include exactly one code", () => {
