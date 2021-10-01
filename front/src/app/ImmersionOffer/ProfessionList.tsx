@@ -1,4 +1,4 @@
-import { useField } from "formik";
+import { FormikErrors, useField } from "formik";
 import React from "react";
 import { Profession } from "src/app/ImmersionOffer/Profession";
 import { ButtonAdd } from "src/components/ButtonAdd";
@@ -11,9 +11,11 @@ type ProfessionListProps = {
 };
 
 export const ProfessionList = ({ name, title }: ProfessionListProps) => {
-  const [field, _, { setValue }] = useField<ProfessionDto[]>({ name });
-  const professions = field.value;
+  const [field, { touched, error }, { setValue }] = useField<ProfessionDto[]>({
+    name,
+  });
 
+  const professions = field.value;
   const onDelete = (index: number) => {
     setValue(removeAtIndex(professions, index));
   };
@@ -43,6 +45,14 @@ export const ProfessionList = ({ name, title }: ProfessionListProps) => {
       >
         Ajouter un métier
       </ButtonAdd>
+
+      {touched && error && (
+        <div id={name + "-error-description"} className="fr-error-text">
+          {typeof error === "string"
+            ? error
+            : "Veuillez saisir des metiers valides."}
+        </div>
+      )}
     </div>
   );
 };

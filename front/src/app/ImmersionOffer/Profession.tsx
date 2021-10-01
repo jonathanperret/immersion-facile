@@ -3,7 +3,6 @@ import React from "react";
 import { DropDown } from "src/app/ImmersionOffer/DropDown";
 import { immersionOfferGateway } from "src/app/main";
 import { DeleteButton } from "src/components/DeleteButton";
-import { TextInput } from "src/components/form/TextInput";
 import { ProfessionDto } from "src/shared/rome";
 
 type ProfessionProps = {

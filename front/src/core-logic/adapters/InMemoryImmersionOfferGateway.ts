@@ -10,6 +10,7 @@ export class InMemoryImmersionOfferGateway implements ImmersionOfferGateway {
   public async addImmersionOffer(
     immersionOffer: ImmersionOfferDto,
   ): Promise<ImmersionOfferId> {
+    console.log(immersionOffer);
     await sleep(2000);
     if (immersionOffer.businessName === "givemeanerrorplease")
       throw new Error("418 I'm a teapot");
@@ -20,6 +21,7 @@ export class InMemoryImmersionOfferGateway implements ImmersionOfferGateway {
     searchText: string,
   ): Promise<RomeSearchResponseDto> {
     await sleep(700);
+    if (searchText === "emptylistplease") return []
     return [
       {
         profession: {
