@@ -35,14 +35,14 @@ export class RomeSearch
 
 const romeAppellationToProfession = (
   appellation: RomeAppellation,
-): ProfessionDto => ({
-  romeCodeMetier: undefined,
-  romeCodeAppellation: appellation.codeAppellation,
-  description: appellation.libelle,
-});
+): ProfessionDto =>
+  ({
+    romeCodeAppellation: appellation.codeAppellation,
+    description: appellation.libelle,
+  } as ProfessionDto);
 
-const romeMetierToProfession = (metier: RomeMetier): ProfessionDto => ({
-  romeCodeMetier: metier.codeMetier,
-  romeCodeAppellation: undefined,
-  description: metier.libelle,
-});
+const romeMetierToProfession = (metier: RomeMetier): ProfessionDto =>
+  ({
+    romeCodeMetier: metier.codeMetier,
+    description: metier.libelle,
+  } as ProfessionDto);

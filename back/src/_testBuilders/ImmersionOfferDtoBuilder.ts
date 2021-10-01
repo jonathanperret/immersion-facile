@@ -1,4 +1,5 @@
 import { ImmersionOfferDto } from "../shared/ImmersionOfferDto";
+import { ProfessionDto } from "../shared/rome";
 import { Builder } from "./Builder";
 
 const valideImmersionOffer: ImmersionOfferDto = {
@@ -20,14 +21,12 @@ const valideImmersionOffer: ImmersionOfferDto = {
   professions: [
     {
       romeCodeMetier: "A1111",
-      romeCodeAppellation: "Boulanger",
-      description: "Description du Boulanger",
-    },
+      description: "Boulangerie",
+    } as ProfessionDto,
     {
-      romeCodeMetier: "B2222",
-      romeCodeAppellation: "Boucher",
-      description: "Description du Boucher",
-    },
+      romeCodeAppellation: "22222",
+      description: "Boucher / Bouchère",
+    } as ProfessionDto,
   ],
 };
 

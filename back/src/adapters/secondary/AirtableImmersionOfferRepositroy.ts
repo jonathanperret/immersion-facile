@@ -1,3 +1,4 @@
+import Airtable, { FieldSet, Record, Table } from "airtable";
 import { QueryParams } from "airtable/lib/query_params";
 import { ImmersionOfferRepository } from "../../domain/immersionOffer/ports/ImmersionOfferRepository";
 import {
@@ -8,9 +9,8 @@ import {
 } from "../../shared/ImmersionOfferDto";
 import { NafDto } from "../../shared/naf";
 import { ProfessionDto } from "../../shared/rome";
-import Airtable, { FieldSet, Record, Table } from "airtable";
-import { ConflictError } from "../primary/helpers/sendHttpResponse";
 import { createLogger } from "../../utils/logger";
+import { ConflictError } from "../primary/helpers/sendHttpResponse";
 
 const logger = createLogger(__filename);
 
@@ -86,6 +86,7 @@ export const immersionOfferDataConverter: AirtableImmersionOfferDataConverterWit
     dtoToFieldSet: (dto: ImmersionOfferDto): FieldSet => {
       return {
         ...dto,
+        naf: JSON.stringify(dto.naf),
         businessContacts: JSON.stringify(dto.businessContacts),
         professions: JSON.stringify(dto.professions),
         preferredContactMethods: JSON.stringify(dto.preferredContactMethods),
