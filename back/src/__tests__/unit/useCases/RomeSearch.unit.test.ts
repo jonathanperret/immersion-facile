@@ -11,21 +11,21 @@ describe("RomeSearch", () => {
   });
 
   test("returns the list of found matches with ranges", async () => {
-    const response = await romeSearch.execute("vente");
+    const response = await romeSearch.execute("lapins");
     expect(response).toEqual([
       {
         profession: {
-          romeCodeMetier: "D1106",
-          description: "Vente en alimentation",
+          romeCodeAppellation: "14704",
+          description: "Éleveur / Éleveuse de lapins angoras",
         },
-        matchRanges: [{ startIndexInclusive: 0, endIndexExclusive: 5 }],
+        matchRanges: [{ startIndexInclusive: 22, endIndexExclusive: 28 }],
       },
       {
         profession: {
-          romeCodeMetier: "D1201",
-          description: "Achat vente d'objets d'art, anciens ou d'occasion",
+          romeCodeMetier: "A1409",
+          description: "Élevage de lapins et volailles",
         },
-        matchRanges: [{ startIndexInclusive: 6, endIndexExclusive: 11 }],
+        matchRanges: [{ startIndexInclusive: 11, endIndexExclusive: 17 }],
       },
     ]);
   });
