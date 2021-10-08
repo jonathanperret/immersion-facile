@@ -20,6 +20,7 @@ import {
 import { reasonableSchedule } from "src/shared/ScheduleSchema";
 import { Route } from "type-route";
 import { v4 as uuidV4 } from "uuid";
+import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
 
 type ApplicationFormRoute = Route<
   | typeof routes.boulogneSurMer
@@ -150,6 +151,11 @@ const currentJWT = (route: ApplicationFormRoute) => {
     return "";
   }
   return route.params.jwt ?? "";
+};
+
+const currentJWTPayload = (route: ApplicationFormRoute) => {
+  const jwt = currentJWT(route);
+  return jwt.length > 0 ? decodeJwt(currentJWT(route)) : undefined;
 };
 
 export const ApplicationForm = ({ route }: ApplicationFormProps) => {
