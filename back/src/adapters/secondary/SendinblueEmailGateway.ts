@@ -5,6 +5,7 @@ import type {
   NewApplicationBeneficiaryConfirmationParams,
   NewApplicationMentorConfirmationParams,
   ValidatedApplicationFinalConfirmationParams,
+  RejectedApplicationNotificationParams,
 } from "../../domain/immersionApplication/ports/EmailGateway";
 import { EmailGateway } from "../../domain/immersionApplication/ports/EmailGateway";
 import { createLogger } from "./../../utils/logger";
@@ -23,6 +24,9 @@ const emailTypeToTemplateId: Record<EmailType, number> = {
 
   // https://my.sendinblue.com/camp/template/6/message-setup
   VALIDATED_APPLICATION_FINAL_CONFIRMATION: 6,
+
+  // https://my.sendinblue.com/camp/template/7/message-setup
+  REJECTED_APPLICATION_NOTIFICATION: 7,
 };
 
 export class SendinblueEmailGateway implements EmailGateway {
@@ -116,6 +120,33 @@ export class SendinblueEmailGateway implements EmailGateway {
       SIGNATURE: params.signature,
     };
     this.sendTransacEmail(sibEmail);
+  }
+
+  public async sendRejecteddApplicationNotification(
+    recipient: string[],
+    params: RejectedApplicationNotificationParams,
+  ): Promise<void> {
+    const sibEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sibEmail.templateId =
+      emailTypeToTemplateId.REJECTED_APPLICATION_NOTIFICATION;
+    if (recipient.length !== 3)
+      logger.error(
+        `Expecting 3 recipients to send Immersion Application rejection mail, got ${recipient.length}`,
+      );
+    else {
+      sibEmail.to = [
+        { email: recipient[0] },
+        { email: recipient[1] },
+        { email: recipient[2] },
+      ];
+      sibEmail.params = {
+        FIRST_NAME: params.beneficiaryFirstName,
+        LAST_NAME: params.beneficiaryLastName,
+        BUSINESS_NAME: params.businessName,
+        REASON: params.reason,
+      };
+      this.sendTransacEmail(sibEmail);
+    }
   }
 
   private async sendTransacEmail(sibEmail: SibApiV3Sdk.SendSmtpEmail) {

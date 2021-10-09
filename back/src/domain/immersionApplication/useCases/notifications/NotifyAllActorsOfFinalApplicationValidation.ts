@@ -10,6 +10,7 @@ import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
 import {
   EmailGateway,
+  RejectedApplicationNotificationParams,
   ValidatedApplicationFinalConfirmationParams,
 } from "../../ports/EmailGateway";
 
@@ -29,13 +30,6 @@ export class NotifyAllActorsOfFinalApplicationValidation
   ) {}
 
   public async execute(dto: ImmersionApplicationDto): Promise<void> {
-    logger.info(
-      {
-        demandeImmersionid: dto.id,
-      },
-      "------------- Entering execute.",
-    );
-
     let recipients = [
       dto.email,
       dto.mentorEmail,
