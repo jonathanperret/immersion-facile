@@ -37,11 +37,20 @@ export type ValidatedApplicationFinalConfirmationParams = {
   signature: string;
 };
 
+export type RejectedApplicationNotificationParams = {
+  beneficiaryFirstName: string;
+  beneficiaryLastName: string;
+  reason: string;
+  businessName: string;
+  validationStructure: string;
+};
+
 export type EmailType =
   | "NEW_APPLICATION_BENEFICIARY_CONFIRMATION"
   | "NEW_APPLICATION_MENTOR_CONFIRMATION"
   | "NEW_APPLICATION_ADMIN_NOTIFICATION"
-  | "VALIDATED_APPLICATION_FINAL_CONFIRMATION";
+  | "VALIDATED_APPLICATION_FINAL_CONFIRMATION"
+  | "REJECTED_APPLICATION_NOTIFICATION";
 
 export interface EmailGateway {
   sendNewApplicationBeneficiaryConfirmation: (
@@ -59,5 +68,9 @@ export interface EmailGateway {
   sendValidatedApplicationFinalConfirmation: (
     recipient: string[],
     params: ValidatedApplicationFinalConfirmationParams,
+  ) => Promise<void>;
+  sendRejecteddApplicationNotification: (
+    recipient: string[],
+    params: RejectedApplicationNotificationParams,
   ) => Promise<void>;
 }

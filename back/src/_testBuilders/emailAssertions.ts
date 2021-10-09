@@ -1,5 +1,6 @@
+import { string } from "pg-format";
 import { TemplatedEmail } from "../adapters/secondary/InMemoryEmailGateway";
-import { getValidatedApplicationFinalConfirmationParams } from "../domain/immersionApplication/useCases/notifications/NotifyAllActorsOfFinalApplicationValidation";
+import { getRejecteddApplicationNotificationParams } from "../domain/immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected";
 import { ImmersionApplicationDto } from "../shared/ImmersionApplicationDto";
 
 export const expectEmailAdminNotificationMatchingImmersionApplication = (
@@ -62,16 +63,21 @@ export const expectEmailMentorConfirmationMatchingImmersionApplication = (
   });
 };
 
-export const expectEmailFinalValidationConfirmationMatchingImmersionApplication =
+export const expectEmailApplicationRejectedNotificationMatchingImmersionApplication =
   (
     recipients: string[],
     templatedEmail: TemplatedEmail,
-    immersionApplication: ImmersionApplicationDto,
+    immersionDto: ImmersionApplicationDto,
+    reason: string,
+    validationStructure: string,
   ) => {
     expect(templatedEmail).toEqual({
-      type: "VALIDATED_APPLICATION_FINAL_CONFIRMATION",
+      type: "REJECTED_APPLICATION_NOTIFICATION",
       recipients,
-      params:
-        getValidatedApplicationFinalConfirmationParams(immersionApplication),
+      params: getRejecteddApplicationNotificationParams(
+        immersionDto,
+        reason,
+        validationStructure,
+      ),
     });
   };
