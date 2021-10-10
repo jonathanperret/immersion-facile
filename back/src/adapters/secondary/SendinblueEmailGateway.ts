@@ -25,8 +25,8 @@ const emailTypeToTemplateId: Record<EmailType, number> = {
   // https://my.sendinblue.com/camp/template/6/message-setup
   VALIDATED_APPLICATION_FINAL_CONFIRMATION: 6,
 
-  // https://my.sendinblue.com/camp/template/7/message-setup
-  REJECTED_APPLICATION_NOTIFICATION: 7,
+  // https://my.sendinblue.com/camp/template/9/message-setup
+  REJECTED_APPLICATION_NOTIFICATION: 9,
 };
 
 export class SendinblueEmailGateway implements EmailGateway {
@@ -122,7 +122,7 @@ export class SendinblueEmailGateway implements EmailGateway {
     this.sendTransacEmail(sibEmail);
   }
 
-  public async sendRejecteddApplicationNotification(
+  public async sendRejectedApplicationNotification(
     recipient: string[],
     params: RejectedApplicationNotificationParams,
   ): Promise<void> {
@@ -144,6 +144,8 @@ export class SendinblueEmailGateway implements EmailGateway {
         LAST_NAME: params.beneficiaryLastName,
         BUSINESS_NAME: params.businessName,
         REASON: params.reason,
+        IMMERSION_PROFESSION: params.immersionProfession,
+        AGENCY: params.agency,
       };
       this.sendTransacEmail(sibEmail);
     }

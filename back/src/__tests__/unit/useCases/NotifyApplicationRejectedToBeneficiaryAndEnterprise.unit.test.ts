@@ -1,43 +1,42 @@
 import { InMemoryEmailGateway } from "../../../adapters/secondary/InMemoryEmailGateway";
-import { RejectedApplicationNotificationParams } from "../../../domain/immersionApplication/ports/EmailGateway";
 import { NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected } from "../../../domain/immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected";
 import {
-  ApplicationSource,
+  applicationStatusFromString,
   ImmersionApplicationDto,
 } from "../../../shared/ImmersionApplicationDto";
+import { AgencyCode } from "../../../shared/agencies";
 import { ImmersionApplicationEntityBuilder } from "../../../_testBuilders/ImmersionApplicationEntityBuilder";
 import { expectEmailApplicationRejectedNotificationMatchingImmersionApplication } from "../../../_testBuilders/emailAssertions";
-import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
-import { NotifyAllActorsOfFinalApplicationValidation } from "../../../domain/immersionApplication/useCases/notifications/NotifyAllActorsOfFinalApplicationValidation";
 
 const validDemandeImmersion: ImmersionApplicationDto =
   new ImmersionApplicationEntityBuilder().build().toDto();
-
 const counsellorEmail = "counsellor@email.fr";
 
 describe("NotifyApplicationRejectedToBeneficiaryAndEnterprise", () => {
   let emailGw: InMemoryEmailGateway;
   let allowList: Set<string>;
-  let unrestrictedEmailSendingSources: Set<ApplicationSource>;
-  let counsellorEmails: Record<ApplicationSource, string[]>;
+  let unrestrictedEmailSendingAgencies: Set<AgencyCode>;
+  let counsellorEmails: Record<AgencyCode, string[]>;
   let notifyBeneficiaryAndEnterpriseThatApplicationIsRejected: NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected;
+  const rejectionReason = "Risque d'emploi de main d'oeuvre gratuite";
 
   beforeEach(() => {
     emailGw = new InMemoryEmailGateway();
     allowList = new Set();
-    unrestrictedEmailSendingSources = new Set();
-    counsellorEmails = {} as Record<ApplicationSource, string[]>;
-    // notifyBeneficiaryAndEnterpriseThatApplicationIsRejected =
-    //   new NotifyAllActorsOfFinalApplicationValidation(
-    //     emailGw,
-    //     allowList,
-
-    //     unrestrictedEmailSendingSources,
-    //     counsellorEmails,
-    //   );
+    unrestrictedEmailSendingAgencies = new Set();
+    counsellorEmails = {} as Record<AgencyCode, string[]>;
+    notifyBeneficiaryAndEnterpriseThatApplicationIsRejected =
+      new NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected(
+        emailGw,
+        allowList,
+        unrestrictedEmailSendingAgencies,
+        counsellorEmails,
+      );
+    validDemandeImmersion.status = applicationStatusFromString("REJECTED");
+    validDemandeImmersion.rejectionReason = rejectionReason;
   });
 
-  test("Sends no emails when allowList and unrestrictedEmailSendingSources is empty", async () => {
+  test("Sends no emails when allowList and unrestrictedEmailSendingAgencies is empty", async () => {
     await notifyBeneficiaryAndEnterpriseThatApplicationIsRejected.execute(
       validDemandeImmersion,
     );
@@ -58,8 +57,64 @@ describe("NotifyApplicationRejectedToBeneficiaryAndEnterprise", () => {
       [validDemandeImmersion.email],
       sentEmails[0],
       validDemandeImmersion,
-      "Suspicion of free working",
-      "Mission Locale",
+    );
+  });
+
+  test("Sends notification of rejection email to mentor when on allowList", async () => {
+    allowList.add(validDemandeImmersion.mentorEmail);
+
+    await notifyBeneficiaryAndEnterpriseThatApplicationIsRejected.execute(
+      validDemandeImmersion,
+    );
+
+    const sentEmails = emailGw.getSentEmails();
+
+    expect(sentEmails).toHaveLength(1);
+    expectEmailApplicationRejectedNotificationMatchingImmersionApplication(
+      [validDemandeImmersion.mentorEmail],
+      sentEmails[0],
+      validDemandeImmersion,
+    );
+  });
+
+  test("Sends notification of rejection email to concellor when on allowList", async () => {
+    counsellorEmails[validDemandeImmersion.agencyCode] = [counsellorEmail];
+
+    allowList.add(counsellorEmail);
+
+    await notifyBeneficiaryAndEnterpriseThatApplicationIsRejected.execute(
+      validDemandeImmersion,
+    );
+
+    const sentEmails = emailGw.getSentEmails();
+
+    expect(sentEmails).toHaveLength(1);
+    expectEmailApplicationRejectedNotificationMatchingImmersionApplication(
+      [counsellorEmail],
+      sentEmails[0],
+      validDemandeImmersion,
+    );
+  });
+
+  test("Sends notification of rejection email to beneficiary, mentor, and counsellor for unrestrictedEmailSendingAgencies", async () => {
+    counsellorEmails[validDemandeImmersion.agencyCode] = [counsellorEmail];
+    unrestrictedEmailSendingAgencies.add(validDemandeImmersion.agencyCode);
+
+    await notifyBeneficiaryAndEnterpriseThatApplicationIsRejected.execute(
+      validDemandeImmersion,
+    );
+
+    const sentEmails = emailGw.getSentEmails();
+
+    expect(sentEmails).toHaveLength(1);
+    expectEmailApplicationRejectedNotificationMatchingImmersionApplication(
+      [
+        validDemandeImmersion.email,
+        validDemandeImmersion.mentorEmail,
+        counsellorEmail,
+      ],
+      sentEmails[0],
+      validDemandeImmersion,
     );
   });
 });

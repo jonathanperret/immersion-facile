@@ -1,7 +1,5 @@
-import {
-  ApplicationSource,
-  ImmersionApplicationDto,
-} from "../../../../shared/ImmersionApplicationDto";
+import { AgencyCode } from "../../../../shared/agencies";
+import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
 import {
@@ -15,24 +13,20 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected
 {
   constructor(
     private readonly emailGateway: EmailGateway,
-    private readonly validationStructure: string,
-    private readonly reason: string,
     private readonly emailAllowList: Readonly<Set<string>>,
-    private readonly unrestrictedEmailSendingSources: Readonly<
-      Set<ApplicationSource>
+    private readonly unrestrictedEmailSendingAgencies: Readonly<
+      Set<AgencyCode>
     >,
-    private readonly counsellorEmails: Readonly<
-      Record<ApplicationSource, string[]>
-    >,
+    private readonly counsellorEmails: Readonly<Record<AgencyCode, string[]>>,
   ) {}
 
   public async execute(dto: ImmersionApplicationDto): Promise<void> {
     let recipients = [
       dto.email,
       dto.mentorEmail,
-      ...(this.counsellorEmails[dto.source] || []),
+      ...(this.counsellorEmails[dto.agencyCode] || []),
     ];
-    if (!this.unrestrictedEmailSendingSources.has(dto.source)) {
+    if (!this.unrestrictedEmailSendingAgencies.has(dto.agencyCode)) {
       recipients = recipients.filter((email) => {
         if (!this.emailAllowList.has(email)) {
           logger.info(`Skipped sending email to: ${email}`);
@@ -43,13 +37,9 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected
     }
 
     if (recipients.length > 0) {
-      await this.emailGateway.sendRejecteddApplicationNotification(
+      await this.emailGateway.sendRejectedApplicationNotification(
         recipients,
-        getRejecteddApplicationNotificationParams(
-          dto,
-          this.reason,
-          this.validationStructure,
-        ),
+        getRejecteddApplicationNotificationParams(dto, dto.agencyCode),
       );
     } else {
       logger.info(
@@ -57,8 +47,7 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected
           id: dto.id,
           recipients,
           source: dto.source,
-          reason: this.reason,
-          structure: this.validationStructure,
+          reason: dto.rejectionReason,
         },
         "Sending validation confirmation email skipped.",
       );
@@ -67,16 +56,28 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected
 }
 
 // Visible for testing.
+export const getSignature = (agencyCode: AgencyCode): string => {
+  switch (agencyCode) {
+    case "AMIE_BOULONAIS":
+      return "L'équipe de l'AMIE du Boulonnais";
+    case "MLJ_GRAND_NARBONNE":
+      return "L'équipe de la Mission Locale de Narbonne";
+    default:
+      return "L'immersion facile";
+  }
+};
+// Visible for testing.
 export const getRejecteddApplicationNotificationParams = (
   dto: ImmersionApplicationDto,
-  reason: string,
-  validationStructure: string,
+  agency: string,
 ): RejectedApplicationNotificationParams => {
   return {
     beneficiaryFirstName: dto.firstName,
     beneficiaryLastName: dto.lastName,
     businessName: dto.businessName,
-    reason: reason,
-    validationStructure: validationStructure,
+    reason: "" && dto.rejectionReason,
+    signature: getSignature(dto.agencyCode),
+    agency: agency,
+    immersionProfession: dto.immersionProfession,
   };
 };

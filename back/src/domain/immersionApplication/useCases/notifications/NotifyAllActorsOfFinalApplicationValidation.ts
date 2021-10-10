@@ -8,7 +8,6 @@ import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
 import {
   EmailGateway,
-  RejectedApplicationNotificationParams,
   ValidatedApplicationFinalConfirmationParams,
 } from "../../ports/EmailGateway";
 

@@ -42,7 +42,9 @@ export type RejectedApplicationNotificationParams = {
   beneficiaryLastName: string;
   reason: string;
   businessName: string;
-  validationStructure: string;
+  signature: string;
+  immersionProfession: string;
+  agency: string;
 };
 
 export type EmailType =
@@ -69,7 +71,7 @@ export interface EmailGateway {
     recipient: string[],
     params: ValidatedApplicationFinalConfirmationParams,
   ) => Promise<void>;
-  sendRejecteddApplicationNotification: (
+  sendRejectedApplicationNotification: (
     recipient: string[],
     params: RejectedApplicationNotificationParams,
   ) => Promise<void>;

@@ -74,7 +74,7 @@ export class InMemoryEmailGateway implements EmailGateway {
     });
   }
 
-  public async sendRejecteddApplicationNotification(
+  public async sendRejectedApplicationNotification(
     recipients: string[],
     params: RejectedApplicationNotificationParams,
   ): Promise<void> {
