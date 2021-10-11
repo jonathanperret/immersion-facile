@@ -91,6 +91,7 @@ export class SendinblueEmailGateway implements EmailGateway {
       DATE_START: params.dateStart,
       DATE_END: params.dateEnd,
       BUSINESS_NAME: params.businessName,
+      MAGIC_LINK: params.magicLink,
     };
     this.sendTransacEmail(sibEmail);
   }

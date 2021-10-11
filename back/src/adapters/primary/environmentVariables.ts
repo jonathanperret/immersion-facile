@@ -11,6 +11,7 @@ const sendInBlueAPIKey = throwIfNotDefined("SENDINBLUE_API_KEY");
 const jwtPrivateKey = throwIfNotDefined("JWT_PRIVATE_KEY");
 const jwtPublicKey = throwIfNotDefined("JWT_PUBLIC_KEY");
 const dev = getBooleanVariable("DEV");
+const baseURL = throwIfNotDefined("IMMERSION_FACILE_BASE_URL");
 
 const repositories = throwIfNotDefined("REPOSITORIES");
 
@@ -23,4 +24,5 @@ export const ENV = {
   pgUrl,
   ci: process.env.CI,
   sendInBlueAPIKey,
+  baseURL,
 };

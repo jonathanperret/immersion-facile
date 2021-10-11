@@ -3,3 +3,7 @@ export const immersionOffersRoute = "immersion-offers";
 export const validateDemandeRoute = "validate-demande";
 export const siretRoute = "siret";
 export const romeRoute = "rome";
+
+export const frontRoutes = {
+  immersionApplicationsToValidate: "verification",
+};
