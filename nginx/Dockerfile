@@ -8,4 +8,3 @@ RUN apt-get update && \
 CMD service cron start && \
     service nginx start && \
     sleep infinity
-    

@@ -22,7 +22,7 @@ services:
       - "${HTTPS_PORT:-443}:443"
     volumes:
       - ./docker-data/letsencrypt:/etc/letsencrypt
-      - ./docker-data/cerbot:/cerbot
+      - ./docker-data/certbot:/certbot
 
 #  postgres:
 #    image: postgres:13
