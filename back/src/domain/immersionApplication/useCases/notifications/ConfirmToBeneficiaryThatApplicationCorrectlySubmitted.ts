@@ -24,8 +24,6 @@ export class ConfirmToBeneficiaryThatApplicationCorrectlySubmitted
     firstName,
     lastName,
   }: ImmersionApplicationDto): Promise<void> {
-    logger.info({ demandeImmersionid: id }, `------------- Entering execute`);
-
     if (
       this.unrestrictedEmailSendingAgencies.has(agencyCode) ||
       this.emailAllowList.has(email)

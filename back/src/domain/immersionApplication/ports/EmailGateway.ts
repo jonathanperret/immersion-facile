@@ -1,3 +1,5 @@
+import { AgencyCode } from "../../../shared/agencies";
+
 export type NewApplicationAdminNotificationParams = {
   demandeId: string;
   firstName: string;
@@ -41,17 +43,27 @@ export type ValidatedApplicationFinalConfirmationParams = {
 export type RejectedApplicationNotificationParams = {
   beneficiaryFirstName: string;
   beneficiaryLastName: string;
-  reason: string;
+  rejectionReason: string;
   businessName: string;
   signature: string;
   immersionProfession: string;
   agency: string;
 };
 
+export type NewImmersionApplicationReviewForEligibilityOrValidationParams = {
+  beneficiaryFirstName: string;
+  beneficiaryLastName: string;
+  businessName: string;
+  magicLink: string;
+  agencySignature: string;
+};
+
 export type EmailType =
   | "NEW_APPLICATION_BENEFICIARY_CONFIRMATION"
   | "NEW_APPLICATION_MENTOR_CONFIRMATION"
   | "NEW_APPLICATION_ADMIN_NOTIFICATION"
+  | "NEW_APPLICATION_REVIEW_FOR_ELIGIBILITY"
+  | "NEW_APPLICATION_REVIEW_FOR_VALIDATION"
   | "VALIDATED_APPLICATION_FINAL_CONFIRMATION"
   | "REJECTED_APPLICATION_NOTIFICATION";
 
@@ -75,5 +87,9 @@ export interface EmailGateway {
   sendRejectedApplicationNotification: (
     recipient: string[],
     params: RejectedApplicationNotificationParams,
+  ) => Promise<void>;
+  sendNewApplicationForReviewNotification: (
+    recipient: string[],
+    params: NewImmersionApplicationReviewForEligibilityOrValidationParams,
   ) => Promise<void>;
 }

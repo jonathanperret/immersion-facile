@@ -1,14 +1,8 @@
-import { ENV } from "../../../../adapters/primary/environmentVariables";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
-import { frontRoutes } from "../../../../shared/routes";
-import {
-  createMagicLinkPayload,
-  MagicLinkPayload,
-} from "../../../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../../../utils/logger";
-import { generateJwt } from "../../../auth/jwt";
 import { UseCase } from "../../../core/UseCase";
 import { EmailGateway } from "../../ports/EmailGateway";
+import { generateMagicLinkString } from "../notifications/NotificationsHelper";
 
 const logger = createLogger(__filename);
 export class NotifyToTeamApplicationSubmittedByBeneficiary
@@ -28,17 +22,17 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
     dateEnd,
     businessName,
   }: ImmersionApplicationDto): Promise<void> {
+    logger.info(
+      {
+        demandeImmersionId: id,
+        immersionFacileContactEmail: this.immersionFacileContactEmail,
+      },
+      "------------- Entering execute.",
+    );
     if (!this.immersionFacileContactEmail) {
       logger.info({ demandeId: id, email }, "No immersionFacileContactEmail");
       return;
     }
-
-    const immersionFacileBaseURL = ENV.baseURL;
-    const magicLinkString: string =
-      immersionFacileBaseURL +
-      `/${frontRoutes.immersionApplicationsToValidate}?jwt=` +
-      generateJwt(createMagicLinkPayload(id, "establishment"));
-    console.log(`magicLinkString IS ${magicLinkString}`);
 
     await this.emailGateway.sendNewApplicationAdminNotification(
       [this.immersionFacileContactEmail],
@@ -49,7 +43,7 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
         dateStart,
         dateEnd,
         businessName,
-        magicLink: magicLinkString,
+        magicLink: generateMagicLinkString(id, "admin"),
       },
     );
   }

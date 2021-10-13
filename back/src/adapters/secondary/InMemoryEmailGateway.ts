@@ -3,6 +3,7 @@ import type {
   NewApplicationAdminNotificationParams,
   NewApplicationBeneficiaryConfirmationParams,
   NewApplicationMentorConfirmationParams,
+  NewImmersionApplicationReviewForEligibilityOrValidationParams,
   RejectedApplicationNotificationParams,
   ValidatedApplicationFinalConfirmationParams,
 } from "../../domain/immersionApplication/ports/EmailGateway";
@@ -54,6 +55,21 @@ export class InMemoryEmailGateway implements EmailGateway {
     logger.info({ recipients, params }, "sendNewApplicationAdminNotification");
     this.sentEmails.push({
       type: "NEW_APPLICATION_ADMIN_NOTIFICATION",
+      recipients: recipients,
+      params,
+    });
+  }
+
+  public async sendNewApplicationForReviewNotification(
+    recipients: string[],
+    params: NewImmersionApplicationReviewForEligibilityOrValidationParams,
+  ): Promise<void> {
+    logger.info(
+      { recipients, params },
+      "sendNewApplicationForReviewNotification",
+    );
+    this.sentEmails.push({
+      type: "NEW_APPLICATION_REVIEW_FOR_ELIGIBILITY",
       recipients: recipients,
       params,
     });

@@ -6,6 +6,7 @@ import type {
   NewApplicationMentorConfirmationParams,
   ValidatedApplicationFinalConfirmationParams,
   RejectedApplicationNotificationParams,
+  NewImmersionApplicationReviewForEligibilityOrValidationParams,
 } from "../../domain/immersionApplication/ports/EmailGateway";
 import { EmailGateway } from "../../domain/immersionApplication/ports/EmailGateway";
 import { createLogger } from "./../../utils/logger";
@@ -27,6 +28,12 @@ const emailTypeToTemplateId: Record<EmailType, number> = {
 
   // https://my.sendinblue.com/camp/template/9/message-setup
   REJECTED_APPLICATION_NOTIFICATION: 9,
+
+  // https://my.sendinblue.com/camp/template/9/message-setup
+  NEW_APPLICATION_REVIEW_FOR_ELIGIBILITY: 10,
+
+  // https://my.sendinblue.com/camp/template/9/message-setup
+  NEW_APPLICATION_REVIEW_FOR_VALIDATION: 11,
 };
 
 export class SendinblueEmailGateway implements EmailGateway {
@@ -144,12 +151,30 @@ export class SendinblueEmailGateway implements EmailGateway {
         FIRST_NAME: params.beneficiaryFirstName,
         LAST_NAME: params.beneficiaryLastName,
         BUSINESS_NAME: params.businessName,
-        REASON: params.reason,
+        REASON: params.rejectionReason,
         IMMERSION_PROFESSION: params.immersionProfession,
         AGENCY: params.agency,
       };
       this.sendTransacEmail(sibEmail);
     }
+  }
+
+  public async sendNewApplicationForReviewNotification(
+    recipients: string[],
+    params: NewImmersionApplicationReviewForEligibilityOrValidationParams,
+  ): Promise<void> {
+    const sibEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sibEmail.templateId =
+      emailTypeToTemplateId.NEW_APPLICATION_REVIEW_FOR_ELIGIBILITY;
+    sibEmail.to = recipients.map((email) => ({ email }));
+    sibEmail.params = {
+      BENEFICIARY_FIRST_NAME: params.beneficiaryFirstName,
+      BENEFICIARY_LAST_NAME: params.beneficiaryLastName,
+      BUSINESS_NAME: params.businessName,
+      SIGNATURE: params.agencySignature,
+      MAGIC_LINK: params.magicLink,
+    };
+    this.sendTransacEmail(sibEmail);
   }
 
   private async sendTransacEmail(sibEmail: SibApiV3Sdk.SendSmtpEmail) {

@@ -1,4 +1,3 @@
-import { string } from "pg-format";
 import { TemplatedEmail } from "../adapters/secondary/InMemoryEmailGateway";
 import { getValidatedApplicationFinalConfirmationParams } from "../domain/immersionApplication/useCases/notifications/NotifyAllActorsOfFinalApplicationValidation";
 import { getRejecteddApplicationNotificationParams } from "../domain/immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected";
@@ -83,10 +82,14 @@ export const expectEmailApplicationRejectedNotificationMatchingImmersionApplicat
     recipients: string[],
     templatedEmail: TemplatedEmail,
     immersionDto: ImmersionApplicationDto,
+    agencyName: string,
   ) => {
     expect(templatedEmail).toEqual({
       type: "REJECTED_APPLICATION_NOTIFICATION",
       recipients,
-      params: getRejecteddApplicationNotificationParams(immersionDto),
+      params: getRejecteddApplicationNotificationParams(
+        immersionDto,
+        agencyName,
+      ),
     });
   };

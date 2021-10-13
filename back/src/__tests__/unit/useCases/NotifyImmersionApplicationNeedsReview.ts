@@ -1,15 +1,12 @@
 import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
-import { expectEmailAdminNotificationMatchingImmersionApplication } from "../../../_testBuilders/emailAssertions";
 import { InMemoryEmailGateway } from "../../../adapters/secondary/InMemoryEmailGateway";
 import { NotifyToTeamApplicationSubmittedByBeneficiary } from "../../../domain/immersionApplication/useCases/notifications/NotifyToTeamApplicationSubmittedByBeneficiary";
 
-describe("NotifyToTeamApplicationSubmittedByBeneficiary", () => {
+describe("NotifyImmersionApplicationNeedsReview", () => {
   let emailGw: InMemoryEmailGateway;
-  let immersionFacileContactEmail: string;
   const validDemandeImmersion = new ImmersionApplicationDtoBuilder().build();
 
   beforeEach(() => {
-    immersionFacileContactEmail = "supervisor@email.fr";
     emailGw = new InMemoryEmailGateway();
   });
 
@@ -23,19 +20,5 @@ describe("NotifyToTeamApplicationSubmittedByBeneficiary", () => {
     expect(sentEmails).toHaveLength(0);
   });
 
-  test("Sends admin notification email to immersion facile team when contact Email is set", async () => {
-    const notifyToTeam = new NotifyToTeamApplicationSubmittedByBeneficiary(
-      emailGw,
-      immersionFacileContactEmail,
-    );
-    await notifyToTeam.execute(validDemandeImmersion);
-
-    const sentEmails = emailGw.getSentEmails();
-    expect(sentEmails).toHaveLength(1);
-
-    expectEmailAdminNotificationMatchingImmersionApplication(sentEmails[0], {
-      recipient: immersionFacileContactEmail,
-      immersionApplication: validDemandeImmersion,
-    });
-  });
+  test("Sends notification for review to an advisor who can either make it eligible, validate or cancel it", async () => {});
 });

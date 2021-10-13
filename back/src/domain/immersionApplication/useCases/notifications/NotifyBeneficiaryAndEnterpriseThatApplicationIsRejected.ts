@@ -75,7 +75,7 @@ export const getRejecteddApplicationNotificationParams = (
     beneficiaryFirstName: dto.firstName,
     beneficiaryLastName: dto.lastName,
     businessName: dto.businessName,
-    reason: "" && dto.rejectionReason,
+    rejectionReason: "" && dto.rejectionReason,
     signature: getSignature(dto.agencyCode),
     agency: agency,
     immersionProfession: dto.immersionProfession,
