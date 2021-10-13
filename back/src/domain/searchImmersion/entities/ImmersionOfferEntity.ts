@@ -1,6 +1,6 @@
 import { Flavor } from "../../../shared/typeFlavors";
 
-export type ImmersionOfferId = Flavor<string, "ImmersionProposalId">;
+export type ImmersionOfferId = Flavor<string, "ImmersionOfferId">;
 export type ImmersionContactInEstablishmentId = Flavor<
   string,
   "ImmersionContactInEstablishmentId"
@@ -34,16 +34,28 @@ export class ImmersionOfferEntity {
     return this.props.name;
   }
 
+  public getRome() {
+    return this.props.rome;
+  }
+
   public toArrayOfProps() {
     return [
       this.props.id,
       this.props.rome,
-      this.props.naf,
+      this.extractCategory(),
       this.props.siret,
+      this.props.naf,
       this.props.name,
       this.props.voluntary_to_immersion,
       this.props.data_source,
       this.props.score,
     ];
+  }
+
+  extractCategory(): number {
+    if (this.props.naf) {
+      return parseInt(this.props.naf.substring(0, 2));
+    }
+    return -1;
   }
 }

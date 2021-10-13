@@ -1,4 +1,3 @@
-import { AgencyCode } from "../../../../shared/agencies";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import {
   prettyPrintLegacySchedule,
@@ -6,6 +5,7 @@ import {
 } from "../../../../shared/ScheduleUtils";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
+import { AgencyConfig, AgencyRepository } from "../../ports/AgencyRepository";
 import {
   EmailGateway,
   ValidatedApplicationFinalConfirmationParams,
@@ -18,19 +18,30 @@ export class NotifyAllActorsOfFinalApplicationValidation
   constructor(
     private readonly emailGateway: EmailGateway,
     private readonly emailAllowList: Readonly<Set<string>>,
-    private readonly unrestrictedEmailSendingAgencies: Readonly<
-      Set<AgencyCode>
-    >,
-    private readonly counsellorEmails: Readonly<Record<AgencyCode, string[]>>,
+    private readonly agencyRepository: AgencyRepository,
   ) {}
 
   public async execute(dto: ImmersionApplicationDto): Promise<void> {
+    logger.info(
+      {
+        demandeImmersionid: dto.id,
+      },
+      "------------- Entering execute.",
+    );
+
+    const agencyConfig = await this.agencyRepository.getConfig(dto.agencyCode);
+    if (!agencyConfig) {
+      throw new Error(
+        `Unable to send mail. No agency config found for ${dto.agencyCode}`,
+      );
+    }
+
     let recipients = [
       dto.email,
       dto.mentorEmail,
-      ...(this.counsellorEmails[dto.agencyCode] || []),
+      ...agencyConfig.counsellorEmails,
     ];
-    if (!this.unrestrictedEmailSendingAgencies.has(dto.agencyCode)) {
+    if (!agencyConfig.allowUnrestrictedEmailSending) {
       recipients = recipients.filter((email) => {
         if (!this.emailAllowList.has(email)) {
           logger.info(`Skipped sending email to: ${email}`);
@@ -43,7 +54,7 @@ export class NotifyAllActorsOfFinalApplicationValidation
     if (recipients.length > 0) {
       await this.emailGateway.sendValidatedApplicationFinalConfirmation(
         recipients,
-        getValidatedApplicationFinalConfirmationParams(dto),
+        getValidatedApplicationFinalConfirmationParams(agencyConfig, dto),
       );
     } else {
       logger.info(
@@ -59,31 +70,8 @@ export class NotifyAllActorsOfFinalApplicationValidation
 }
 
 // Visible for testing.
-export const getSignature = (agencyCode: AgencyCode): string => {
-  switch (agencyCode) {
-    case "AMIE_BOULONAIS":
-      return "L'équipe de l'AMIE du Boulonnais";
-    case "MLJ_GRAND_NARBONNE":
-      return "L'équipe de la Mission Locale de Narbonne";
-    default:
-      return "L'immersion facile";
-  }
-};
-
-// Visible for testing.
-export const getQuestionnaireUrl = (agencyCode: AgencyCode): string => {
-  switch (agencyCode) {
-    case "AMIE_BOULONAIS":
-      return "https://docs.google.com/document/d/1LLNoYByQzU6PXmOTN-MHbrhfOOglvTm1dBuzUzgesow/view";
-    case "MLJ_GRAND_NARBONNE":
-      return "https://drive.google.com/file/d/1GP4JX21uF5RCBk8kbjWtgZjiBBHPYSFO/view";
-    default:
-      return "";
-  }
-};
-
-// Visible for testing.
 export const getValidatedApplicationFinalConfirmationParams = (
+  agencyConfig: AgencyConfig,
   dto: ImmersionApplicationDto,
 ): ValidatedApplicationFinalConfirmationParams => {
   return {
@@ -104,7 +92,7 @@ export const getValidatedApplicationFinalConfirmationParams = (
         ? dto.sanitaryPreventionDescription
         : "non",
     individualProtection: dto.individualProtection ? "oui" : "non",
-    questionnaireUrl: getQuestionnaireUrl(dto.agencyCode),
-    signature: getSignature(dto.agencyCode),
+    questionnaireUrl: agencyConfig.questionnaireUrl,
+    signature: agencyConfig.signature,
   };
 };

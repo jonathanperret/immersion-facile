@@ -1,7 +1,9 @@
+import { AgencyCode } from "../../../../shared/agencies";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import { Role } from "../../../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
+import { AgencyRepository } from "../../ports/AgencyRepository";
 import { EmailGateway } from "../../ports/EmailGateway";
 import { generateMagicLinkString } from "../notifications/NotificationsHelper";
 
@@ -16,13 +18,13 @@ type AgencyConfig = {
   signature: string;
 };
 
-export class NotifyToTeamApplicationSubmittedByBeneficiary
+export class NotifyImmersionApplicationNeedsReview
   implements UseCase<ImmersionApplicationDto>
 {
   constructor(
     private readonly emailGateway: EmailGateway,
-    private readonly immersionFacileContactEmail: string | undefined,
-    private readonly agencyConfig: AgencyConfig,
+    private readonly agencyRepository: AgencyRepository,
+    private readonly agencyCode: AgencyCode,
   ) {}
 
   public async execute(
@@ -30,12 +32,21 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
   ): Promise<void> {
     let targetMailRecicipients: string[];
     let immersionApplicationReviewerRole: Role;
+    const agencyConfig = await this.agencyRepository.getConfig(this.agencyCode);
 
-    if (this.agencyConfig.counsellorEmails.length > 0) {
-      targetMailRecicipients = this.agencyConfig.counsellorEmails;
-      immersionApplicationReviewerRole = "advisor";
+    if (!agencyConfig) {
+      logger.error(
+        { agencyCode: this.agencyCode },
+        "No Agency Config found for this agency code",
+      );
+      return;
+    }
+
+    if (agencyConfig.counsellorEmails.length > 0) {
+      targetMailRecicipients = agencyConfig.counsellorEmails;
+      immersionApplicationReviewerRole = "counsellor";
     } else {
-      targetMailRecicipients = this.agencyConfig.adminEmails;
+      targetMailRecicipients = agencyConfig.validatorEmails;
       immersionApplicationReviewerRole = "validator";
     }
 
@@ -57,7 +68,7 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
         ),
         beneficiaryFirstName: immersionApplicationDto.firstName,
         beneficiaryLastName: immersionApplicationDto.lastName,
-        agencySignature: this.agencyConfig.signature,
+        agencySignature: agencyConfig.signature,
       },
     );
 

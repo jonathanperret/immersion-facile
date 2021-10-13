@@ -1,24 +1,54 @@
-import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
+import { notify } from "superagent";
+import {
+  AgencyConfigs,
+  InMemoryAgencyRepository,
+} from "../../../adapters/secondary/InMemoryAgencyRepository";
 import { InMemoryEmailGateway } from "../../../adapters/secondary/InMemoryEmailGateway";
-import { NotifyToTeamApplicationSubmittedByBeneficiary } from "../../../domain/immersionApplication/useCases/notifications/NotifyToTeamApplicationSubmittedByBeneficiary";
+import { NotifyImmersionApplicationNeedsReview } from "../../../domain/immersionApplication/useCases/notifications/NotifyNewApplicationNeedsReview";
+import { AgencyConfigBuilder } from "../../../_testBuilders/AgencyConfigBuilder";
+import { expectEmailAdminNotificationMatchingImmersionApplication } from "../../../_testBuilders/emailAssertions";
+import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
+
+const adminEmail = "admin@email.fr";
+const validDemandeImmersion = new ImmersionApplicationDtoBuilder().build();
 
 describe("NotifyImmersionApplicationNeedsReview", () => {
   let emailGw: InMemoryEmailGateway;
-  const validDemandeImmersion = new ImmersionApplicationDtoBuilder().build();
+  let agencyConfigs: AgencyConfigs;
 
   beforeEach(() => {
+    agencyConfigs = {
+      [validDemandeImmersion.agencyCode]: AgencyConfigBuilder.empty().build(),
+    };
     emailGw = new InMemoryEmailGateway();
   });
 
-  test("Sends no mail when contact Email is not set", async () => {
-    const notifyToTeam = new NotifyToTeamApplicationSubmittedByBeneficiary(
+  const createUseCase = () => {
+    return new NotifyImmersionApplicationNeedsReview(
       emailGw,
-      undefined,
+      new InMemoryAgencyRepository(agencyConfigs),
+      validDemandeImmersion.agencyCode,
     );
-    await notifyToTeam.execute(validDemandeImmersion);
+  };
+
+  test("Sends no mail when contact Email is not set", async () => {
+    await createUseCase().execute(validDemandeImmersion);
     const sentEmails = emailGw.getSentEmails();
     expect(sentEmails).toHaveLength(0);
   });
 
-  test("Sends notification for review to an advisor who can either make it eligible, validate or cancel it", async () => {});
+  test("Sends notification email to an advisor to verify eligibility", async () => {
+    agencyConfigs[validDemandeImmersion.agencyCode] =
+      AgencyConfigBuilder.empty().withAdminEmails([adminEmail]).build();
+
+    await createUseCase().execute(validDemandeImmersion);
+
+    const sentEmails = emailGw.getSentEmails();
+    expect(sentEmails).toHaveLength(1);
+
+    expectEmailAdminNotificationMatchingImmersionApplication(sentEmails[0], {
+      recipients: [adminEmail],
+      immersionApplication: validDemandeImmersion,
+    });
+  });
 });

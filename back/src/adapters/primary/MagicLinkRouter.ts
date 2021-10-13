@@ -1,30 +1,21 @@
 import { Router } from "express";
-import { authMiddleware } from "./authMiddleware";
-import { sendHttpResponse } from "./helpers/sendHttpResponse";
-import { immersionApplicationsRoute } from "../../shared/routes";
-import { AppConfig } from "./config";
-import { callUseCase } from "./helpers/callUseCase";
 import {
   getImmersionApplicationRequestDtoSchema,
   immersionApplicationSchema,
   updateImmersionApplicationRequestDtoSchema,
+  updateImmersionApplicationStatusRequestSchema,
 } from "../../shared/ImmersionApplicationDto";
+import {
+  immersionApplicationsRoute,
+  updateApplicationStatusRoute,
+} from "../../shared/routes";
+import { authMiddleware } from "./authMiddleware";
+import { AppConfig } from "./config";
+import { callUseCase } from "./helpers/callUseCase";
+import { sendHttpResponse } from "./helpers/sendHttpResponse";
 
 export const createMagicLinkRouter = (config: AppConfig) => {
   const authenticatedRouter = Router({ mergeParams: true });
-
-  // Posting a new application doesn't require a JWT, so this is intentionally added before the auth middleware is plugged in
-  authenticatedRouter
-    .route(`/${immersionApplicationsRoute}`)
-    .post(async (req, res) =>
-      sendHttpResponse(req, res, () =>
-        callUseCase({
-          useCase: config.useCases.addDemandeImmersionML,
-          validationSchema: immersionApplicationSchema,
-          useCaseParams: req.body,
-        }),
-      ),
-    );
 
   authenticatedRouter.use("/:jwt", authMiddleware);
 
@@ -51,6 +42,19 @@ export const createMagicLinkRouter = (config: AppConfig) => {
         });
       }),
     );
+
+  authenticatedRouter
+    .route(`/${updateApplicationStatusRoute}/:jwt`)
+    .post(async (req, res) => {
+      sendHttpResponse(req, res, () =>
+        callUseCase({
+          useCase: config.useCases.updateImmersionApplicationStatus,
+          validationSchema: updateImmersionApplicationStatusRequestSchema,
+          useCaseParams: req.body,
+          jwtPayload: req.jwtPayload,
+        }),
+      );
+    });
 
   return authenticatedRouter;
 };

@@ -1,6 +1,8 @@
+import { agencyCodes } from "../../../../shared/agencies";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
+import { AgencyRepository } from "../../ports/AgencyRepository";
 import { EmailGateway } from "../../ports/EmailGateway";
 import { generateMagicLinkString } from "../notifications/NotificationsHelper";
 
@@ -10,12 +12,12 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
 {
   constructor(
     private readonly emailGateway: EmailGateway,
-    private readonly immersionFacileContactEmail: string | undefined,
+    private readonly agencyRepository: AgencyRepository,
   ) {}
 
   public async execute({
     id,
-    email,
+    agencyCode,
     firstName,
     lastName,
     dateStart,
@@ -25,17 +27,24 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
     logger.info(
       {
         demandeImmersionId: id,
-        immersionFacileContactEmail: this.immersionFacileContactEmail,
       },
       "------------- Entering execute.",
     );
-    if (!this.immersionFacileContactEmail) {
-      logger.info({ demandeId: id, email }, "No immersionFacileContactEmail");
+
+    const agencyConfig = await this.agencyRepository.getConfig(agencyCode);
+    if (!agencyConfig) {
+      throw new Error(
+        `Unable to send mail. No agency config found for ${agencyCode}`,
+      );
+    }
+
+    if (agencyConfig.adminEmails.length < 1) {
+      logger.info({ demandeId: id, agencyCode }, "No adminEmail.");
       return;
     }
 
     await this.emailGateway.sendNewApplicationAdminNotification(
-      [this.immersionFacileContactEmail],
+      agencyConfig.adminEmails,
       {
         demandeId: id,
         firstName,

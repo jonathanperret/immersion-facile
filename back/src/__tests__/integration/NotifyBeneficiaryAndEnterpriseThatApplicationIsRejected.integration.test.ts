@@ -36,7 +36,7 @@ describe("NotifyApplicationRejectedToBeneficiaryAndEnterprise", () => {
     validDemandeImmersion.rejectionReason = rejectionReason;
   });
 
-  test("Sends no emails when allowList and unrestrictedEmailSendingAgencies is empty", async () => {
+  test.skip("Sends no emails when allowList and unrestrictedEmailSendingAgencies is empty", async () => {
     counsellorEmails[validDemandeImmersion.agencyCode] = [counsellorEmail];
     unrestrictedEmailSendingAgencies.add(validDemandeImmersion.agencyCode);
 

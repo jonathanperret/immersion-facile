@@ -7,3 +7,4 @@ export const romeRoute = "rome";
 export const frontRoutes = {
   immersionApplicationsToValidate: "verification",
 };
+export const updateApplicationStatusRoute = "update-application-status";

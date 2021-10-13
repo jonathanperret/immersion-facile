@@ -18,11 +18,15 @@ export type ApplicationStatus =
   | "UNKNOWN"
   | "DRAFT"
   | "IN_REVIEW"
+  | "ACCEPTED_BY_COUNSELLOR"
+  | "ACCEPTED_BY_VALIDATOR"
   | "VALIDATED"
   | "REJECTED";
 const validApplicationStatus: NotEmptyArray<ApplicationStatus> = [
   "DRAFT",
   "IN_REVIEW",
+  "ACCEPTED_BY_COUNSELLOR",
+  "ACCEPTED_BY_VALIDATOR",
   "VALIDATED",
   "REJECTED",
 ];
@@ -67,6 +71,7 @@ export const immersionApplicationSchema = z
   .object({
     id: immersionApplicationIdSchema,
     status: z.enum(validApplicationStatus),
+    rejectionJustification: zString.optional(),
     source: z.enum(validApplicationSources),
     email: zEmail,
     firstName: zTrimmedString,
@@ -95,7 +100,6 @@ export const immersionApplicationSchema = z
     individualProtection: zBoolean,
     sanitaryPrevention: zBoolean,
     sanitaryPreventionDescription: z.string().optional(),
-
     immersionAddress: z.string().optional(),
     immersionObjective: z.string().optional(),
     immersionProfession: zTrimmedString,
@@ -172,3 +176,14 @@ export const validateImmersionApplicationRequestDtoSchema =
 // prettier-ignore
 export type ValidateImmersionApplicationResponseDto = z.infer<typeof validateImmersionApplicationResponseDtoSchema>;
 export const validateImmersionApplicationResponseDtoSchema = idInObject;
+
+// prettier-ignore
+export type UpdateImmersionApplicationStatusRequestDto = z.infer<typeof updateImmersionApplicationStatusRequestSchema>;
+export const updateImmersionApplicationStatusRequestSchema = z.object({
+  status: z.enum(validApplicationStatus),
+  justification: z.string().optional(),
+});
+
+// prettier-ignore
+export type UpdateImmersionApplicationStatusResponseDto = z.infer<typeof updateImmersionApplicationStatusResponseSchema>;
+export const updateImmersionApplicationStatusResponseSchema = idInObject;
