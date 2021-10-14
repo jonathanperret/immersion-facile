@@ -9,6 +9,7 @@ variables:
 stages:
   - test
   - deploy
+  - merge
 
 image: node:16.5
 
@@ -80,8 +81,8 @@ deploy_on_dev:
       git reset --hard origin/dev;
       retVal=\$?;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL:Source code fetch failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL:Source code fetch failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       touch .env &&
@@ -94,8 +95,8 @@ deploy_on_dev:
       retVal=\$?;
       rm -f .env;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       sleep 60;
@@ -125,8 +126,8 @@ deploy_on_beta:
       git reset --hard origin/beta;
       retVal=\$?;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL:Source code fetch failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL:Source code fetch failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       touch .env &&
@@ -139,8 +140,8 @@ deploy_on_beta:
       retVal=\$?;
       rm -f .env;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       sleep 60;
@@ -170,8 +171,8 @@ deploy_on_prod:
       git reset --hard origin/main;
       retVal=\$?;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL:Source code fetch failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL:Source code fetch failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       touch .env &&
@@ -184,10 +185,66 @@ deploy_on_prod:
       retVal=\$?;
       rm -f .env;
       if [ \$retVal -ne 0 ]; then
-        echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
-        exit \$retVal;
+      echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
+      exit \$retVal;
       fi;
 
       sleep 60;
       echo \"Checking server health...\";
       curl --silent --fail --output /dev/null http://localhost:80/api/"
+
+merge-to-staging:
+  stage: "merge"
+  cache: []
+  needs: ["front", "back"]
+  only:
+    - beta-to-staging
+  when: manual
+  script:
+    - git branch
+    - git push -o merge_request.create -o merge_request.target=staging -o merge_request.merge_when_pipeline_succeeds origin HEAD:beta-to-staging
+
+deploy_on_staging:
+  cache: []
+  only:
+    - staging
+  image: alpine:latest
+  stage: deploy
+  environment:
+    name: staging
+  script:
+    - chmod og= $DEPLOYER_ID_RSA_DEV
+    - echo $SERVER_USER
+    - apk update && apk add openssh-client
+    - scp -i $DEPLOYER_ID_RSA_DEV -o StrictHostKeyChecking=no $SECRETS $SERVER_USER@$DEPLOYER_SERVER_IP_DEV:/home/docker/immersion-facile-staging/.env.secrets
+    - scp -i $DEPLOYER_ID_RSA_DEV -o StrictHostKeyChecking=no $VARIABLES $SERVER_USER@$DEPLOYER_SERVER_IP_DEV:/home/docker/immersion-facile-staging/.env.variables
+    - ssh -i $DEPLOYER_ID_RSA_DEV -o StrictHostKeyChecking=no $SERVER_USER@$DEPLOYER_SERVER_IP_DEV "cd /home/docker/immersion-facile-staging &&
+      chmod 600 .env.secrets;
+      chmod 600 .env.variables;
+
+      git checkout staging &&
+      git fetch &&
+      git reset --hard origin/staging;
+      retVal=\$?;
+      if [ \$retVal -ne 0 ]; then
+      echo \"FATAL:Source code fetch failed. Aborting.\";
+      exit \$retVal;
+      fi;
+
+      touch .env &&
+      chmod 600 .env &&
+      cat .env.variables <(echo) .env.secrets <(echo) > .env &&
+      rm -f .env.variables .env.secrets &&
+      docker-compose --env-file .env build &&
+      docker-compose down &&
+      docker-compose up -d;
+      retVal=\$?;
+      rm -f .env;
+      if [ \$retVal -ne 0 ]; then
+      echo \"FATAL ERROR Docker image creation and server restart failed. Aborting.\";
+      exit \$retVal;
+      fi;
+
+      sleep 60;
+      echo \"Checking server health...\";
+      curl --silent --fail --output /dev/null http://localhost:3100/api/"
