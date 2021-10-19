@@ -11,6 +11,7 @@ import { InMemoryImmersionApplicationRepository } from "../../../adapters/second
 import {
   CreateNewEvent,
   makeCreateNewEvent,
+  NarrowEvent,
 } from "../../../domain/core/eventBus/EventBus";
 import { DomainEvent, DomainTopic } from "../../../domain/core/eventBus/events";
 import { OutboxRepository } from "../../../domain/core/ports/OutboxRepository";
@@ -263,8 +264,9 @@ describe("UpdateImmersionApplicationStatus", () => {
     role: Role;
     oldStatus: ApplicationStatus;
     newStatus: ApplicationStatus;
-    expectedDomainTopic?: DomainTopic;
+    expectedDomainTopic: DomainTopic;
   };
+
   const testAcceptsStatusUpdate = async ({
     role,
     oldStatus,
@@ -284,10 +286,22 @@ describe("UpdateImmersionApplicationStatus", () => {
     };
     expect(storedImmersionApplication).toEqual(expectedImmersionApplication);
 
-    await expectNewEvent({
-      topic: expectedDomainTopic,
-      payload: expectedImmersionApplication,
-    });
+    if (expectedDomainTopic === "ImmersionApplicationRequiresModification") {
+      const payload = {
+        application: expectedImmersionApplication,
+        reason: "test-modification-justification",
+      };
+
+      await expectNewEvent(expectedDomainTopic, {
+        topic: "ImmersionApplicationRequiresModification",
+        payload,
+      });
+    } else {
+      await expectNewEvent(expectedDomainTopic, {
+        topic: expectedDomainTopic,
+        payload: expectedImmersionApplication,
+      });
+    }
   };
 
   type TestAcceptsStatusUpdateToRejectedParams = {
@@ -313,8 +327,7 @@ describe("UpdateImmersionApplicationStatus", () => {
     };
     expect(storedImmersionApplication).toEqual(expectedImmersionApplication);
 
-    await expectNewEvent({
-      topic: "ImmersionApplicationRejected",
+    await expectNewEvent("ImmersionApplicationRejected", {
       payload: expectedImmersionApplication,
     });
   };
@@ -343,14 +356,12 @@ describe("UpdateImmersionApplicationStatus", () => {
     };
     expect(storedImmersionApplication).toEqual(expectedImmersionApplication);
 
-    await expectNewEvent( {
-      topic: "ImmersionApplicationRequiresModification",
-      payload: {application: expectedImmersionApplication, 
+    await expectNewEvent("ImmersionApplicationRequiresModification", {
+      payload: {
+        application: expectedImmersionApplication,
         reason: "test-modification-justification",
-      }
-    }
-    );
-    
+      },
+    });
   };
 
   type TestRejectsNewStatusParams = {
@@ -376,9 +387,16 @@ describe("UpdateImmersionApplicationStatus", () => {
     );
   };
 
-  const expectNewEvent = async (expectedEvent: Partial<DomainEvent>) => {
+  const expectNewEvent = async <T extends DomainTopic>(
+    topic: T,
+    expectedEvent: Partial<NarrowEvent<T>>,
+  ) => {
     const allEvents = await outboxRepository.getAllUnpublishedEvents();
     expect(allEvents).toHaveLength(1);
+
+    // expect(allEvents[0]).toMatchObject({received: "received"});
+    // expect(expectedEvent).toMatchObject({expected: "expected"});
+
     expect(allEvents[0]).toMatchObject(expectedEvent);
   };
 });

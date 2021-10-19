@@ -132,10 +132,21 @@ export class UpdateImmersionApplicationStatus
 
     const domainTopic = statusTransitionConfig.domainTopic;
     if (domainTopic) {
-      const event = this.createNewEvent({
-        topic: domainTopic,
-        payload: updatedEntity.toDto(),
-      });
+      let event = undefined
+      if (domainTopic === "ImmersionApplicationRequiresModification") {
+         event = this.createNewEvent({
+          topic: domainTopic,
+          payload: {
+            application: updatedEntity.toDto(),
+            reason: justification ?? "",
+          },
+        });
+      } else {
+         event = this.createNewEvent({
+          topic: domainTopic,
+          payload: updatedEntity.toDto(),
+        });
+      }
       await this.outboxRepository.save(event);
     }
 

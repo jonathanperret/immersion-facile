@@ -1,4 +1,3 @@
-import { mustBeSignedByEnterpriseBeforeReview } from "./../../../front/src/shared/immersionApplicationRefinement";
 import { z } from "../../node_modules/zod";
 import { agencyCodeSchema } from "./agencies";
 import {
@@ -7,6 +6,7 @@ import {
   startDateIsBeforeEndDate,
   submissionAndStartDatesConstraints,
   underMaxDuration,
+  mustBeSignedByEnterpriseBeforeReview,
 } from "./immersionApplicationRefinement";
 import {
   LegacyScheduleDto,
