@@ -22,7 +22,7 @@ import { NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected } from "../../d
 import { NotifyNewApplicationNeedsReview } from "../../domain/immersionApplication/useCases/notifications/NotifyNewApplicationNeedsReview";
 import { NotifyToTeamApplicationSubmittedByBeneficiary } from "../../domain/immersionApplication/useCases/notifications/NotifyToTeamApplicationSubmittedByBeneficiary";
 import { UpdateImmersionApplication } from "../../domain/immersionApplication/useCases/UpdateImmersionApplication";
-import { UpdateImmersionApplicationStatus } from "../../domain/immersionApplication/useCases/UpdateImmersionApplicationStatus";
+import { GenerateMagicLink, UpdateImmersionApplicationStatus } from "../../domain/immersionApplication/useCases/UpdateImmersionApplicationStatus";
 import { ValidateImmersionApplication } from "../../domain/immersionApplication/useCases/ValidateImmersionApplication";
 import { AddImmersionOffer } from "../../domain/immersionOffer/useCases/AddImmersionOffer";
 import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
@@ -281,6 +281,10 @@ const createUseCases = (
     createNewEvent,
     repositories.outbox,
   ),
+  generateMagicLink: new GenerateMagicLink(
+    repositories.demandeImmersion,
+    generateMagicLinkFn
+  )
 
   // immersionOffer
   addImmersionOffer: new AddImmersionOffer(repositories.immersionOffer),

@@ -50,6 +50,17 @@ const getPrefix = (status: ApplicationStatus) => {
   return "[⁉️ STATUS DE LA DEMANDE INDÉFINI]";
 };
 
+export const FormMagicLinks = ({
+  immersionApplication,
+}: FormAccordionProps) => {
+  const ml = "https://google.com";
+  return (
+    <>
+      <a href={ml}>Admin link</a>
+    </>
+  );
+};
+
 export const FormAccordion = ({ immersionApplication }: FormAccordionProps) => {
   const { status, lastName, firstName, businessName, dateStart, dateEnd } =
     immersionApplication;
@@ -65,6 +76,7 @@ export const FormAccordion = ({ immersionApplication }: FormAccordionProps) => {
   return (
     <div style={{ padding: "0.5rem" }}>
       <h5 style={{ margin: "2rem 4rem" }}>{title}</h5>
+      <FormMagicLinks immersionApplication={immersionApplication} />
       <FormDetails immersionApplication={immersionApplication} />
     </div>
   );

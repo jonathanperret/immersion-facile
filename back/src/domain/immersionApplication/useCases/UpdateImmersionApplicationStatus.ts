@@ -5,6 +5,8 @@ import {
 } from "../../../adapters/primary/helpers/sendHttpResponse";
 import {
   ApplicationStatus,
+  GenerateMagicLinkRequestDto,
+  GenerateMagicLinkResponseDto,
   UpdateImmersionApplicationStatusRequestDto,
   UpdateImmersionApplicationStatusResponseDto,
 } from "../../../shared/ImmersionApplicationDto";
@@ -19,6 +21,7 @@ import { OutboxRepository } from "../../core/ports/OutboxRepository";
 import { UseCase } from "../../core/UseCase";
 import { ImmersionApplicationEntity } from "../entities/ImmersionApplicationEntity";
 import { ImmersionApplicationRepository } from "../ports/ImmersionApplicationRepository";
+import { GenerateMagicLinkFn } from "./notifications/NotificationsHelpers";
 
 const logger = createLogger(__filename);
 
@@ -61,6 +64,19 @@ const statusTransitionConfigs: Partial<
     domainTopic: "ImmersionApplicationRejected",
   },
 };
+
+export class GenerateMagicLink
+  implements UseCase<GenerateMagicLinkRequestDto, GenerateMagicLinkResponseDto>
+{
+  constructor(
+    private readonly immersionApplicationRepository: ImmersionApplicationRepository,
+    private readonly generateMagicLinkFn: GenerateMagicLinkFn,
+  ) {}
+
+  public async execute({ applicationId, role }: GenerateMagicLinkRequestDto) {
+    this.generateMagicLinkFn(applicationId, role);
+  }
+}
 
 export class UpdateImmersionApplicationStatus
   implements

@@ -12,6 +12,7 @@ import {
   ScheduleDto,
 } from "./ScheduleSchema";
 import { siretSchema } from "./siret";
+import { allRoles } from "./tokens/MagicLinkPayload";
 import { Flavor } from "./typeFlavors";
 import { NotEmptyArray, phoneRegExp } from "./utils";
 import { zBoolean, zEmail, zString, zTrimmedString, zTrue } from "./zodUtils";
@@ -192,6 +193,19 @@ export const updateImmersionApplicationStatusRequestSchema = z.object({
 // prettier-ignore
 export type UpdateImmersionApplicationStatusResponseDto = z.infer<typeof updateImmersionApplicationStatusResponseSchema>;
 export const updateImmersionApplicationStatusResponseSchema = idInObject;
+
+// prettier-ignore
+export type GenerateMagicLinkRequestDto = z.infer<typeof generateMagicLinkRequestDtoSchema>;
+export const generateMagicLinkRequestDtoSchema = z.object({
+  applicationId: immersionApplicationIdSchema,
+  role: z.enum(allRoles),
+});
+
+// prettier-ignore
+export type GenerateMagicLinkResponseDto = z.infer<typeof generateMagicLinkResponseSchema>;
+export const generateMagicLinkResponseSchema = z.object({
+  jwt: z.string(),
+});
 
 export const IMMERSION_APPLICATION_TEMPLATE: ImmersionApplicationDto = {
   id: "fake-test-id",
