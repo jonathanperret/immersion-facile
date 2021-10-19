@@ -92,6 +92,26 @@ describe("UpdateImmersionApplicationStatus", () => {
       }));
   });
 
+  describe("* -> DRAFT transition", () => {
+    const validOldStatuses = [
+      "IN_REVIEW",
+      "ACCEPTED_BY_VALIDATOR",
+      "ACCEPTED_BY_COUNSELLOR",
+    ] as Array<ApplicationStatus>;
+    const validRoles = ["counsellor", "validator", "admin"] as Array<Role>;
+
+    for (const status of validOldStatuses) {
+      for (const role of validRoles) {
+        test("accepted from " + role, () =>
+          testAcceptsStatusUpdateToDraftAndInvalidatesSignatures({
+            role: role,
+            oldStatus: status,
+          }),
+        );
+      }
+    }
+  });
+
   describe("ACCEPTED_BY_COUNSELLOR -> ACCEPTED_BY_VALIDATOR transition", () => {
     test("rejected from counsellor", () =>
       testRejectsStatusUpdate({
@@ -297,6 +317,40 @@ describe("UpdateImmersionApplicationStatus", () => {
       topic: "ImmersionApplicationRejected",
       payload: expectedImmersionApplication,
     });
+  };
+
+  type TestAcceptsStatusUpdateToDraftParams = {
+    role: Role;
+    oldStatus: ApplicationStatus;
+  };
+  const testAcceptsStatusUpdateToDraftAndInvalidatesSignatures = async ({
+    role,
+    oldStatus,
+  }: TestAcceptsStatusUpdateToDraftParams) => {
+    const originalImmersionApplication = await setupInitialState({ oldStatus });
+    const storedImmersionApplication = await executeUseCase({
+      applicationId: originalImmersionApplication.id,
+      role,
+      newStatus: "DRAFT",
+      justification: "test-modification-justification",
+    });
+
+    const expectedImmersionApplication: ImmersionApplicationDto = {
+      ...originalImmersionApplication,
+      status: "DRAFT",
+      beneficiaryAccepted: false,
+      enterpriseAccepted: false,
+    };
+    expect(storedImmersionApplication).toEqual(expectedImmersionApplication);
+
+    await expectNewEvent( {
+      topic: "ImmersionApplicationRequiresModification",
+      payload: {application: expectedImmersionApplication, 
+        reason: "test-modification-justification",
+      }
+    }
+    );
+    
   };
 
   type TestRejectsNewStatusParams = {

@@ -54,4 +54,10 @@ export const subscribeToEvents = (deps: AppDependencies) => {
       event.payload,
     ),
   );
+
+  deps.eventBus.subscribe("ImmersionApplicationRequiresModification", (event) =>
+    deps.useCases.notifyBeneficiaryAndEnterpriseThatApplicationNeedsModifications.execute(
+      event.payload,
+    ),
+  );
 };

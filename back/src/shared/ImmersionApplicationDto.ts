@@ -1,7 +1,9 @@
+import { mustBeSignedByEnterpriseBeforeReview } from "./../../../front/src/shared/immersionApplicationRefinement";
 import { z } from "../../node_modules/zod";
 import { agencyCodeSchema } from "./agencies";
 import {
   emailAndMentorEmailAreDifferent,
+  mustBeSignedByApplicantBeforeReview,
   startDateIsBeforeEndDate,
   submissionAndStartDatesConstraints,
   underMaxDuration,
@@ -13,7 +15,7 @@ import {
 } from "./ScheduleSchema";
 import { Flavor } from "./typeFlavors";
 import { NotEmptyArray, phoneRegExp } from "./utils";
-import { zBoolean, zEmail, zString, zTrimmedString, zTrue } from "./zodUtils";
+import { zBoolean, zEmail, zString, zTrimmedString } from "./zodUtils";
 
 // Matches valid dates of the format 'yyyy-mm-dd'.
 const dateRegExp = /\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
@@ -110,8 +112,8 @@ export const immersionApplicationSchema = z
     immersionProfession: zTrimmedString,
     immersionActivities: zTrimmedString,
     immersionSkills: z.string().optional(),
-    beneficiaryAccepted: zTrue,
-    enterpriseAccepted: zTrue,
+    beneficiaryAccepted: zBoolean,
+    enterpriseAccepted: zBoolean,
   })
   .refine(submissionAndStartDatesConstraints, {
     message: "La date de démarrage doit étre au moins 2 jours après la saisie.",
@@ -128,6 +130,14 @@ export const immersionApplicationSchema = z
   .refine(emailAndMentorEmailAreDifferent, {
     message: "Votre adresse e-mail doit être différente de celle du tuteur",
     path: ["mentorEmail"],
+  })
+  .refine(mustBeSignedByApplicantBeforeReview, {
+    message: "L'engagement est obligatoire",
+    path: ["beneficiaryAccepted"],
+  })
+  .refine(mustBeSignedByEnterpriseBeforeReview, {
+    message: "L'engagement est obligatoire",
+    path: ["enterpriseAccepted"],
   });
 
 export const immersionApplicationArraySchema = z.array(

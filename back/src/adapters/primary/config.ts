@@ -1,3 +1,4 @@
+import { NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification } from "./../../domain/immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification";
 import { Pool } from "pg";
 import { ALWAYS_REJECT } from "../../domain/auth/AuthChecker";
 import { InMemoryAuthChecker } from "../../domain/auth/InMemoryAuthChecker";
@@ -312,6 +313,12 @@ const createUseCases = (
     ),
   notifyBeneficiaryAndEnterpriseThatApplicationIsRejected:
     new NotifyBeneficiaryAndEnterpriseThatApplicationIsRejected(
+      repositories.email,
+      config.emailAllowList,
+      repositories.agency,
+    ),
+  notifyBeneficiaryAndEnterpriseThatApplicationNeedsModifications:
+    new NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification(
       repositories.email,
       config.emailAllowList,
       repositories.agency,

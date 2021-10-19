@@ -9,6 +9,11 @@ type GenericEvent<T extends string, P> = {
   wasPublished?: boolean;
 };
 
+export type ImmersionApplicationRequiresModificationPayload = {
+  application: ImmersionApplicationDto;
+  reason: string;
+};
+
 export type DomainEvent =
   | GenericEvent<
       "ImmersionApplicationSubmittedByBeneficiary",
@@ -26,7 +31,11 @@ export type DomainEvent =
       "FinalImmersionApplicationValidationByAdmin",
       ImmersionApplicationDto
     >
-  | GenericEvent<"ImmersionApplicationRejected", ImmersionApplicationDto>;
+  | GenericEvent<"ImmersionApplicationRejected", ImmersionApplicationDto>
+  | GenericEvent<
+      "ImmersionApplicationRequiresModification",
+      ImmersionApplicationRequiresModificationPayload
+    >;
 
 export type DomainTopic = DomainEvent["topic"];
 
