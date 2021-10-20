@@ -322,6 +322,7 @@ const createUseCases = (
       repositories.email,
       config.emailAllowList,
       repositories.agency,
+      generateMagicLinkFn,
     ),
 });
 

@@ -57,6 +57,7 @@ export type ModificationRequestApplicationNotificationParams = {
   signature: string;
   immersionProfession: string;
   agency: string;
+  magicLink: string;
 };
 
 export type NewImmersionApplicationReviewForEligibilityOrValidationParams = {

@@ -132,9 +132,9 @@ export class UpdateImmersionApplicationStatus
 
     const domainTopic = statusTransitionConfig.domainTopic;
     if (domainTopic) {
-      let event = undefined
+      let event = undefined;
       if (domainTopic === "ImmersionApplicationRequiresModification") {
-         event = this.createNewEvent({
+        event = this.createNewEvent({
           topic: domainTopic,
           payload: {
             application: updatedEntity.toDto(),
@@ -142,7 +142,7 @@ export class UpdateImmersionApplicationStatus
           },
         });
       } else {
-         event = this.createNewEvent({
+        event = this.createNewEvent({
           topic: domainTopic,
           payload: updatedEntity.toDto(),
         });

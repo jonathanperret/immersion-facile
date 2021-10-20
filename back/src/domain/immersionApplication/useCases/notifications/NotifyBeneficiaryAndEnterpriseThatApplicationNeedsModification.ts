@@ -1,3 +1,4 @@
+import { GenerateMagicLinkFn } from "./NotificationsHelpers";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
@@ -17,6 +18,7 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification
     private readonly emailGateway: EmailGateway,
     private readonly emailAllowList: Readonly<Set<string>>,
     private readonly agencyRepository: AgencyRepository,
+    private readonly generateMagicLinkFn: GenerateMagicLinkFn,
   ) {}
 
   public async execute({
@@ -32,11 +34,10 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification
       );
     }
 
-    let recipients = [
-      application.email,
-      application.mentorEmail,
-      ...agencyConfig.counsellorEmails,
-    ];
+    // Note that MODIFICATION_REQUEST_APPLICATION_NOTIFICATION template is phrased to address the
+    // beneficiary only, so it needs to be updated if the list of recipients is changed.
+    let recipients = [application.email];
+
     if (!agencyConfig.allowUnrestrictedEmailSending) {
       recipients = recipients.filter((email) => {
         if (!this.emailAllowList.has(email)) {
@@ -54,6 +55,7 @@ export class NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification
           application,
           agencyConfig,
           reason,
+          this.generateMagicLinkFn(application.id, "beneficiary"),
         ),
       );
     } else {
@@ -74,6 +76,7 @@ const getModificationRequestApplicationNotificationParams = (
   dto: ImmersionApplicationDto,
   agencyConfig: AgencyConfig,
   reason: string,
+  magicLink: string,
 ): ModificationRequestApplicationNotificationParams => {
   return {
     beneficiaryFirstName: dto.firstName,
@@ -83,5 +86,6 @@ const getModificationRequestApplicationNotificationParams = (
     signature: agencyConfig.signature,
     agency: agencyConfig.name,
     immersionProfession: dto.immersionProfession,
+    magicLink,
   };
 };

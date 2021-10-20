@@ -30,8 +30,8 @@ const emailTypeToTemplateId: Record<EmailType, number> = {
   // https://my.sendinblue.com/camp/template/9/message-setup
   REJECTED_APPLICATION_NOTIFICATION: 9,
 
-  // TODO(stk):
-  MODIFICATION_REQUEST_APPLICATION_NOTIFICATION: -1,
+  // https://my.sendinblue.com/camp/template/13/message-setup
+  MODIFICATION_REQUEST_APPLICATION_NOTIFICATION: 13,
 
   // https://my.sendinblue.com/camp/template/11/message-setup
   NEW_APPLICATION_REVIEW_FOR_ELIGIBILITY_OR_VALIDATION: 11,
@@ -160,12 +160,19 @@ export class SendinblueEmailGateway implements EmailGateway {
       emailTypeToTemplateId.MODIFICATION_REQUEST_APPLICATION_NOTIFICATION;
     sibEmail.to = recipients.map((email) => ({ email }));
     sibEmail.params = {
+      /*
+
+URL
+*/
+
+      AGENCY: params.agency,
+
       FIRST_NAME: params.beneficiaryFirstName,
       BENEFICIARY_LAST_NAME: params.beneficiaryLastName,
       BUSINESS_NAME: params.businessName,
       REASON: params.reason,
-      AGENCY: params.agency,
       SIGNATURE: params.signature,
+      URL: params.magicLink,
     };
     this.sendTransacEmail(sibEmail);
   }
