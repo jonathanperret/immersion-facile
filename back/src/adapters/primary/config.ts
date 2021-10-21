@@ -29,7 +29,6 @@ import { AddImmersionOffer } from "../../domain/immersionOffer/useCases/AddImmer
 import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { ImmersionApplicationId } from "../../shared/ImmersionApplicationDto";
-import { frontRoutes } from "../../shared/routes";
 import {
   createMagicLinkPayload,
   Role,
@@ -83,7 +82,7 @@ export const createAppDependencies = async (config: AppConfig) => {
   const repositories = await createRepositories(config);
   const eventBus = createEventBus();
   const generateJwtFn = createGenerateJwtFn(config);
-  const generateMagicLinkFn = createGenerateMagicLinkFn(config);
+  const generateMagicLinkFn = createGenerateVerificationMagicLink(config);
   return {
     useCases: createUseCases(
       config,
@@ -115,7 +114,7 @@ const getGenericRepo = async (config: AppConfig) => {
         genericApplicationDataConverter,
       );
     case "PG": {
-      const pool = new Pool({ connectionString: config.pgImmersionDbUrl });
+      const pool = new Pool({ connectionString: process.env.PG_URL });
       const client = await pool.connect();
       return new PgImmersionApplicationRepository(client);
     }
@@ -153,8 +152,10 @@ const createApplicationRepository = async (
   return new ApplicationRepositorySwitcher(repositoriesBySource);
 };
 
-// prettier-ignore
-type Repositories = ReturnType<typeof createRepositories> extends Promise<infer T>
+// prettier-ig
+type Repositories = ReturnType<typeof createRepositories> extends Promise<
+  infer T
+>
   ? T
   : never;
 
@@ -218,16 +219,18 @@ export const createAuthChecker = (config: AppConfig) => {
 export const createGenerateJwtFn = (config: AppConfig): GenerateJwtFn =>
   makeGenerateJwt(config.jwtPrivateKey);
 
-export type GenerateMagicLinkFn = ReturnType<typeof createGenerateMagicLinkFn>;
+export type GenerateVerificationMagicLink = ReturnType<
+  typeof createGenerateVerificationMagicLink
+>;
 
 // Visible for testing.
-export const createGenerateMagicLinkFn = (config: AppConfig) => {
+export const createGenerateVerificationMagicLink = (config: AppConfig) => {
   const generateJwt = createGenerateJwtFn(config);
 
-  return (id: ImmersionApplicationId, role: Role) => {
+  return (id: ImmersionApplicationId, role: Role, targetRoute: string) => {
     const baseUrl = config.immersionFacileBaseUrl;
     const jwt = generateJwt(createMagicLinkPayload(id, role));
-    return `${baseUrl}/${frontRoutes.immersionApplicationsToValidate}?jwt=${jwt}`;
+    return `${baseUrl}/${targetRoute}?jwt=${jwt}`;
   };
 };
 
@@ -235,7 +238,7 @@ const createUseCases = (
   config: AppConfig,
   repositories: Repositories,
   generateJwtFn: GenerateJwtFn,
-  generateMagicLinkFn: GenerateMagicLinkFn,
+  generateMagicLinkFn: GenerateVerificationMagicLink,
 ) => ({
   addDemandeImmersion: new AddImmersionApplication(
     repositories.demandeImmersion,

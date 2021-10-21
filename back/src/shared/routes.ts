@@ -7,4 +7,5 @@ export const updateApplicationStatusRoute = "update-application-status";
 
 export const frontRoutes = {
   immersionApplicationsToValidate: "verification",
+  immersionApplicationsRoute: immersionApplicationsRoute,
 };

@@ -161,7 +161,7 @@ export class SendinblueEmailGateway implements EmailGateway {
     sibEmail.to = recipients.map((email) => ({ email }));
     sibEmail.params = {
       AGENCY: params.agency,
-      FIRST_NAME: params.beneficiaryFirstName,
+      BENEFICIARY_FIRST_NAME: params.beneficiaryFirstName,
       BENEFICIARY_LAST_NAME: params.beneficiaryLastName,
       BUSINESS_NAME: params.businessName,
       REASON: params.reason,

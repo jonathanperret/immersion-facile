@@ -4,8 +4,9 @@ import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
 import { AgencyRepository } from "../../ports/AgencyRepository";
 import { EmailGateway } from "../../ports/EmailGateway";
-import { GenerateMagicLinkFn } from "./NotificationsHelpers";
 import { parseISO } from "date-fns";
+import { GenerateVerificationMagicLink } from "../../../../adapters/primary/config";
+import { frontRoutes } from "../../../../shared/routes";
 
 const logger = createLogger(__filename);
 export class NotifyToAdminsApplicationValidated
@@ -14,7 +15,7 @@ export class NotifyToAdminsApplicationValidated
   constructor(
     private readonly emailGateway: EmailGateway,
     private readonly agencyRepository: AgencyRepository,
-    private readonly generateMagicLinkFn: GenerateMagicLinkFn,
+    private readonly generateMagicLinkFn: GenerateVerificationMagicLink,
   ) {}
 
   public async execute({
@@ -48,7 +49,11 @@ export class NotifyToAdminsApplicationValidated
         dateEnd: parseISO(dateEnd).toLocaleDateString("fr"),
         businessName,
         agencyName: agencyConfig.name,
-        magicLink: this.generateMagicLinkFn(id, "admin"),
+        magicLink: this.generateMagicLinkFn(
+          id,
+          "admin",
+          frontRoutes.immersionApplicationsToValidate,
+        ),
       },
     );
   }
