@@ -1,8 +1,6 @@
-import { MagicLinkPayload } from "./../../../../../front/src/shared/tokens/MagicLinkPayload";
+import { MagicLinkPayload } from "../../../shared/tokens/MagicLinkPayload";
 import { GenerateJwtFn } from "./../../../domain/auth/jwt";
-import { GenerateMagicLinkFn } from "./../../../domain/immersionApplication/useCases/notifications/NotificationsHelpers";
 import { GenerateMagicLink } from "./../../../domain/immersionApplication/useCases/GenerateMagicLink";
-import { ImmersionApplicationId } from "../../../shared/ImmersionApplicationDto";
 import {
   createMagicLinkPayload,
   Role,
