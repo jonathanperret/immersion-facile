@@ -13,8 +13,8 @@ import {
   UpdateImmersionApplicationStatusRequestDto,
   UpdateImmersionApplicationStatusResponseDto,
 } from "src/shared/ImmersionApplicationDto";
+import { Role } from "src/shared/tokens/MagicLinkPayload";
 import { sleep } from "src/shared/utils";
-
 
 const TEST_ESTABLISHMENT1_SIRET = "12345678901234";
 const TEST_ESTABLISHMENT1: Establishment = {
@@ -101,6 +101,7 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
     this._demandesImmersion[demandeImmersionDto.id] = demandeImmersionDto;
 
     // TODO: generate actual JWTs here
+    throw new Error("500 Not Implemented In InMemory Gateway");
     return { magicLinkApplicant: "", magicLinkEnterprise: "" };
   }
 
@@ -184,13 +185,13 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
     return id;
   }
 
-
   public async generateMagicLink(
     applicationId: ImmersionApplicationId,
-    role: Role
+    role: Role,
   ): Promise<string> {
     // TODO: generate actual JWTs here
-    return ""
+    throw new Error("500 Not Implemented In InMemory Gateway");
+    return "";
   }
 
   public async getSiretInfo(

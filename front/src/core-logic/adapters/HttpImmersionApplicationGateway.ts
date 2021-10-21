@@ -31,7 +31,6 @@ import { Role } from "src/shared/tokens/MagicLinkPayload";
 const prefix = "api";
 
 export class HttpImmersionApplicationGateway extends ImmersionApplicationGateway {
-
   public async add(
     demandeImmersionDto: ImmersionApplicationDto,
   ): Promise<string> {
@@ -151,10 +150,11 @@ export class HttpImmersionApplicationGateway extends ImmersionApplicationGateway
 
   public async generateMagicLink(
     applicationId: ImmersionApplicationId,
-    role: Role
+    role: Role,
   ): Promise<string> {
-    const httpResponse = await axios.get(`/${prefix}/${generateMagicLinkRoute}?id=${applicationId}&role=${role}`);
+    const httpResponse = await axios.get(
+      `/${prefix}/admin/${generateMagicLinkRoute}?id=${applicationId}&role=${role}`,
+    );
     return httpResponse.data.jwt;
   }
-
 }

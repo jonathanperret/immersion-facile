@@ -181,6 +181,23 @@ describe("/demandes-immersion route", () => {
           .expect(200, { id: immersionApplication.id });
       });
 
+      it("Requires backoffice password to generate magic links", async () => {
+        const role = "beneficiary";
+        const generateMagicLinkUrl = `/admin/${generateMagicLinkRoute}?role=${role}&id=${immersionApplication.id}`;
+
+        await request
+          .get(generateMagicLinkUrl)
+          .auth("e2e_tests", "e2e")
+          .expect(200);
+
+        await request.get(generateMagicLinkUrl).expect(401);
+
+        await request
+          .get(generateMagicLinkUrl)
+          .auth("not_admin_login", "not_admin_password")
+          .expect(403);
+      });
+
       it("Returns correctly scoped links", async () => {
         const role: Role = "beneficiary";
 

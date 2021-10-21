@@ -7,7 +7,6 @@ import { formatDistance, formatDuration, intervalToDuration } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Accordion } from "./Accordion";
 import { FormDetails } from "./FormDetails";
-import { FormMagicLinks } from "./FormMagicLinks";
 
 const beforeAfterString = (date: string) => {
   const eventDate = new Date(date);
@@ -66,7 +65,6 @@ export const FormAccordion = ({ immersionApplication }: FormAccordionProps) => {
   return (
     <div style={{ padding: "0.5rem" }}>
       <h5 style={{ margin: "2rem 4rem" }}>{title}</h5>
-      <FormMagicLinks immersionApplication={immersionApplication} />
       <FormDetails immersionApplication={immersionApplication} />
     </div>
   );
