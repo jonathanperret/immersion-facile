@@ -10,6 +10,9 @@ import {
 import { UseCase } from "../../core/UseCase";
 import { ImmersionApplicationEntity } from "../entities/ImmersionApplicationEntity";
 import { ImmersionApplicationRepository } from "../ports/ImmersionApplicationRepository";
+import { CreateNewEvent } from "../../core/eventBus/EventBus";
+import { OutboxRepository } from "../../core/ports/OutboxRepository";
+import { DomainEvent, DomainTopic } from "../../core/eventBus/events";
 
 type UpdateImmersionApplicationDependencies = {
   immersionApplicationRepository: ImmersionApplicationRepository;
@@ -26,10 +29,14 @@ export class UpdateImmersionApplication
   private readonly immersionApplicationRepository: ImmersionApplicationRepository;
   private readonly featureFlags: FeatureFlags;
 
-  constructor({
-    immersionApplicationRepository,
-    featureFlags,
-  }: UpdateImmersionApplicationDependencies) {
+  constructor(
+    private readonly createNewEvent: CreateNewEvent,
+    private readonly outboxRepository: OutboxRepository,
+    {
+      immersionApplicationRepository,
+      featureFlags,
+    }: UpdateImmersionApplicationDependencies,
+  ) {
     this.immersionApplicationRepository = immersionApplicationRepository;
     this.featureFlags = featureFlags;
   }
@@ -50,6 +57,15 @@ export class UpdateImmersionApplication
         immersionApplicationEntity,
       );
     if (!id) throw new NotFoundError(params.id);
+
+    // So far we are in the case where a beneficiary made an update on an Immersion Application, and we just need to review it for eligibility
+    const event = this.createNewEvent({
+      topic: "ImmersionApplicationSubmittedByBeneficiary",
+      payload: params.demandeImmersion,
+    });
+
+    await this.outboxRepository.save(event);
+
     return { id };
   }
 }

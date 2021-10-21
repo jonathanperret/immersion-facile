@@ -29,8 +29,9 @@ export const subscribeToEvents = (deps: AppDependencies) => {
   // Needs Review by a counsellor or validator
   deps.eventBus.subscribe(
     "ImmersionApplicationSubmittedByBeneficiary",
-    (event) =>
-      deps.useCases.notifyNewApplicationNeedsReview.execute(event.payload),
+    (event) => {
+      deps.useCases.notifyNewApplicationNeedsReview.execute(event.payload);
+    },
   );
 
   deps.eventBus.subscribe("ImmersionApplicationAcceptedByCounsellor", (event) =>

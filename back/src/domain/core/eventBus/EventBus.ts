@@ -22,9 +22,10 @@ type CreateEventDependencies = {
   uuidGenerator: UuidGenerator;
 };
 
-export type CreateNewEvent = <T extends DomainTopic>(
-  params: Pick<NarrowEvent<T>, "topic" | "payload">,
-) => NarrowEvent<T>;
+export type CreateNewEvent = <T extends DomainTopic>(params: {
+  topic: T;
+  payload: NarrowEvent<T>["payload"];
+}) => NarrowEvent<T>;
 
 export const makeCreateNewEvent =
   ({ uuidGenerator, clock }: CreateEventDependencies): CreateNewEvent =>

@@ -29,7 +29,7 @@ type StatusTransitionConfig = {
 };
 
 // key: status transition target, value: status transition config
-const statusTransitionConfigs: Partial<
+export const statusTransitionConfigs: Partial<
   Record<ApplicationStatus, StatusTransitionConfig>
 > = {
   ACCEPTED_BY_COUNSELLOR: {

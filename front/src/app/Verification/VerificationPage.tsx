@@ -41,7 +41,8 @@ export const VerificationPage = ({ route }: VerificationPageProps) => {
   };
 
   const validatedSuccessfully = "La demande d'immersion a bien été mise à jour";
-  const sentForModificationSuccessfully = "La demande d'immersion a bien été renvoyée pour modification";
+  const sentForModificationSuccessfully =
+    "La demande d'immersion a bien été renvoyée pour modification";
 
   return (
     <div
@@ -70,7 +71,7 @@ export const VerificationPage = ({ route }: VerificationPageProps) => {
           newStatus="DRAFT"
           messageToShowOnSuccess={sentForModificationSuccessfully}
         >
-          Renvoyer à beneficier pour modification
+          Renvoyer au bénéficiaire pour modification
         </VerificationActionButton>
 
         {actingRole === "counsellor" && (

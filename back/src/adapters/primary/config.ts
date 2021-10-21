@@ -153,9 +153,8 @@ const createApplicationRepository = async (
   return new ApplicationRepositorySwitcher(repositoriesBySource);
 };
 
-type Repositories = ReturnType<typeof createRepositories> extends Promise<
-  infer T
->
+// prettier-ignore
+type Repositories = ReturnType<typeof createRepositories> extends Promise<infer T>
   ? T
   : never;
 
@@ -224,6 +223,7 @@ export type GenerateMagicLinkFn = ReturnType<typeof createGenerateMagicLinkFn>;
 // Visible for testing.
 export const createGenerateMagicLinkFn = (config: AppConfig) => {
   const generateJwt = createGenerateJwtFn(config);
+
   return (id: ImmersionApplicationId, role: Role) => {
     const baseUrl = config.immersionFacileBaseUrl;
     const jwt = generateJwt(createMagicLinkPayload(id, role));
@@ -255,10 +255,14 @@ const createUseCases = (
     immersionApplicationRepository: repositories.demandeImmersion,
     featureFlags: config.featureFlags,
   }),
-  updateDemandeImmersion: new UpdateImmersionApplication({
-    immersionApplicationRepository: repositories.demandeImmersion,
-    featureFlags: config.featureFlags,
-  }),
+  updateDemandeImmersion: new UpdateImmersionApplication(
+    createNewEvent,
+    repositories.outbox,
+    {
+      immersionApplicationRepository: repositories.demandeImmersion,
+      featureFlags: config.featureFlags,
+    },
+  ),
   validateDemandeImmersion: new ValidateImmersionApplication(
     repositories.demandeImmersion,
     createNewEvent,

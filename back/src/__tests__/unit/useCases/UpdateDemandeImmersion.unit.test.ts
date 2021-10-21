@@ -1,8 +1,16 @@
 import { NotFoundError } from "../../../adapters/primary/helpers/sendHttpResponse";
+import { CustomClock } from "../../../adapters/secondary/core/ClockImplementations";
+import { InMemoryOutboxRepository } from "../../../adapters/secondary/core/InMemoryOutboxRepository";
+import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
 import {
   ImmersionApplications,
   InMemoryImmersionApplicationRepository,
 } from "../../../adapters/secondary/InMemoryImmersionApplicationRepository";
+import {
+  CreateNewEvent,
+  makeCreateNewEvent,
+} from "../../../domain/core/eventBus/EventBus";
+import { OutboxRepository } from "../../../domain/core/ports/OutboxRepository";
 import { UpdateImmersionApplication } from "../../../domain/immersionApplication/useCases/UpdateImmersionApplication";
 import {
   FeatureDisabledError,
@@ -17,13 +25,20 @@ describe("Update immersionApplication", () => {
   let updateDemandeImmersion: UpdateImmersionApplication;
   let repository: InMemoryImmersionApplicationRepository;
   let featureFlags: FeatureFlags;
+  let outboxRepository: OutboxRepository;
+  let createNewEvent: CreateNewEvent;
 
   beforeEach(() => {
     repository = new InMemoryImmersionApplicationRepository();
+    outboxRepository = new InMemoryOutboxRepository();
+    createNewEvent = makeCreateNewEvent({
+      clock: new CustomClock(),
+      uuidGenerator: new TestUuidGenerator(),
+    });
   });
 
   const createUpdateDemandeImmersionUseCase = () => {
-    return new UpdateImmersionApplication({
+    return new UpdateImmersionApplication(createNewEvent, outboxRepository, {
       immersionApplicationRepository: repository,
       featureFlags,
     });

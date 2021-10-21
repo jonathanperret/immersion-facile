@@ -13,7 +13,7 @@ import {
   makeCreateNewEvent,
   NarrowEvent,
 } from "../../../domain/core/eventBus/EventBus";
-import { DomainEvent, DomainTopic } from "../../../domain/core/eventBus/events";
+import { DomainTopic } from "../../../domain/core/eventBus/events";
 import { OutboxRepository } from "../../../domain/core/ports/OutboxRepository";
 import { ImmersionApplicationEntity } from "../../../domain/immersionApplication/entities/ImmersionApplicationEntity";
 import { UpdateImmersionApplicationStatus } from "../../../domain/immersionApplication/useCases/UpdateImmersionApplicationStatus";

@@ -1,4 +1,3 @@
-import { GenerateMagicLinkFn } from "./NotificationsHelpers";
 import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplicationDto";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
@@ -9,6 +8,7 @@ import {
 } from "../../ports/EmailGateway";
 import { AgencyConfig } from "../../ports/AgencyRepository";
 import { ImmersionApplicationRequiresModificationPayload } from "../../../core/eventBus/events";
+import type { GenerateMagicLinkFn } from "../../../../adapters/primary/config";
 
 const logger = createLogger(__filename);
 export class NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification
