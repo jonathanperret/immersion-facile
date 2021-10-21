@@ -167,7 +167,9 @@ export class AppConfig {
   // == Magic links ==
 
   public get immersionFacileBaseUrl() {
-    return this.throwIfNotDefined("IMMERSION_FACILE_BASE_URL");
+    return (
+      "localhost:3000" ?? this.throwIfNotDefined("IMMERSION_FACILE_BASE_URL")
+    );
   }
 
   public get jwtPublicKey() {

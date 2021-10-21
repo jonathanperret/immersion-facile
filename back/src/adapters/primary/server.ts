@@ -84,7 +84,7 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     );
   });
 
-  router.route(`/${generateMagicLinkRoute}`).get(async (req, res) => {
+  router.route(`/admin/${generateMagicLinkRoute}`).get(async (req, res) => {
     sendHttpResponse(
       req,
       res,
