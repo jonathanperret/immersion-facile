@@ -90,9 +90,9 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
       res,
       () =>
         callUseCase({
-          useCase: deps.useCases.validateDemandeImmersion,
+          useCase: deps.useCases.generateMagicLink,
           validationSchema: generateMagicLinkRequestDtoSchema,
-          useCaseParams: { id: req.query.id, role: req.query.role },
+          useCaseParams: { applicationId: req.query.id, role: req.query.role },
         }),
       deps.authChecker,
     );

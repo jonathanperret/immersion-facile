@@ -7,6 +7,7 @@ import { formatDistance, formatDuration, intervalToDuration } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Accordion } from "./Accordion";
 import { FormDetails } from "./FormDetails";
+import { FormMagicLinks } from "./FormMagicLinks";
 
 const beforeAfterString = (date: string) => {
   const eventDate = new Date(date);
@@ -48,17 +49,6 @@ const getPrefix = (status: ApplicationStatus) => {
   }
 
   return "[⁉️ STATUS DE LA DEMANDE INDÉFINI]";
-};
-
-export const FormMagicLinks = ({
-  immersionApplication,
-}: FormAccordionProps) => {
-  const ml = "https://google.com";
-  return (
-    <>
-      <a href={ml}>Admin link</a>
-    </>
-  );
 };
 
 export const FormAccordion = ({ immersionApplication }: FormAccordionProps) => {

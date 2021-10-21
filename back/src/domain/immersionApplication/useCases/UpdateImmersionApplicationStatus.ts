@@ -74,7 +74,7 @@ export class GenerateMagicLink
   ) {}
 
   public async execute({ applicationId, role }: GenerateMagicLinkRequestDto) {
-    this.generateMagicLinkFn(applicationId, role);
+    return { jwt: this.generateMagicLinkFn(applicationId, role) };
   }
 }
 

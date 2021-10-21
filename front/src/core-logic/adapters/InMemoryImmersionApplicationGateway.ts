@@ -15,6 +15,7 @@ import {
 } from "src/shared/ImmersionApplicationDto";
 import { sleep } from "src/shared/utils";
 
+
 const TEST_ESTABLISHMENT1_SIRET = "12345678901234";
 const TEST_ESTABLISHMENT1: Establishment = {
   siren: "123456789",
@@ -181,6 +182,15 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
       throw new Error("400 Bad Request");
     }
     return id;
+  }
+
+
+  public async generateMagicLink(
+    applicationId: ImmersionApplicationId,
+    role: Role
+  ): Promise<string> {
+    // TODO: generate actual JWTs here
+    return ""
   }
 
   public async getSiretInfo(

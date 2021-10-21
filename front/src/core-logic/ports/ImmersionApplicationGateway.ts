@@ -1,3 +1,4 @@
+import { Role } from 'src/shared/tokens/MagicLinkPayload';
 import { EstablishmentInfoFromSiretApi } from "src/core-logic/ports/EstablishmentInfoFromSiretApi";
 import {
   AddImmersionApplicationMLResponseDto,
@@ -42,4 +43,7 @@ export abstract class ImmersionApplicationGateway {
       initialArray.map((_, i) => this.add(generateApplication(i))),
     );
   }
+
+  generateMagicLink: (applicationId: ImmersionApplicationId, role: Role) => Promise<string>;
+
 }
