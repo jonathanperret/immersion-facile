@@ -58,7 +58,7 @@ export class NotifyToTeamApplicationSubmittedByBeneficiary
         magicLink: this.generateMagicLinkFn(
           id,
           "admin",
-          frontRoutes.immersionApplicationsRoute,
+          frontRoutes.immersionApplicationsToValidate,
         ),
       },
     );

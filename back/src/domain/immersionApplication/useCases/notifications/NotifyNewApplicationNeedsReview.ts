@@ -68,7 +68,7 @@ export class NotifyNewApplicationNeedsReview
         magicLink: this.generateMagicLinkFn(
           immersionApplicationDto.id,
           recipients.role,
-          frontRoutes.immersionApplicationsRoute,
+          frontRoutes.immersionApplicationsToValidate,
         ),
         beneficiaryFirstName: immersionApplicationDto.firstName,
         beneficiaryLastName: immersionApplicationDto.lastName,
