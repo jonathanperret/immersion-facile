@@ -53,7 +53,7 @@ export class UpdateEstablishmentsAndImmersionOffersFromLastSearches {
 
         //We then transform  dfffdthem into immersions and add them to our database
         const allImmersions = allEstablishments.flatMap((establishment) =>
-          this.extractImmersionsFromEstablishment(establishment),
+          establishment.extractImmersions(),
         );
         await this.immersionOfferRepository.insertImmersions(allImmersions);
       }),

@@ -1,4 +1,8 @@
-import { EstablishmentEntity, TefenCode } from "./EstablishmentEntity";
+import {
+  EstablishmentEntity,
+  TefenCode,
+  OptionalEstablishmentFields,
+} from "./EstablishmentEntity";
 import type {
   MandatoryEstablishmentFields,
   EstablishmentFieldsToRetrieve,
@@ -16,7 +20,8 @@ export type GetExtraEstablishmentInfos = (
 ) => Promise<ExtraEstablishmentInfos>;
 
 export type UncompleteEstablishmentProps = MandatoryEstablishmentFields &
-  Partial<EstablishmentFieldsToRetrieve>;
+  Partial<EstablishmentFieldsToRetrieve> &
+  Partial<OptionalEstablishmentFields>;
 
 export class UncompleteEstablishmentEntity {
   constructor(private props: UncompleteEstablishmentProps) {}
@@ -91,12 +96,12 @@ export class UncompleteEstablishmentEntity {
       numberEmployeesRange = this.props.numberEmployeesRange;
     }
 
-    return new EstablishmentEntity({
+    const establishmentToReturn = new EstablishmentEntity({
       id: this.props.id,
       address: this.props.address,
-      city: this.props.city,
       score: this.props.score,
       romes: this.props.romes,
+      voluntary_to_immersion: this.props.voluntary_to_immersion,
       siret: this.props.siret,
       dataSource: this.props.dataSource,
       name: this.props.name,
@@ -104,5 +109,14 @@ export class UncompleteEstablishmentEntity {
       position: position,
       naf: naf,
     });
+    if (this.props.contact_mode) {
+      establishmentToReturn.setContact_mode(this.props.contact_mode);
+    }
+    if (this.props.contact_in_establishment) {
+      establishmentToReturn.setContact_in_establishment(
+        this.props.contact_in_establishment,
+      );
+    }
+    return establishmentToReturn;
   }
 }
