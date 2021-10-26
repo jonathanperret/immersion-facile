@@ -55,7 +55,7 @@ export class TransformFormEstablishmentIntoSearchData {
           voluntary_to_immersion: true,
           romes: immersionOfferDto.professions
             .map((x) => x.romeCodeMetier)
-            .filter((x) => x != undefined),
+            .filter((x) => x !== undefined),
 
           dataSource: "form",
           contact_in_establishment: establishmentContact,
