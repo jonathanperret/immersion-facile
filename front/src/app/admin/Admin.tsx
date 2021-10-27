@@ -45,7 +45,7 @@ export const Admin = ({ route }: AdminProps) => {
             {demandesImmersion.map((item) => (
               <li key={item.id}>
                 <FormAccordion immersionApplication={item} />
-                <FormMagicLinks immersionApplication={item} />
+                { route.name === "admin" && <FormMagicLinks immersionApplication={item} />}
                 <hr />
               </li>
             ))}
