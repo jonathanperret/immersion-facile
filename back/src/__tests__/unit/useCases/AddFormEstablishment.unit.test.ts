@@ -3,29 +3,46 @@ import { InMemoryFormEstablishmentRepository } from "../../../adapters/secondary
 import { AddFormEstablishment } from "../../../domain/immersionOffer/useCases/AddFormEstablishment";
 import { FormEstablishmentDtoBuilder } from "../../../_testBuilders/FormEstablishmentDtoBuilder";
 import { expectPromiseToFailWithErrorMatching } from "../../../_testBuilders/test.helpers";
+import { InMemoryOutboxRepository } from "../../../adapters/secondary/core/InMemoryOutboxRepository";
+import { CustomClock } from "../../../adapters/secondary/core/ClockImplementations";
+import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
+import { makeCreateNewEvent } from "../../../domain/core/eventBus/EventBus";
 
 describe("Add FormEstablishment", () => {
   let addFormEstablishment: AddFormEstablishment;
   let formEstablishmentRepository: InMemoryFormEstablishmentRepository;
+  let outboxRepository: InMemoryOutboxRepository;
 
   beforeEach(() => {
     formEstablishmentRepository = new InMemoryFormEstablishmentRepository();
+    outboxRepository = new InMemoryOutboxRepository();
+    const clock = new CustomClock();
+    const uuidGenerator = new TestUuidGenerator();
+    const createNewEvent = makeCreateNewEvent({ clock, uuidGenerator });
+
     addFormEstablishment = new AddFormEstablishment(
       formEstablishmentRepository,
+      createNewEvent,
+      outboxRepository,
     );
   });
 
   test("saves an establishment in the repository", async () => {
-    const validImmersionOffer = FormEstablishmentDtoBuilder.valid().build();
+    const formEstablishment = FormEstablishmentDtoBuilder.valid().build();
 
-    expect(await addFormEstablishment.execute(validImmersionOffer)).toEqual(
-      validImmersionOffer.id,
+    expect(await addFormEstablishment.execute(formEstablishment)).toEqual(
+      formEstablishment.id,
     );
 
     const storedInRepo = await formEstablishmentRepository.getAll();
     expect(storedInRepo.length).toBe(1);
 
-    expect(storedInRepo[0]).toEqual(validImmersionOffer);
+    expect(storedInRepo[0]).toEqual(formEstablishment);
+    expect(outboxRepository.events).toHaveLength(1);
+    expect(outboxRepository.events[0]).toMatchObject({
+      topic: "FormEstablishmentAdded",
+      payload: formEstablishment,
+    });
   });
 
   test("reject when tryingsaving Immersion offer in the repository with null values", async () => {

@@ -1,6 +1,7 @@
 import type { ImmersionApplicationDto } from "../../../shared/ImmersionApplicationDto";
 import { ImmersionApplicationRequiresModificationPayload } from "../../immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification";
 import type { DateStr } from "../ports/Clock";
+import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";
 
 type GenericEvent<T extends string, P> = {
   id: string;
@@ -31,7 +32,8 @@ export type DomainEvent =
   | GenericEvent<
       "ImmersionApplicationRequiresModification",
       ImmersionApplicationRequiresModificationPayload
-    >;
+    >
+  | GenericEvent<"FormEstablishmentAdded", FormEstablishmentDto>;
 
 export type DomainTopic = DomainEvent["topic"];
 
