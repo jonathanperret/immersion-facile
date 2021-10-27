@@ -67,6 +67,7 @@ import { SendinblueEmailGateway } from "../secondary/SendinblueEmailGateway";
 import { PgAgencyRepository } from "./../secondary/pg/PgAgencyRepository";
 import { AppConfig } from "./appConfig";
 import { createAuthMiddleware } from "./authMiddleware";
+import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
 
 const logger = createLogger(__filename);
 
@@ -250,10 +251,21 @@ const createUseCases = (
   generateMagicLink: new GenerateMagicLink(generateJwtFn),
 
   // immersionOffer
-  addImmersionOffer: new AddFormEstablishment(repositories.formEstablishment),
-
-  // immersionOffer
   searchImmersion: new SearchImmersion(repositories.immersionOfferForSearch),
+
+  addFormEstablishment: new AddFormEstablishment(
+    repositories.formEstablishment,
+    createNewEvent,
+    repositories.outbox,
+  ),
+
+  tranformFormEstablishmentToSearchData:
+    new TransformFormEstablishmentIntoSearchData(
+      repositories.formEstablishment,
+      repositories.immersionOfferForSearch,
+      getPosition,
+      getExtraEstablishmentInfos,
+    ),
 
   // siret
   getSiret: new GetSiret(repositories.sirene),
