@@ -1,17 +1,19 @@
 import React, { Component, useEffect, useState } from "react";
 import { immersionApplicationGateway } from "src/app/main";
 import { routes } from "src/app/routes";
-import { ImmersionApplicationDto } from "src/shared/ImmersionApplicationDto";
+import {
+  ApplicationStatus,
+  ImmersionApplicationDto,
+  validApplicationStatus,
+} from "src/shared/ImmersionApplicationDto";
 import { MarianneHeader } from "src/components/MarianneHeader";
 import { Route } from "type-route";
 import "./Admin.css";
 import { FormAccordion } from "src/components/admin/FormAccordion";
 import { FormMagicLinks } from "src/components/admin/FormMagicLinks";
 import { AgencyCode } from "src/shared/agencies";
+import { ArrayDropdown } from "src/components/admin/ArrayDropdown";
 
-interface AdminState {
-  demandeImmersion: Array<ImmersionApplicationDto>;
-}
 interface AdminProps {
   route: Route<typeof routes.admin> | Route<typeof routes.agencyAdmin>;
 }
@@ -21,13 +23,25 @@ export const Admin = ({ route }: AdminProps) => {
     ImmersionApplicationDto[]
   >([]);
 
+  const [statusFilter, setStatusFilter] = useState<
+    ApplicationStatus | undefined
+  >(undefined);
+
   useEffect(() => {
+    console.log(statusFilter);
     let agency =
       "agencyCode" in route.params
         ? (route.params.agencyCode as AgencyCode)
         : undefined;
-    immersionApplicationGateway.getAll(agency).then(setDemandesImmersion);
-  }, []);
+    immersionApplicationGateway
+      .getAll(agency, statusFilter)
+      .then(setDemandesImmersion);
+  }, [statusFilter]);
+
+  const filterChanged = (selectedIndex: number, selectedLabel: string) => {
+    setDemandesImmersion([]);
+    setStatusFilter(validApplicationStatus[selectedIndex]);
+  };
 
   return (
     <>
@@ -39,13 +53,31 @@ export const Admin = ({ route }: AdminProps) => {
           <div className="fr-text">
             Bienvenue dans le backoffice ! <br />
             Veuillez autentifier pour acceder aux donnes. <br />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "30px",
+                backgroundColor: "#E5E5F4",
+                padding: "10px",
+              }}
+            >
+              <p>filtres</p>
+              <ArrayDropdown
+                labels={validApplicationStatus}
+                didPick={filterChanged}
+              />
+            </div>
           </div>
 
           <ul className="fr-accordions-group">
             {demandesImmersion.map((item) => (
               <li key={item.id}>
                 <FormAccordion immersionApplication={item} />
-                { route.name === "admin" && <FormMagicLinks immersionApplication={item} />}
+                {route.name === "admin" && (
+                  <FormMagicLinks immersionApplication={item} />
+                )}
                 <hr />
               </li>
             ))}
