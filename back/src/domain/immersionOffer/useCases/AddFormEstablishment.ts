@@ -18,7 +18,7 @@ export class AddFormEstablishment extends UseCase<
 > {
   constructor(
     private readonly formEstablishmentRepository: FormEstablishmentRepository,
-    private readonly createNewEvent: CreateNewEvent,
+    private createNewEvent: CreateNewEvent,
     private readonly outboxRepository: OutboxRepository,
   ) {
     super();
