@@ -17,7 +17,7 @@ const useFetchInitialTodos = () => {
   }, [dispatch]);
 };
 
-export const TodoApp = (props: { route: Route<typeof routes.todos> }) => {
+export const TodoApp = (_: { route: Route<typeof routes.todos> }) => {
   useFetchInitialTodos();
   const dispatch = useDispatch();
   const isAddingTodo = useAppSelector(isAddingTodoSelector);

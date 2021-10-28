@@ -18,7 +18,7 @@ export const SimpleSchedulePicker = (props: SimpleSchedulePickerProps) => {
         name={props.name}
         schedule={field.value.simpleSchedule.dayPeriods}
         onValueChange={(updatedWeekdays: number[][]) => {
-          let schedule = field.value;
+          const schedule = field.value;
           schedule.simpleSchedule.dayPeriods = updatedWeekdays;
           props.setFieldValue(schedule);
         }}
@@ -31,7 +31,7 @@ export const SimpleSchedulePicker = (props: SimpleSchedulePickerProps) => {
         name={props.name}
         schedule={field.value.simpleSchedule.hours}
         onValueChange={(newHours) => {
-          let schedule = field.value;
+          const schedule = field.value;
           schedule.simpleSchedule.hours = newHours;
           props.setFieldValue(schedule);
         }}

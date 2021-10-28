@@ -3,7 +3,7 @@ import { StringWithHighlights } from "src/app/FormEstablishment/StringWithHighli
 import { useDebounce } from "src/app/useDebounce";
 import "./dropdown.css";
 
-const shouldNeverBeCalled = (param: never) => {
+const shouldNeverBeCalled = (_: never) => {
   throw new Error("should never be called");
 };
 
@@ -35,6 +35,7 @@ type DropDownAction<T> =
   | { type: "FOCUS_LOST" }
   | { type: "ERROR"; payload: string };
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 const reducer = <T extends unknown>(
   state: DropDownState<T>,
   action: DropDownAction<T>,
@@ -99,6 +100,7 @@ type DropDownProps<T> = {
   onTermChange: (newTerm: string) => Promise<Proposal<T>[]>;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export const DropDown = <T extends unknown>({
   title,
   initialTerm = "",

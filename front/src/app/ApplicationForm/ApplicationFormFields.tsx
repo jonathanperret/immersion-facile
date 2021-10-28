@@ -16,13 +16,10 @@ import {
 } from "src/components/form/SchedulePicker/SchedulePicker";
 import { SuccessMessage } from "src/components/form/SuccessMessage";
 import { TextInput } from "src/components/form/TextInput";
-import { ENV } from "src/environmentVariables";
 import type {
   ApplicationStatus,
   ImmersionApplicationDto,
 } from "src/shared/ImmersionApplicationDto";
-
-const { featureFlags } = ENV;
 
 const FrozenMessage = () => (
   <>
@@ -305,17 +302,6 @@ type SubmitButtonProps = {
   isSubmitting: boolean;
   onSubmit: () => Promise<void>;
 };
-
-const SaveButton = ({ onSubmit, isSubmitting }: SubmitButtonProps) => (
-  <button
-    className="fr-fi-save-line fr-btn--icon-left"
-    type="button"
-    onClick={onSubmit}
-    disabled={isSubmitting}
-  >
-    {isSubmitting ? "Éxecution" : "Sauvegarder"}
-  </button>
-);
 
 const SubmitButton = ({ onSubmit, isSubmitting }: SubmitButtonProps) => {
   const [_, __, { setValue }] = useField<ApplicationStatus>({ name: "status" });

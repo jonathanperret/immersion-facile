@@ -33,7 +33,7 @@ const isDemandeImmersionFrozen = (
   demandeImmersion: Partial<ImmersionApplicationDto>,
 ): boolean => !demandeImmersion.status || demandeImmersion.status !== "DRAFT";
 
-const { featureFlags, dev } = ENV;
+const { dev } = ENV;
 
 const getApplicationSourceForRoute = (
   route: ApplicationFormRoute,

@@ -119,7 +119,7 @@ const SiretRelatedInputs = () => {
   );
 };
 
-export const EstablishmentForm = ({ route }: EstablishmentFormProps) => {
+export const EstablishmentForm = (_: EstablishmentFormProps) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<Error | null>(null);
 

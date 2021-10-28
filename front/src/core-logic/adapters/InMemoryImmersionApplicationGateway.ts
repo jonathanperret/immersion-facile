@@ -130,7 +130,7 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
   }
 
   public async updateStatus(
-    { status, justification }: UpdateImmersionApplicationStatusRequestDto,
+    { status }: UpdateImmersionApplicationStatusRequestDto,
     jwt: string,
   ): Promise<UpdateImmersionApplicationStatusResponseDto> {
     const payload = decodeJwt(jwt);
@@ -145,7 +145,7 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
   public async validate(id: ImmersionApplicationId): Promise<string> {
     console.log("InMemoryDemandeImmersionGateway.validate: ", id);
     await sleep(SIMULATED_LATENCY_MS);
-    let form = { ...this._demandesImmersion[id] };
+    const form = { ...this._demandesImmersion[id] };
     if (form.status === "IN_REVIEW") {
       form.status = "VALIDATED";
       this._demandesImmersion[id] = form;

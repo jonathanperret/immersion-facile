@@ -21,7 +21,7 @@ import { NotEmptyArray, phoneRegExp } from "./utils";
 import { zBoolean, zEmail, zString, zTrimmedString } from "./zodUtils";
 
 // Matches valid dates of the format 'yyyy-mm-dd'.
-const dateRegExp = /\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
+const dateRegExp = /\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])/;
 
 export type ApplicationStatus =
   | "UNKNOWN"

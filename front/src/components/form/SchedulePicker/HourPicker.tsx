@@ -22,8 +22,8 @@ export const HourPicker = ({
     if (schedule.length > 0) {
       // Autofill next period as end of current period + 1h,
       // w/ duration of 1h.
-      let last = schedule[schedule.length - 1];
-      let endH = last.end.split(":").map(Number)[0];
+      const last = schedule[schedule.length - 1];
+      const endH = last.end.split(":").map(Number)[0];
       if (endH < 22) {
         start = (endH + 1).toString() + ":00";
         end = (endH + 2).toString() + ":00";

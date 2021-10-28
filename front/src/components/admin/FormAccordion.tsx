@@ -1,11 +1,10 @@
-import React, { Component } from "react";
-import type {
-  ImmersionApplicationDto,
-  ApplicationStatus,
-} from "src/shared/ImmersionApplicationDto";
 import { formatDistance, formatDuration, intervalToDuration } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Accordion } from "./Accordion";
+import React from "react";
+import type {
+  ApplicationStatus,
+  ImmersionApplicationDto,
+} from "src/shared/ImmersionApplicationDto";
 import { FormDetails } from "./FormDetails";
 
 const beforeAfterString = (date: string) => {
@@ -19,7 +18,7 @@ const beforeAfterString = (date: string) => {
 };
 
 const durationDays = (dateStart: string, dateEnd: string) => {
-  let d = intervalToDuration({
+  const d = intervalToDuration({
     start: new Date(dateStart),
     end: new Date(dateEnd),
   });

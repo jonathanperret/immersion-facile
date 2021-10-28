@@ -1,10 +1,10 @@
-import React, { Component, ReactNode } from "react";
-import { keys } from "src/shared/utils";
-import { Accordion } from "./Accordion";
-import { TextCell } from "./TextCell";
-import { FormAccordionProps } from "./FormAccordion";
+import React, { ReactNode } from "react";
 import { ImmersionApplicationDto } from "src/shared/ImmersionApplicationDto";
 import { prettyPrintSchedule } from "src/shared/ScheduleUtils";
+import { keys } from "src/shared/utils";
+import { Accordion } from "./Accordion";
+import { FormAccordionProps } from "./FormAccordion";
+import { TextCell } from "./TextCell";
 
 type ImmersionField = keyof ImmersionApplicationDto;
 type FieldsToLabel = Partial<Record<ImmersionField, string>>;
@@ -72,10 +72,11 @@ export const FormDetails = ({ immersionApplication }: FormAccordionProps) => {
 
   return (
     <div className="static-application-container">
-      {allFields.map(({ listTitle, fields }, index) => (
+      {allFields.map(({ listTitle, fields }) => (
         <Accordion title={listTitle} key={listTitle}>
           {keys(fields).map((field) => (
             <TextCell
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               title={fields[field]!}
               contents={buildContent(field)}
               key={field}

@@ -18,7 +18,7 @@ export const ComplexSchedulePicker = (props: ComplexSchedulePickerProps) => {
         complexSchedule={field.value.complexSchedule}
         selectedIndex={field.value.selectedIndex}
         onChange={(lastClickedIndex) => {
-          let schedule = field.value;
+          const schedule = field.value;
           schedule.selectedIndex = lastClickedIndex;
           props.setFieldValue(schedule);
         }}
@@ -28,7 +28,7 @@ export const ComplexSchedulePicker = (props: ComplexSchedulePickerProps) => {
         name={props.name}
         schedule={field.value.complexSchedule[field.value.selectedIndex]}
         onValueChange={(newHours) => {
-          let schedule = field.value;
+          const schedule = field.value;
           schedule.complexSchedule[schedule.selectedIndex] = newHours;
           props.setFieldValue(schedule);
         }}
