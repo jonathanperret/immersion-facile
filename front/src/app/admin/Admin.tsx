@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { immersionApplicationGateway } from "src/app/main";
+import { immersionApplicationGateway } from "src/app/dependencies";
 import { routes } from "src/app/routes";
 import { FormAccordion } from "src/components/admin/FormAccordion";
 import { FormMagicLinks } from "src/components/admin/FormMagicLinks";
