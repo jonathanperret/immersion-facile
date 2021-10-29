@@ -1,9 +1,5 @@
-import { ApplicationStatus } from "src/shared/ImmersionApplicationDto";
-import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
-import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
-import { AgencyCode } from "src/shared/agencies";
-import { FeatureFlags } from "src/shared/featureFlags";
 import {
+  ApplicationStatus,
   AddImmersionApplicationMLResponseDto,
   ImmersionApplicationDto,
   ImmersionApplicationId,
@@ -11,6 +7,10 @@ import {
   UpdateImmersionApplicationStatusRequestDto,
   UpdateImmersionApplicationStatusResponseDto,
 } from "src/shared/ImmersionApplicationDto";
+import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
+import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
+import { AgencyCode } from "src/shared/agencies";
+import { FeatureFlags } from "src/shared/featureFlags";
 import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
 import { Role } from "src/shared/tokens/MagicLinkPayload";
 import { sleep } from "src/shared/utils";

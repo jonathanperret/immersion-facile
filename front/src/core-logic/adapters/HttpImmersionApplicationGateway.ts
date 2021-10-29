@@ -1,8 +1,5 @@
-import { ApplicationStatus } from "src/shared/ImmersionApplicationDto";
-import axios from "axios";
-import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
-import { AgencyCode } from "src/shared/agencies";
 import {
+  ApplicationStatus,
   AddImmersionApplicationMLResponseDto,
   addImmersionApplicationMLResponseDtoSchema,
   AddImmersionApplicationResponseDto,
@@ -16,6 +13,9 @@ import {
   UpdateImmersionApplicationStatusResponseDto,
   updateImmersionApplicationStatusResponseSchema,
 } from "src/shared/ImmersionApplicationDto";
+import axios from "axios";
+import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
+import { AgencyCode } from "src/shared/agencies";
 import {
   generateMagicLinkRoute,
   immersionApplicationsRoute,

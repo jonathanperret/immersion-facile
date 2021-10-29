@@ -1,11 +1,11 @@
-import { LegacyScheduleDto } from "../shared/ScheduleSchema";
 import {
+  LegacyScheduleDto,
   ComplexScheduleDto,
   ScheduleDto,
   SimpleScheduleDto,
   TimePeriodDto,
   weekdays,
-} from "./ScheduleSchema";
+} from "../shared/ScheduleSchema";
 
 const minutesInDay = (timePeriods: TimePeriodDto[]): number => {
   return timePeriods.reduce(
@@ -256,5 +256,5 @@ export const convertToFrenchNamedDays = (aSchedule: ScheduleDto) => {
   );
 };
 
-export const isArrayOfWeekdays = (value: string): boolean =>
+export const isArrayOfWeekdays = (value: any): boolean =>
   Array.isArray(value) && value.every((el) => weekdays.includes(el));
