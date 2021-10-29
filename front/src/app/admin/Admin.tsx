@@ -25,11 +25,10 @@ export const Admin = ({ route }: AdminProps) => {
 
   const [statusFilter, setStatusFilter] = useState<
     ApplicationStatus | undefined
-  >(undefined);
+  >();
 
   useEffect(() => {
-    console.log(statusFilter);
-    let agency =
+    const agency =
       "agencyCode" in route.params
         ? (route.params.agencyCode as AgencyCode)
         : undefined;
