@@ -63,15 +63,14 @@ export class UncompleteEstablishmentEntity {
   public async updateExtraEstablishmentInfos(
     sirenRepositiory: SireneRepository,
   ) {
-    const extraEstablishmentInfo: Establishment = await sirenRepositiory.get(
-      this.props.siret,
-    );
+    const extraEstablishmentInfo = await sirenRepositiory.get(this.props.siret);
     if (extraEstablishmentInfo) {
       this.props.naf =
         extraEstablishmentInfo.uniteLegale.activitePrincipaleUniteLegale!;
-      this.props.numberEmployeesRange = <TefenCode>(
-        +extraEstablishmentInfo.uniteLegale.trancheEffectifsUniteLegale
-      );
+      if (extraEstablishmentInfo.uniteLegale.trancheEffectifsUniteLegale)
+        this.props.numberEmployeesRange = <TefenCode>(
+          +extraEstablishmentInfo.uniteLegale.trancheEffectifsUniteLegale
+        );
       return extraEstablishmentInfo;
     }
   }
