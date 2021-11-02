@@ -1,5 +1,5 @@
-import { zTrimmedString } from "./../../../front/src/shared/zodUtils";
 import { z } from "../../node_modules/zod";
+import { zTrimmedString } from "./zodUtils";
 
 // Details: https://www.pole-emploi.fr/employeur/vos-recrutements/le-rome-et-les-fiches-metiers.html
 const romeCodeMetierRegex = /[A-N]\d{4}/;
