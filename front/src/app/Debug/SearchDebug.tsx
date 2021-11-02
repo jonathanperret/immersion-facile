@@ -79,7 +79,10 @@ export const SearchDebug = () => {
               onTermChange={async (newTerm) => {
                 if (!newTerm) return [];
                 const romeOptions =
-                  await formEstablishmentGateway.searchProfession(newTerm);
+                  await formEstablishmentGateway.searchProfession(
+                    newTerm,
+                    /*includeAppelation=*/ false,
+                  );
 
                 return romeOptions.map(({ matchRanges, profession }) => ({
                   value: profession,

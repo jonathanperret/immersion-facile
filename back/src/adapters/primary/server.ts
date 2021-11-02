@@ -11,6 +11,7 @@ import {
   generateMagicLinkRoute,
   immersionApplicationsRoute,
   immersionOffersRoute,
+  romeMetierRoute,
   romeRoute,
   searchImmersionRoute,
   siretRoute,
@@ -130,7 +131,26 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
       return callUseCase({
         useCase: deps.useCases.romeSearch,
         validationSchema: romeSearchRequestSchema,
-        useCaseParams: req.query.searchText,
+        useCaseParams: {
+          searchText: req.query.searchText,
+          searchMetiers: true,
+          searchAppelations: true,
+        },
+      });
+    });
+
+    router.route(`/${romeMetierRoute}`).get(async (req, res) => {
+      sendHttpResponse(req, res, async () => {
+        logger.info(req);
+        return callUseCase({
+          useCase: deps.useCases.romeSearch,
+          validationSchema: romeSearchRequestSchema,
+          useCaseParams: {
+            searchText: req.query.searchText,
+            searchMetiers: true,
+            searchAppelations: false,
+          },
+        });
       });
     });
   });

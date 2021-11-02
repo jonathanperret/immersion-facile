@@ -21,6 +21,7 @@ export class InMemoryFormEstablishmentGateway
 
   public async searchProfession(
     searchText: string,
+    includeAppelation?: boolean,
   ): Promise<RomeSearchResponseDto> {
     await sleep(700);
     if (searchText === "givemeanemptylistplease") return [];

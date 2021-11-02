@@ -4,6 +4,7 @@ export const validateDemandeRoute = "validate-demande";
 export const generateMagicLinkRoute = "generate-magic-link";
 export const siretRoute = "siret";
 export const romeRoute = "rome";
+export const romeMetierRoute = "rome-metier";
 export const updateApplicationStatusRoute = "update-application-status";
 export const searchImmersionRoute = "search-immersion";
 export const agenciesRoute = "agencies";

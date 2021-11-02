@@ -23,14 +23,16 @@ export class RomeSearch extends UseCase<
 
   inputSchema = romeSearchRequestSchema;
 
-  public async _execute(
-    searchText: RomeSearchRequestDto,
-  ): Promise<RomeSearchResponseDto> {
+  public async _execute({
+    searchText,
+    searchMetiers,
+    searchAppelations,
+  }: RomeSearchRequestDto): Promise<RomeSearchResponseDto> {
     if (searchText.length <= MIN_SEARCH_TEXT_LENGTH) return [];
 
     const [appellations, metiers] = await Promise.all([
-      this.romeGateway.searchAppellation(searchText),
-      this.romeGateway.searchMetier(searchText),
+      searchAppelations ? this.romeGateway.searchAppellation(searchText) : [],
+      searchMetiers ? this.romeGateway.searchMetier(searchText) : [],
     ]);
 
     const result = [
