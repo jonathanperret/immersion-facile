@@ -1,15 +1,15 @@
 import {
+  EstablishmentFromSireneRepositoryAnswer,
+  SireneRepositoryAnswer,
   SireneRepository,
-  SiretResponse,
 } from "../../domain/sirene/ports/SireneRepository";
 import { Establishment } from "../../../../front/src/core-logic/ports/EstablishmentInfoFromSiretApi";
 import { SiretDto } from "../../shared/siret";
 
-export const TEST_ESTABLISHMENT1: Establishment = {
+export const TEST_ESTABLISHMENT1: EstablishmentFromSireneRepositoryAnswer = {
   siret: "12345678901234",
   siren: "123456789",
   nic: "01234",
-  etablissementSiege: false,
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE",
     activitePrincipaleUniteLegale: "71.12B",
@@ -25,6 +25,8 @@ export const TEST_ESTABLISHMENT1: Establishment = {
   },
 };
 
+type Repo = { [siret: string]: EstablishmentFromSireneRepositoryAnswer };
+
 export class InMemorySireneRepository implements SireneRepository {
   private readonly _repo = {
     [TEST_ESTABLISHMENT1.siret]: TEST_ESTABLISHMENT1,
@@ -32,10 +34,17 @@ export class InMemorySireneRepository implements SireneRepository {
 
   public constructor() {}
 
-  public async get(siret: SiretDto): Promise<SiretResponse | undefined> {
+  public async get(siret: string): Promise<SireneRepositoryAnswer | undefined> {
     const establishment = this._repo[siret];
     if (!establishment) return undefined;
     return {
+      header: {
+        statut: 400,
+        message: "itsgood",
+        total: 1,
+        debut: 1,
+        nombre: 1,
+      },
       etablissements: [establishment],
     };
   }
