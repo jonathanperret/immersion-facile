@@ -1,5 +1,5 @@
+import { zTrimmedString } from "./../../../front/src/shared/zodUtils";
 import { z } from "../../node_modules/zod";
-import { zTrimmedString } from "./zodUtils";
 
 // Details: https://www.pole-emploi.fr/employeur/vos-recrutements/le-rome-et-les-fiches-metiers.html
 const romeCodeMetierRegex = /[A-N]\d{4}/;
@@ -43,7 +43,11 @@ export const romeSearchMatchSchema = z.object(
 );
 
 export type RomeSearchRequestDto = z.infer<typeof romeSearchRequestSchema>;
-export const romeSearchRequestSchema = zTrimmedString;
+export const romeSearchRequestSchema = z.object({
+  searchText: zTrimmedString,
+  searchMetiers: z.boolean(),
+  searchAppelations: z.boolean(),
+});
 
 export type RomeSearchResponseDto = z.infer<typeof romeSearchResponseSchema>;
 export const romeSearchResponseSchema = z.array(romeSearchMatchSchema, {

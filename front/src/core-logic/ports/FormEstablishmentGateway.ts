@@ -8,5 +8,9 @@ export interface FormEstablishmentGateway {
   addFormEstablishment: (
     establishment: FormEstablishmentDto,
   ) => Promise<FormEstablishmentId>;
-  searchProfession: (searchText: string) => Promise<RomeSearchResponseDto>;
+  // includeAppelation defaults to true.
+  searchProfession: (
+    searchText: string,
+    includeAppelation?: boolean,
+  ) => Promise<RomeSearchResponseDto>;
 }

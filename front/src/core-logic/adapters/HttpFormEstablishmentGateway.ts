@@ -10,7 +10,11 @@ import {
   RomeSearchResponseDto,
   romeSearchResponseSchema,
 } from "src/shared/rome";
-import { immersionOffersRoute, romeRoute } from "src/shared/routes";
+import {
+  immersionOffersRoute,
+  romeRoute,
+  romeMetierRoute,
+} from "src/shared/routes";
 
 const prefix = "api";
 
@@ -29,8 +33,10 @@ export class HttpFormEstablishmentGateway implements FormEstablishmentGateway {
 
   public async searchProfession(
     searchText: string,
+    includeAppelation?: boolean,
   ): Promise<RomeSearchResponseDto> {
-    const httpResponse = await axios.get(`/${prefix}/${romeRoute}`, {
+    const route = includeAppelation ? romeRoute : romeMetierRoute;
+    const httpResponse = await axios.get(`/${prefix}/${route}`, {
       params: { searchText },
     });
     const responseDto: RomeSearchResponseDto = httpResponse.data;
