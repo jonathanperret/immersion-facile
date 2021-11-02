@@ -8,6 +8,7 @@ import {
 import { SiretDto } from "../../shared/siret";
 import { createLogger } from "../../utils/logger";
 import { AxiosConfig } from "../primary/appConfig";
+import { Establishment } from "../../../../front/src/core-logic/ports/EstablishmentInfoFromSiretApi";
 
 const logger = createLogger(__filename);
 

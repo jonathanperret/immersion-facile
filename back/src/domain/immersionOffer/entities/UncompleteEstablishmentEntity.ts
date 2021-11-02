@@ -8,6 +8,8 @@ import type {
   EstablishmentFieldsToRetrieve,
   Position,
 } from "./EstablishmentEntity";
+import { SireneRepository } from "../../sirene/ports/SireneRepository";
+import { Establishment } from "../../../../../front/src/core-logic/ports/EstablishmentInfoFromSiretApi";
 
 export type GetPosition = (address: string) => Promise<Position>;
 
@@ -59,22 +61,24 @@ export class UncompleteEstablishmentEntity {
   }
 
   public async updateExtraEstablishmentInfos(
-    getExtraEstablishmentInfos: GetExtraEstablishmentInfos,
+    sirenRepositiory: SireneRepository,
   ) {
-    const extraEstablishmentInfo = await getExtraEstablishmentInfos(
+    const extraEstablishmentInfo: Establishment = await sirenRepositiory.get(
       this.props.siret,
     );
-
-    this.props.naf = extraEstablishmentInfo.naf;
-    this.props.numberEmployeesRange = <TefenCode>(
-      +extraEstablishmentInfo.numberEmployeesRange
-    );
-    return extraEstablishmentInfo;
+    if (extraEstablishmentInfo) {
+      this.props.naf =
+        extraEstablishmentInfo.uniteLegale.activitePrincipaleUniteLegale!;
+      this.props.numberEmployeesRange = <TefenCode>(
+        +extraEstablishmentInfo.uniteLegale.trancheEffectifsUniteLegale
+      );
+      return extraEstablishmentInfo;
+    }
   }
 
   public async searchForMissingFields(
     getPosition: GetPosition,
-    getExtraEstablishmentInfos: GetExtraEstablishmentInfos,
+    sirenRepositiory: SireneRepository,
   ): Promise<EstablishmentEntity> {
     let position: Position;
     if (!this.props.position) {
@@ -87,7 +91,7 @@ export class UncompleteEstablishmentEntity {
     let numberEmployeesRange: TefenCode;
     if (!this.props.naf || !this.props.numberEmployeesRange) {
       const otherProperties = await this.updateExtraEstablishmentInfos(
-        getExtraEstablishmentInfos,
+        sirenRepositiory,
       );
       numberEmployeesRange = otherProperties.numberEmployeesRange;
       naf = otherProperties.naf;

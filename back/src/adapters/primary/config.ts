@@ -68,6 +68,7 @@ import { PgAgencyRepository } from "./../secondary/pg/PgAgencyRepository";
 import { AppConfig } from "./appConfig";
 import { createAuthMiddleware } from "./authMiddleware";
 import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
 
 const logger = createLogger(__filename);
 
@@ -82,6 +83,7 @@ export const createAppDependencies = async (config: AppConfig) => {
   const emailFilter = config.skipEmailAllowlist
     ? new AlwaysAllowEmailFilter()
     : new AllowListEmailFilter(config.emailAllowList);
+  const adressGateway = new APIAdresseGateway();
 
   return {
     useCases: createUseCases(
@@ -90,6 +92,7 @@ export const createAppDependencies = async (config: AppConfig) => {
       generateJwtFn,
       generateMagicLinkFn,
       emailFilter,
+      adressGateway,
     ),
     authChecker: createAuthChecker(config),
     authMiddleware: createAuthMiddleware(config),
@@ -214,6 +217,7 @@ const createUseCases = (
   generateJwtFn: GenerateJwtFn,
   generateMagicLinkFn: GenerateVerificationMagicLink,
   emailFilter: EmailFilter,
+  addressGateway: APIAdresseGateway,
 ) => ({
   addDemandeImmersion: new AddImmersionApplication(
     repositories.demandeImmersion,
@@ -263,8 +267,8 @@ const createUseCases = (
     new TransformFormEstablishmentIntoSearchData(
       repositories.formEstablishment,
       repositories.immersionOfferForSearch,
-      getPosition,
-      getExtraEstablishmentInfos,
+      addressGateway.getGPSFromAddressAPIAdresse,
+      repositories.sirene,
     ),
 
   // siret

@@ -1,22 +1,5 @@
 import { SiretDto } from "../../../shared/siret";
-
-export type Establishment = {
-  siret: string;
-  uniteLegale: Partial<{
-    denominationUniteLegale?: string;
-    nomUniteLegale?: string;
-    prenomUsuelUniteLegale?: string;
-    activitePrincipaleUniteLegale?: string;
-    nomenclatureActivitePrincipaleUniteLegale?: string;
-  }>;
-  adresseEtablissement: Partial<{
-    numeroVoieEtablissement?: string;
-    typeVoieEtablissement?: string;
-    libelleVoieEtablissement?: string;
-    codePostalEtablissement?: string;
-    libelleCommuneEtablissement?: string;
-  }>;
-};
+import { Establishment } from "../../../../../front/src/core-logic/ports/EstablishmentInfoFromSiretApi";
 
 export type SiretResponse = {
   etablissements: Establishment[];

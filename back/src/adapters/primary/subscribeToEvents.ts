@@ -61,4 +61,10 @@ export const subscribeToEvents = (deps: AppDependencies) => {
       event.payload,
     ),
   );
+
+  deps.eventBus.subscribe("FormEstablishmentAdded", (event) => {
+    deps.useCases.tranformFormEstablishmentToSearchData.execute(
+      event.payload.id,
+    );
+  });
 };

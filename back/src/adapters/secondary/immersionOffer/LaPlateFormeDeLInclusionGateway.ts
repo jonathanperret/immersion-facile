@@ -66,6 +66,7 @@ export type HttpCallsToLaPlateFormeDeLInclusion = {
   ) => Promise<EstablishmentFromLaPlateFormeDeLInclusion[]>;
 };
 
+//TODO delete
 export const httpCallToLaPlateFormeDeLInclusion: HttpCallsToLaPlateFormeDeLInclusion =
   {
     getEstablishments: async (searchParams: SearchParams) => {
@@ -175,25 +176,3 @@ export class LaPlateFormeDeLInclusionGateway implements EstablishmentsGateway {
       });
   }
 }
-
-/*
-  Clean establishment data before insertion into the database with external APIs
-  */
-/*
-  async enrichEstablishmentData(establishments: UncompleteEstablishmentEntity[]): Promise<EstablishmentEntity[]> {
-    const cleanedEstablishments = [];
-    for (const establishmentIndex in establishments) {
-      //Adjust GPS coordinates
-      const establishment = establishments[establishmentIndex];
-      const gps = await this.getGPSFromAddressAPIAdresse(
-        establishments[establishmentIndex].getAddress(),
-      );
-      establishment.setLatitude(Number(gps[0]));
-      establishment.setLongitude(Number(gps[1]));
-
-      //Get NAF from establishment
-
-      cleanedEstablishments.push(establishment);
-    }
-    return cleanedEstablishments;
-  }*/
