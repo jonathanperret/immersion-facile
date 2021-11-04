@@ -10,6 +10,7 @@ export const TEST_ESTABLISHMENT1_SIRET = "12345678901234";
 export const TEST_ESTABLISHMENT2_SIRET = "20006765000016";
 export const TEST_ESTABLISHMENT3_SIRET = "77561959600155";
 export const TEST_ESTABLISHMENT4_SIRET = "24570135400111";
+export const TEST_ESTABLISHMENT5_SIRET = "01234567890123";
 
 export const TEST_ESTABLISHMENT1: EstablishmentFromSireneRepositoryAnswer = {
   siret: "12345678901234",
@@ -98,6 +99,13 @@ export class InMemorySireneRepository implements SireneRepository {
     this._repo[TEST_ESTABLISHMENT2_SIRET] = TEST_ESTABLISHMENT2;
     this._repo[TEST_ESTABLISHMENT3_SIRET] = TEST_ESTABLISHMENT3;
     this._repo[TEST_ESTABLISHMENT4_SIRET] = TEST_ESTABLISHMENT4;
+  }
+
+  public insert(
+    siret: string,
+    establishment: EstablishmentFromSireneRepositoryAnswer,
+  ) {
+    this._repo[siret] = establishment;
   }
 
   public async get(siret: string): Promise<SireneRepositoryAnswer | undefined> {

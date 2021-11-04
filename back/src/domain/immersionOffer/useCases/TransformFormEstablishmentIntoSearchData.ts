@@ -75,6 +75,7 @@ export class TransformFormEstablishmentIntoSearchData extends UseCase<
           this.getPosition,
           this.sirenRepositiory,
         );
+
       if (establishmentEntity) {
         //Insert immersion
         const immersions = establishmentEntity.extractImmersions();
