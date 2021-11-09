@@ -1,32 +1,37 @@
-import {
-  FormEstablishmentDto,
-  FormEstablishmentId,
-  BusinessContactDto,
-} from "../../../shared/FormEstablishmentDto";
-import { EstablishmentEntity } from "../entities/EstablishmentEntity";
-import {
-  ImmersionOfferEntity,
-  ImmersionEstablishmentContact,
-} from "../entities/ImmersionOfferEntity";
-import { FormEstablishmentRepository } from "../ports/FormEstablishmentRepository";
-import { SearchImmersionResponseDto } from "../../../shared/SearchImmersionDto";
 import { v4 as uuidV4 } from "uuid";
-import { UseCase } from "../../core/UseCase";
 import {
-  UncompleteEstablishmentEntity,
-  GetPosition,
+  BusinessContactDto,
+  FormEstablishmentId,
+  formEstablishmentIdSchema,
+} from "../../../shared/FormEstablishmentDto";
+import {
+  ImmersionEstablishmentContact,
+  ImmersionOfferEntity,
+} from "../entities/ImmersionOfferEntity";
+import {
   GetExtraEstablishmentInfos,
+  GetPosition,
+  UncompleteEstablishmentEntity,
 } from "../entities/UncompleteEstablishmentEntity";
+import { FormEstablishmentRepository } from "../ports/FormEstablishmentRepository";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
-import { ProfessionDto } from "../../../shared/rome";
+import { SireneRepository } from "../../sirene/ports/SireneRepository";
+import { UseCase } from "../../core/UseCase";
 
-export class TransformFormEstablishmentIntoSearchData {
+export class TransformFormEstablishmentIntoSearchData extends UseCase<
+  FormEstablishmentId,
+  ImmersionOfferEntity[]
+> {
   constructor(
     private readonly formEstablishmentRepository: FormEstablishmentRepository,
     private immersionOfferRepository: ImmersionOfferRepository,
     private getPosition: GetPosition,
-    private getExtraEstablishmentInfos: GetExtraEstablishmentInfos,
-  ) {}
+    private sirenRepositiory: SireneRepository, // private getExtraEstablishmentInfos: GetExtraEstablishmentInfos,
+  ) {
+    super();
+  }
+
+  inputSchema = formEstablishmentIdSchema;
 
   public async _execute(
     id: FormEstablishmentId,
@@ -34,11 +39,10 @@ export class TransformFormEstablishmentIntoSearchData {
     const immersionOfferDto = await this.formEstablishmentRepository.getById(
       id,
     );
-
     if (immersionOfferDto) {
       //Insert contact
       //TODO insert contact
-      const establishmentContact =
+      const establishmentContact: ImmersionEstablishmentContact =
         this.convertBusinessContactDtoToImmersionEstablishmentContact(
           immersionOfferDto.businessContacts[0],
           immersionOfferDto.siret,
@@ -48,6 +52,10 @@ export class TransformFormEstablishmentIntoSearchData {
         establishmentContact,
       );
       //Insert establishment
+      const romeCodes = await immersionOfferDto.professions
+        .map((x) => x.romeCodeMetier)
+        .filter((x): x is string => x !== undefined);
+
       const uncompleteEstablishmentEntity: UncompleteEstablishmentEntity =
         new UncompleteEstablishmentEntity({
           id: uuidV4(),
@@ -56,29 +64,30 @@ export class TransformFormEstablishmentIntoSearchData {
           address: immersionOfferDto.businessAddress,
           score: 10,
           voluntary_to_immersion: true,
-          romes: immersionOfferDto.professions
-            .map((x) => x.romeCodeMetier)
-            .filter((x) => x !== undefined),
-
+          romes: romeCodes,
           dataSource: "form",
           contact_in_establishment: establishmentContact,
           contact_mode: immersionOfferDto.preferredContactMethods[0],
         });
+
       const establishmentEntity =
         await uncompleteEstablishmentEntity.searchForMissingFields(
           this.getPosition,
-          this.getExtraEstablishmentInfos,
+          this.sirenRepositiory,
         );
 
-      //Insert establishment
-      await this.immersionOfferRepository.insertEstablishments([
-        establishmentEntity,
-      ]);
-      //Insert immersion
-      this.immersionOfferRepository.insertImmersions(
-        establishmentEntity.extractImmersions(),
-      );
-
+      if (establishmentEntity) {
+        //Insert establishment
+        await this.immersionOfferRepository.insertEstablishments([
+          establishmentEntity,
+        ]);
+        //Insert immersion
+        const immersions = establishmentEntity.extractImmersions();
+        this.immersionOfferRepository.insertImmersions(
+          establishmentEntity.extractImmersions(),
+        );
+        return immersions;
+      }
       return [];
     } else {
       return [];
