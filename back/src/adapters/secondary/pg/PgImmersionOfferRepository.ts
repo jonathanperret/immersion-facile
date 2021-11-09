@@ -142,11 +142,17 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
       [],
     );
 
+    const positionIndex = 10;
+
     const deduplicatedArrayOfImmersionsOffersMapped =
       deduplicatedArrayOfImmersionsOffers.map((offer) => {
-        const position: Position = offer[10];
+        const position: Position = offer[positionIndex];
         const newPosition = `ST_GeographyFromText('POINT(${position.lon} ${position.lat})')`;
-        return [...offer.slice(0, 10), newPosition, ...offer.slice(10 + 1)];
+        return [
+          ...offer.slice(0, positionIndex),
+          newPosition,
+          ...offer.slice(positionIndex + 1),
+        ];
       });
 
     const formatedQuery = format(

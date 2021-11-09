@@ -78,10 +78,10 @@ export const TEST_ESTABLISHMENT4: Establishment = {
   },
 };
 
-type Repo = { [siret: string]: Establishment };
+type EstablishmentBySiret = { [siret: string]: Establishment };
 
 export class InMemorySireneRepository implements SireneRepository {
-  private readonly _repo: Repo = {
+  private readonly _repo: EstablishmentBySiret = {
     [TEST_ESTABLISHMENT1.siret]: TEST_ESTABLISHMENT1,
   };
 
