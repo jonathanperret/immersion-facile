@@ -1,6 +1,3 @@
-import { SiretDto } from "../../../shared/siret";
-import { Establishment } from "../../../../../front/src/core-logic/ports/EstablishmentInfoFromSiretApi";
-
 export type EstablishmentFromSireneRepositoryAnswer = {
   siren: string;
   nic: string;
