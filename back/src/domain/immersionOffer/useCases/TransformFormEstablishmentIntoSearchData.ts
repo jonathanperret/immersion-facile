@@ -18,6 +18,7 @@ import {
   GetExtraEstablishmentInfos,
 } from "../entities/UncompleteEstablishmentEntity";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
+import { ProfessionDto } from "../../../shared/rome";
 
 export class TransformFormEstablishmentIntoSearchData {
   constructor(
@@ -36,12 +37,14 @@ export class TransformFormEstablishmentIntoSearchData {
 
     if (immersionOfferDto) {
       //Insert contact
+      //TODO insert contact
       const establishmentContact =
         this.convertBusinessContactDtoToImmersionEstablishmentContact(
           immersionOfferDto.businessContacts[0],
           immersionOfferDto.siret,
         );
-      this.immersionOfferRepository.insertEstablishmentContact(
+
+      await this.immersionOfferRepository.insertEstablishmentContact(
         establishmentContact,
       );
       //Insert establishment
