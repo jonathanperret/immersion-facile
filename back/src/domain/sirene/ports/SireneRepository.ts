@@ -1,3 +1,5 @@
+import { SiretDto } from "../../../shared/siret";
+
 export type Establishment = {
   siret: string;
   uniteLegale: Partial<{
@@ -29,5 +31,5 @@ export type SireneRepositoryAnswer = {
 };
 
 export interface SireneRepository {
-  get: (siret: string) => Promise<SireneRepositoryAnswer | undefined>;
+  get: (siret: SiretDto) => Promise<SireneRepositoryAnswer | undefined>;
 }

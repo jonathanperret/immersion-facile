@@ -45,7 +45,9 @@ export class HttpsSireneRepository implements SireneRepository {
     private readonly clock: Clock,
   ) {}
 
-  public async get(siret: string): Promise<SireneRepositoryAnswer | undefined> {
+  public async get(
+    siret: SiretDto,
+  ): Promise<SireneRepositoryAnswer | undefined> {
     try {
       const response = await this.axiosInstance.get("/siret", {
         params: this.createSiretQueryParams(siret),
