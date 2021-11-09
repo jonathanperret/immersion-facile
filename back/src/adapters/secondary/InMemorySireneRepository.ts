@@ -1,5 +1,5 @@
 import {
-  EstablishmentFromSireneRepositoryAnswer,
+  Establishment,
   SireneRepositoryAnswer,
   SireneRepository,
 } from "../../domain/sirene/ports/SireneRepository";
@@ -12,7 +12,7 @@ export const TEST_ESTABLISHMENT3_SIRET = "77561959600155";
 export const TEST_ESTABLISHMENT4_SIRET = "24570135400111";
 export const TEST_ESTABLISHMENT5_SIRET = "01234567890123";
 
-export const TEST_ESTABLISHMENT1: EstablishmentFromSireneRepositoryAnswer = {
+export const TEST_ESTABLISHMENT1: Establishment = {
   siret: "12345678901234",
   siren: "123456789",
   nic: "01234",
@@ -87,7 +87,7 @@ export const TEST_ESTABLISHMENT4 = {
   },
 };
 
-type Repo = { [siret: string]: EstablishmentFromSireneRepositoryAnswer };
+type Repo = { [siret: string]: Establishment };
 
 export class InMemorySireneRepository implements SireneRepository {
   private readonly _repo = {
@@ -101,10 +101,7 @@ export class InMemorySireneRepository implements SireneRepository {
     this._repo[TEST_ESTABLISHMENT4_SIRET] = TEST_ESTABLISHMENT4;
   }
 
-  public insert(
-    siret: string,
-    establishment: EstablishmentFromSireneRepositoryAnswer,
-  ) {
+  public insert(siret: string, establishment: Establishment) {
     this._repo[siret] = establishment;
   }
 
@@ -124,7 +121,7 @@ export class InMemorySireneRepository implements SireneRepository {
   }
 
   // Visible for testing
-  public add(establishment: EstablishmentFromSireneRepositoryAnswer) {
+  public add(establishment: Establishment) {
     this._repo[establishment.siret] = establishment;
   }
 }

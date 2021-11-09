@@ -6,10 +6,7 @@ import {
   GetSiretResponseDto,
 } from "../../../shared/siret";
 import { UseCase } from "../../core/UseCase";
-import {
-  EstablishmentFromSireneRepositoryAnswer,
-  SireneRepository,
-} from "../ports/SireneRepository";
+import { Establishment, SireneRepository } from "../ports/SireneRepository";
 export class GetSiret extends UseCase<GetSiretRequestDto, GetSiretResponseDto> {
   constructor(private readonly sireneRepository: SireneRepository) {
     super();
@@ -28,9 +25,7 @@ export class GetSiret extends UseCase<GetSiretRequestDto, GetSiretResponseDto> {
   }
 }
 
-const getBusinessName = (
-  etablissement: EstablishmentFromSireneRepositoryAnswer,
-) => {
+const getBusinessName = (etablissement: Establishment) => {
   const denomination = etablissement.uniteLegale.denominationUniteLegale;
   /*if (denomination) */ return denomination;
 
@@ -42,9 +37,7 @@ const getBusinessName = (
     .join(" ");*/
 };
 
-const getBusinessAddress = (
-  etablissement: EstablishmentFromSireneRepositoryAnswer,
-) =>
+const getBusinessAddress = (etablissement: Establishment) =>
   [
     etablissement.adresseEtablissement.numeroVoieEtablissement,
     etablissement.adresseEtablissement.typeVoieEtablissement,
@@ -55,9 +48,7 @@ const getBusinessAddress = (
     .filter((el) => !!el)
     .join(" ");
 
-const getNaf = (
-  etablissement: EstablishmentFromSireneRepositoryAnswer,
-): NafDto | undefined => {
+const getNaf = (etablissement: Establishment): NafDto | undefined => {
   if (
     !etablissement.uniteLegale.activitePrincipaleUniteLegale ||
     !etablissement.uniteLegale.nomenclatureActivitePrincipaleUniteLegale
@@ -72,7 +63,7 @@ const getNaf = (
 };
 
 export const convertEtablissementToResponse = async (
-  establishment: EstablishmentFromSireneRepositoryAnswer,
+  establishment: Establishment,
 ): Promise<GetSiretResponseDto> => ({
   siret: establishment.siret,
   businessName: getBusinessName(establishment),

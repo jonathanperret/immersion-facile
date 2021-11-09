@@ -1,20 +1,20 @@
-export type EstablishmentFromSireneRepositoryAnswer = {
-  siren: string;
-  nic: string;
+export type Establishment = {
   siret: string;
-  uniteLegale: {
-    denominationUniteLegale: string;
-    activitePrincipaleUniteLegale: string;
-    nomenclatureActivitePrincipaleUniteLegale: string;
-    trancheEffectifsUniteLegale: string;
-  };
-  adresseEtablissement: {
-    numeroVoieEtablissement: string;
-    typeVoieEtablissement: string;
-    libelleVoieEtablissement: string;
-    codePostalEtablissement: string;
-    libelleCommuneEtablissement: string;
-  };
+  uniteLegale: Partial<{
+    denominationUniteLegale?: string;
+    nomUniteLegale?: string;
+    prenomUsuelUniteLegale?: string;
+    activitePrincipaleUniteLegale?: string;
+    nomenclatureActivitePrincipaleUniteLegale?: string;
+    trancheEffectifsUniteLegale?: string;
+  }>;
+  adresseEtablissement: Partial<{
+    numeroVoieEtablissement?: string;
+    typeVoieEtablissement?: string;
+    libelleVoieEtablissement?: string;
+    codePostalEtablissement?: string;
+    libelleCommuneEtablissement?: string;
+  }>;
 };
 
 export type SireneRepositoryAnswer = {
@@ -25,7 +25,7 @@ export type SireneRepositoryAnswer = {
     debut: number;
     nombre: number;
   };
-  etablissements: EstablishmentFromSireneRepositoryAnswer[];
+  etablissements: Establishment[];
 };
 
 export interface SireneRepository {
