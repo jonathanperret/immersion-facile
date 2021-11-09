@@ -27,14 +27,14 @@ export class GetSiret extends UseCase<GetSiretRequestDto, GetSiretResponseDto> {
 
 const getBusinessName = (etablissement: Establishment) => {
   const denomination = etablissement.uniteLegale.denominationUniteLegale;
-  /*if (denomination) */ return denomination;
+  if (denomination) return denomination;
 
-  /*return [
+  return [
     etablissement.uniteLegale.prenomUsuelUniteLegale,
     etablissement.uniteLegale.nomUniteLegale,
   ]
     .filter((el) => !!el)
-    .join(" ");*/
+    .join(" ");
 };
 
 const getBusinessAddress = (etablissement: Establishment) =>
