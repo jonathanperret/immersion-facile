@@ -11,4 +11,5 @@ export const agenciesRoute = "agencies";
 export const frontRoutes = {
   immersionApplicationsToValidate: "verification",
   immersionApplicationsRoute: "demande-immersion",
+  magicLinkRenewal: "refraichir-lien"
 };

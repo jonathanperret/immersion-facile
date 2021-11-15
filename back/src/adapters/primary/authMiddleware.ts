@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import { TokenExpiredError } from "jsonwebtoken";
 import { MagicLinkPayload } from "../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../utils/logger";
 import { makeVerifyJwt } from "./../../domain/auth/jwt";
 import { AppConfig } from "./appConfig";
+import jwt from "jsonwebtoken";
+import { createRenewMagicLinkUrl } from "./config";
 
 const logger = createLogger(__filename);
 
@@ -18,6 +21,25 @@ export const createAuthMiddleware =
 
     verifyJwt(maybeJwt as string, (err, payload) => {
       if (err) {
+        if (err instanceof TokenExpiredError) {
+          // Decode the payload without verifying it to extract the application id and role.
+          const expiredPayload = jwt.decode(maybeJwt) as MagicLinkPayload;
+          if (!expiredPayload) {
+            sendForbiddenError(res, err);
+          } else {
+            res.redirect(
+              301,
+              createRenewMagicLinkUrl(
+                config,
+                expiredPayload.roles[0],
+                expiredPayload.applicationId,
+              ),
+            );
+          }
+
+          return;
+        }
+
         sendForbiddenError(res, err);
         return;
       }

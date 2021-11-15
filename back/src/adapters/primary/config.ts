@@ -69,6 +69,7 @@ import { AppConfig } from "./appConfig";
 import { createAuthMiddleware } from "./authMiddleware";
 import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
 import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
+import { frontRoutes } from "../../shared/routes";
 
 const logger = createLogger(__filename);
 
@@ -210,6 +211,10 @@ export const createGenerateVerificationMagicLink = (config: AppConfig) => {
     return `${baseUrl}/${targetRoute}?jwt=${jwt}`;
   };
 };
+
+export const createRenewMagicLinkUrl = (config: AppConfig, role: Role, applicationId: ImmersionApplicationId) => {
+  return `${config.immersionFacileBaseUrl}/${frontRoutes.magicLinkRenewal}?id=${applicationId}&role=${role}`
+}
 
 const createUseCases = (
   config: AppConfig,
