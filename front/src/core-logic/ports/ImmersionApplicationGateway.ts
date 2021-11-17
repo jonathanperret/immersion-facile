@@ -47,6 +47,11 @@ export abstract class ImmersionApplicationGateway {
     role: Role,
   ): Promise<string>;
 
+  abstract renewMagicLink(
+    applicationId: ImmersionApplicationId,
+    role: Role,
+  ): Promise<void>;
+
   abstract listAgencies(): Promise<AgencyDto[]>;
 
   public async debugPopulateDB(count: number): Promise<Array<string>> {

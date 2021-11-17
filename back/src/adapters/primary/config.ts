@@ -213,7 +213,7 @@ export const createGenerateVerificationMagicLink = (config: AppConfig) => {
 };
 
 export const createRenewMagicLinkUrl = (config: AppConfig, role: Role, applicationId: ImmersionApplicationId) => {
-  return `${config.immersionFacileBaseUrl}/${frontRoutes.magicLinkRenewal}?id=${applicationId}&role=${role}`
+  return `/${frontRoutes.magicLinkRenewal}?id=${applicationId}&role=${role}`
 }
 
 const createUseCases = (
