@@ -67,4 +67,8 @@ export const subscribeToEvents = (deps: AppDependencies) => {
       event.payload.id,
     );
   });
+
+  deps.eventBus.subscribe("RenewMagicLink", (event) => {
+    deps.useCases.deliverRenewedMagicLink.execute(event.payload);
+  });
 };

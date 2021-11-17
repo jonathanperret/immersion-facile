@@ -1,3 +1,4 @@
+import { DeliverRenewedMagicLink } from "./../../domain/immersionApplication/useCases/notifications/DeliverRenewedMagicLink";
 import { Pool } from "pg";
 import { ALWAYS_REJECT } from "../../domain/auth/AuthChecker";
 import { InMemoryAuthChecker } from "../../domain/auth/InMemoryAuthChecker";
@@ -14,6 +15,7 @@ import {
   AddImmersionApplicationML,
 } from "../../domain/immersionApplication/useCases/AddImmersionApplication";
 import { GenerateMagicLink } from "../../domain/immersionApplication/useCases/GenerateMagicLink";
+import { RenewMagicLink } from "../../domain/immersionApplication/useCases/RenewMagicLink";
 import { GetImmersionApplication } from "../../domain/immersionApplication/useCases/GetImmersionApplication";
 import { ListAgencies } from "../../domain/immersionApplication/useCases/ListAgencies";
 import { ListImmersionApplication } from "../../domain/immersionApplication/useCases/ListImmersionApplication";
@@ -212,9 +214,12 @@ export const createGenerateVerificationMagicLink = (config: AppConfig) => {
   };
 };
 
-export const createRenewMagicLinkUrl = (config: AppConfig, role: Role, applicationId: ImmersionApplicationId) => {
-  return `/${frontRoutes.magicLinkRenewal}?id=${applicationId}&role=${role}`
-}
+export const createRenewMagicLinkUrl = (
+  role: Role,
+  applicationId: ImmersionApplicationId,
+) => {
+  return `/${frontRoutes.magicLinkRenewal}?id=${applicationId}&role=${role}`;
+};
 
 const createUseCases = (
   config: AppConfig,
@@ -263,6 +268,13 @@ const createUseCases = (
       repositories.outbox,
     ),
     generateMagicLink: new GenerateMagicLink(generateJwtFn),
+    renewMagicLink: new RenewMagicLink(
+      repositories.demandeImmersion,
+      createNewEvent,
+      repositories.outbox,
+      repositories.agency,
+      generateJwtFn,
+    ),
 
     // immersionOffer
     searchImmersion: new SearchImmersion(repositories.immersionOfferForSearch),
@@ -331,6 +343,10 @@ const createUseCases = (
         repositories.agency,
         generateMagicLinkFn,
       ),
+    deliverRenewedMagicLink: new DeliverRenewedMagicLink(
+      emailFilter,
+      repositories.email,
+    ),
   };
 };
 
