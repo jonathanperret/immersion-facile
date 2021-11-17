@@ -2,6 +2,7 @@ import promClient from "prom-client";
 import {
   ModificationRequestApplicationNotificationParams,
   SendRenewedMagicLinkParams,
+  NewEstablishmentContactConfirmationParams,
 } from "./../../domain/immersionApplication/ports/EmailGateway";
 import * as SibApiV3Sdk from "sib-api-v3-typescript";
 import type {
@@ -60,6 +61,8 @@ const emailTypeToTemplateId: Record<EmailType, number> = {
 
   // https://my.sendinblue.com/camp/template/14/message-setup
   MAGIC_LINK_RENEWAL: 14,
+  // https://my.sendinblue.com/camp/template/12/message-setup
+  NEW_ESTABLISHMENT_CREATED_CONTACT_CONFIRMATION: 12,
 };
 
 export class SendinblueEmailGateway implements EmailGateway {
@@ -76,6 +79,21 @@ export class SendinblueEmailGateway implements EmailGateway {
     return new SendinblueEmailGateway(apiInstance);
   }
 
+  public async sendNewEstablismentContactConfirmation(
+    recipient: string,
+    params: NewEstablishmentContactConfirmationParams,
+  ): Promise<void> {
+    const sibEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sibEmail.templateId =
+      emailTypeToTemplateId.NEW_ESTABLISHMENT_CREATED_CONTACT_CONFIRMATION;
+    sibEmail.to = [{ email: recipient }];
+    sibEmail.params = {
+      CONTACT_FIRST_NAME: params.establishmentDto.businessContacts[0].firstName,
+      CONTACT_LAST_NAME: params.establishmentDto.businessContacts[0].lastName,
+      BUSINESS_NAME: params.establishmentDto.businessName,
+    };
+    this.sendTransacEmail(sibEmail);
+  }
   public async sendNewApplicationBeneficiaryConfirmation(
     recipient: string,
     params: NewApplicationBeneficiaryConfirmationParams,

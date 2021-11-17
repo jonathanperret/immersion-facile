@@ -1,3 +1,5 @@
+import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";
+
 export type NewApplicationAdminNotificationParams = {
   demandeId: string;
   firstName: string;
@@ -20,6 +22,10 @@ export type NewApplicationMentorConfirmationParams = {
   mentorName: string;
   beneficiaryFirstName: string;
   beneficiaryLastName: string;
+};
+
+export type NewEstablishmentContactConfirmationParams = {
+  establishmentDto: FormEstablishmentDto;
 };
 
 export type ValidatedApplicationFinalConfirmationParams = {
@@ -81,11 +87,16 @@ export type EmailType =
   | "REJECTED_APPLICATION_NOTIFICATION"
   | "MODIFICATION_REQUEST_APPLICATION_NOTIFICATION"
   | "MAGIC_LINK_RENEWAL";
+  | "NEW_ESTABLISHMENT_CREATED_CONTACT_CONFIRMATION";
 
 export interface EmailGateway {
   sendNewApplicationBeneficiaryConfirmation: (
     recipient: string,
     params: NewApplicationBeneficiaryConfirmationParams,
+  ) => Promise<void>;
+  sendNewEstablismentContactConfirmation: (
+    recipients: string,
+    params: NewEstablishmentContactConfirmationParams,
   ) => Promise<void>;
   sendNewApplicationMentorConfirmation: (
     recipient: string,

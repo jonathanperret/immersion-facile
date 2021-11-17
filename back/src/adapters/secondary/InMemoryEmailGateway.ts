@@ -1,6 +1,7 @@
 import {
   ModificationRequestApplicationNotificationParams,
   SendRenewedMagicLinkParams,
+  NewEstablishmentContactConfirmationParams,
 } from "./../../domain/immersionApplication/ports/EmailGateway";
 import type {
   EmailType,
@@ -24,6 +25,21 @@ export type TemplatedEmail = {
 
 export class InMemoryEmailGateway implements EmailGateway {
   private readonly sentEmails: TemplatedEmail[] = [];
+
+  public async sendNewEstablismentContactConfirmation(
+    recipient: string,
+    params: NewEstablishmentContactConfirmationParams,
+  ): Promise<void> {
+    logger.info(
+      { recipient, params },
+      "sendNewEstablismentContactConfirmation",
+    );
+    this.sentEmails.push({
+      type: "NEW_ESTABLISHMENT_CONTACT_CONFIRMATION",
+      recipients: [recipient],
+      params,
+    });
+  }
 
   public async sendNewApplicationBeneficiaryConfirmation(
     recipient: string,
