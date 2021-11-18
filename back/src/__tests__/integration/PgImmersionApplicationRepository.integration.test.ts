@@ -12,19 +12,12 @@ describe("PgImmersionApplicationRepository", () => {
   let immersionApplicationRepository: PgImmersionApplicationRepository;
 
   beforeAll(async () => {
-    pool = pool = getTestPgPool();
-    client = await pool.connect();
-  });
-
-  afterAll(() => {
-    client.release();
+    pool = getTestPgPool();
   });
 
   beforeEach(async () => {
     await client.query("TRUNCATE immersion_applications");
-    immersionApplicationRepository = new PgImmersionApplicationRepository(
-      client,
-    );
+    immersionApplicationRepository = new PgImmersionApplicationRepository(pool);
   });
 
   it("Adds a new ImmersionApplicationEntity", async () => {

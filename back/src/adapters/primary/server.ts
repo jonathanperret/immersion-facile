@@ -3,7 +3,7 @@ import express, { Express, Router } from "express";
 import PinoHttp from "pino-http";
 import {
   immersionApplicationSchema,
-  listImmersionApplicationRequestDtoSchema
+  listImmersionApplicationRequestDtoSchema,
 } from "../../shared/ImmersionApplicationDto";
 import { romeSearchRequestSchema } from "../../shared/rome";
 import {
@@ -14,7 +14,7 @@ import {
   romeRoute,
   searchImmersionRoute,
   siretRoute,
-  validateDemandeRoute
+  validateDemandeRoute,
 } from "../../shared/routes";
 import { searchImmersionRequestSchema } from "../../shared/SearchImmersionDto";
 import { getSiretRequestSchema } from "../../shared/siret";
@@ -49,7 +49,10 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
   });
 
   const injector = new DependencyInjector(config);
-  const legacyDependencies = await createLegacyAppDependencies(config, injector);
+  const legacyDependencies = await createLegacyAppDependencies(
+    config,
+    injector,
+  );
 
   router
     .route(`/${immersionApplicationsRoute}`)
@@ -76,7 +79,10 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     sendHttpResponse(
       req,
       res,
-      () => legacyDependencies.useCases.validateDemandeImmersion.execute(req.params.id),
+      () =>
+        legacyDependencies.useCases.validateDemandeImmersion.execute(
+          req.params.id,
+        ),
       legacyDependencies.authChecker,
     );
   });
@@ -103,7 +109,8 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
       sendHttpResponse(
         req,
         res,
-        () => legacyDependencies.useCases.getDemandeImmersion.execute(req.params),
+        () =>
+          legacyDependencies.useCases.getDemandeImmersion.execute(req.params),
         legacyDependencies.authChecker,
       ),
     );
@@ -160,7 +167,9 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
   router
     .route(`/${agenciesRoute}`)
     .get(async (req, res) =>
-      sendHttpResponse(req, res, () => legacyDependencies.useCases.listAgencies.execute()),
+      sendHttpResponse(req, res, () =>
+        legacyDependencies.useCases.listAgencies.execute(),
+      ),
     );
 
   app.use(router);

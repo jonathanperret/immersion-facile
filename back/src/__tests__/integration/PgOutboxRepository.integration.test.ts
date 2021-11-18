@@ -3,9 +3,9 @@ import { CustomClock } from "../../adapters/secondary/core/ClockImplementations"
 import { TestUuidGenerator } from "../../adapters/secondary/core/UuidGeneratorImplementations";
 import { PgOutboxRepository } from "../../adapters/secondary/pg/PgOutboxRepository";
 import { makeCreateNewEvent } from "../../domain/core/eventBus/EventBus";
+import { DomainEvent } from "../../domain/core/eventBus/events";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
 import { ImmersionApplicationDtoBuilder } from "../../_testBuilders/ImmersionApplicationDtoBuilder";
-import { DomainEvent } from "../../domain/core/eventBus/events";
 
 describe("PgOutboxRepository", () => {
   let pool: Pool;
@@ -16,17 +16,12 @@ describe("PgOutboxRepository", () => {
   const createNewEvent = makeCreateNewEvent({ uuidGenerator, clock });
 
   beforeAll(async () => {
-    pool = pool = getTestPgPool();
-    client = await pool.connect();
-  });
-
-  afterAll(() => {
-    client.release();
+    pool = getTestPgPool();
   });
 
   beforeEach(async () => {
     await client.query("TRUNCATE outbox");
-    outboxRepository = new PgOutboxRepository(client);
+    outboxRepository = new PgOutboxRepository(pool);
   });
 
   it("saves an event to be processed", async () => {

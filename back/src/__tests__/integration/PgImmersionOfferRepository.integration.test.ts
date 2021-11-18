@@ -14,7 +14,6 @@ describe("Postgres implementation of immersion offer repository", () => {
 
   beforeAll(async () => {
     pool = getTestPgPool();
-    client = await pool.connect();
   });
 
   beforeEach(async () => {
@@ -22,7 +21,7 @@ describe("Postgres implementation of immersion offer repository", () => {
     await client.query("TRUNCATE immersion_contacts CASCADE");
     await client.query("TRUNCATE establishments CASCADE");
     await client.query("TRUNCATE immersion_offers CASCADE");
-    pgImmersionOfferRepository = new PgImmersionOfferRepository(client);
+    pgImmersionOfferRepository = new PgImmersionOfferRepository(pool);
   });
 
   afterAll(async () => {

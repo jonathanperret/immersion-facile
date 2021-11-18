@@ -1,6 +1,6 @@
 import { Pool, PoolClient } from "pg";
 
-export const withPgPoolClient = async <T> (
+export const withPgPoolClient = async <T>(
   pgPool: Pool,
   fn: (client: PoolClient) => Promise<T>,
 ): Promise<T> => {
@@ -10,4 +10,4 @@ export const withPgPoolClient = async <T> (
   } finally {
     client.release();
   }
-}
+};

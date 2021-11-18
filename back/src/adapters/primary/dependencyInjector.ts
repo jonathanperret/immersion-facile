@@ -3,17 +3,27 @@ import { makeCreateNewEvent } from "../../domain/core/eventBus/EventBus";
 import { OutboxRepository } from "../../domain/core/ports/OutboxRepository";
 import { ImmersionApplicationRepository } from "../../domain/immersionApplication/ports/ImmersionApplicationRepository";
 import { AddImmersionApplication } from "../../domain/immersionApplication/useCases/AddImmersionApplication";
+import { EstablishmentsGateway } from "../../domain/immersionOffer/ports/EstablishmentsGateway";
 import { SireneRepository } from "../../domain/sirene/ports/SireneRepository";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { createLogger } from "../../utils/logger";
+import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import { InMemoryOutboxRepository } from "../secondary/core/InMemoryOutboxRepository";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
 import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
+import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
+import { InMemoryImmersionOfferRepository } from "../secondary/immersionOffer/InMemoryImmersonOfferRepository";
+import { LaBonneBoiteGateway } from "../secondary/immersionOffer/LaBonneBoiteGateway";
+import { LaPlateFormeDeLInclusionGateway } from "../secondary/immersionOffer/LaPlateFormeDeLInclusionGateway";
+import { PoleEmploiAccessTokenGateway } from "../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
 import { InMemoryImmersionApplicationRepository } from "../secondary/InMemoryImmersionApplicationRepository";
 import { InMemorySireneRepository } from "../secondary/InMemorySireneRepository";
 import { PgImmersionApplicationRepository } from "../secondary/pg/PgImmersionApplicationRepository";
+import { PgImmersionOfferRepository } from "../secondary/pg/PgImmersionOfferRepository";
 import { PgOutboxRepository } from "../secondary/pg/PgOutboxRepository";
+import { AccessTokenGateway } from "./../../domain/core/ports/AccessTokenGateway";
+import { UpdateEstablishmentsAndImmersionOffersFromLastSearches } from "./../../domain/immersionOffer/useCases/UpdateEstablishmentsAndImmersionOffersFromLastSearches";
 import { AppConfig } from "./appConfig";
 
 const logger = createLogger(__filename);
@@ -27,7 +37,7 @@ export class DependencyInjector {
 
   public get addImmersionApplicationUseCase(): AddImmersionApplication {
     return this.getOrCreate(
-      "addImmersionApplication",
+      "addImmersionApplicationUseCase",
       () =>
         new AddImmersionApplication(
           this.immersionApplicationRepository,
@@ -40,8 +50,22 @@ export class DependencyInjector {
 
   public get getSiretUseCase(): GetSiret {
     return this.getOrCreate(
-      "getSiret",
+      "getSiretUseCase",
       () => new GetSiret(this.sireneRepository),
+    );
+  }
+
+  public get updateEstablishmentsAndImmersionOffersFromLastSearchesUseCase(): UpdateEstablishmentsAndImmersionOffersFromLastSearches {
+    return this.getOrCreate(
+      "updateEstablishmentsAndImmersionOffersFromLastSearchesUseCase",
+      () =>
+        new UpdateEstablishmentsAndImmersionOffersFromLastSearches(
+          this.laBonneBoiteGateway,
+          this.laPlateFormeDeLInclusionGateway,
+          this.addressGateway.getGPSFromAddressAPIAdresse,
+          this.sireneRepository,
+          this.immersionOfferRepository,
+        ),
     );
   }
 
@@ -53,6 +77,15 @@ export class DependencyInjector {
       return this.config.repositories === "PG"
         ? new PgImmersionApplicationRepository(this.pgPool)
         : new InMemoryImmersionApplicationRepository();
+    });
+  }
+
+  public get immersionOfferRepository() {
+    return this.getOrCreate("immersionOfferRepository", () => {
+      logger.info({ immersionOfferRepository: this.config.repositories });
+      return this.config.repositories === "PG"
+        ? new PgImmersionOfferRepository(this.pgPool)
+        : new InMemoryImmersionOfferRepository();
     });
   }
 
@@ -75,6 +108,42 @@ export class DependencyInjector {
           )
         : new InMemorySireneRepository();
     });
+  }
+
+  // Gateways
+
+  public get addressGateway(): APIAdresseGateway {
+    return this.getOrCreate("addressGateway", () => new APIAdresseGateway());
+  }
+
+  public get laBonneBoiteGateway() {
+    return this.getOrCreate(
+      "laBonneBoiteGateway",
+      () =>
+        new LaBonneBoiteGateway(
+          this.poleEmploiAccessTokenGateway,
+          this.config.poleEmploiClientId,
+        ),
+    );
+  }
+
+  public get laPlateFormeDeLInclusionGateway(): EstablishmentsGateway {
+    return this.getOrCreate(
+      "laPlateFormeDeLInclusionGateway",
+      () => new LaPlateFormeDeLInclusionGateway(),
+    );
+  }
+
+  public get poleEmploiAccessTokenGateway(): AccessTokenGateway {
+    return this.getOrCreate(
+      "poleEmploiAccessTokenGateway",
+      () =>
+        new CachingAccessTokenGateway(
+          new PoleEmploiAccessTokenGateway(
+            this.config.poleEmploiAccessTokenConfig,
+          ),
+        ),
+    );
   }
 
   // Event Handling

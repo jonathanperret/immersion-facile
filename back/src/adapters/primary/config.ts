@@ -3,14 +3,14 @@ import { InMemoryAuthChecker } from "../../domain/auth/InMemoryAuthChecker";
 import { GenerateJwtFn, makeGenerateJwt } from "../../domain/auth/jwt";
 import {
   EventBus,
-  makeCreateNewEvent
+  makeCreateNewEvent,
 } from "../../domain/core/eventBus/EventBus";
 import { EventCrawler } from "../../domain/core/eventBus/EventCrawler";
 import { EmailFilter } from "../../domain/core/ports/EmailFilter";
 import { OutboxRepository } from "../../domain/core/ports/OutboxRepository";
 import {
   AddImmersionApplication,
-  AddImmersionApplicationML
+  AddImmersionApplicationML,
 } from "../../domain/immersionApplication/useCases/AddImmersionApplication";
 import { GenerateMagicLink } from "../../domain/immersionApplication/useCases/GenerateMagicLink";
 import { GetImmersionApplication } from "../../domain/immersionApplication/useCases/GetImmersionApplication";
@@ -33,25 +33,21 @@ import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
 import { ImmersionApplicationId } from "../../shared/ImmersionApplicationDto";
 import {
   createMagicLinkPayload,
-  Role
+  Role,
 } from "../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../utils/logger";
-import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import {
   AllowListEmailFilter,
-  AlwaysAllowEmailFilter
+  AlwaysAllowEmailFilter,
 } from "../secondary/core/EmailFilterImplementations";
 import {
   BasicEventCrawler,
-  RealEventCrawler
+  RealEventCrawler,
 } from "../secondary/core/EventCrawlerImplementations";
 import { InMemoryEventBus } from "../secondary/core/InMemoryEventBus";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
-import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
-import { InMemoryImmersionOfferRepository as InMemoryImmersionOfferRepositoryForSearch } from "../secondary/immersionOffer/InMemoryImmersonOfferRepository";
-import { PoleEmploiAccessTokenGateway } from "../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
 import { PoleEmploiRomeGateway } from "../secondary/immersionOffer/PoleEmploiRomeGateway";
 import { InMemoryAgencyRepository } from "../secondary/InMemoryAgencyRepository";
 import { InMemoryEmailGateway } from "../secondary/InMemoryEmailGateway";
@@ -59,7 +55,6 @@ import { InMemoryFormEstablishmentRepository } from "../secondary/InMemoryFormEs
 import { InMemoryRomeGateway } from "../secondary/InMemoryRomeGateway";
 import { PgAgencyRepository } from "../secondary/pg/PgAgencyRepository";
 import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
-import { PgImmersionOfferRepository as PgImmersionOfferRepositoryForSearch } from "../secondary/pg/PgImmersionOfferRepository";
 import { SendinblueEmailGateway } from "../secondary/SendinblueEmailGateway";
 import { AppConfig } from "./appConfig";
 import { createAuthMiddleware } from "./authMiddleware";
@@ -82,7 +77,6 @@ export const createLegacyAppDependencies = async (
   const emailFilter = config.skipEmailAllowlist
     ? new AlwaysAllowEmailFilter()
     : new AllowListEmailFilter(config.emailAllowList);
-  const addressGateway = new APIAdresseGateway();
 
   return {
     useCases: createUseCases(
@@ -92,7 +86,6 @@ export const createLegacyAppDependencies = async (
       generateJwtFn,
       generateMagicLinkFn,
       emailFilter,
-      addressGateway,
     ),
     authChecker: createAuthChecker(config),
     authMiddleware: createAuthMiddleware(config),
@@ -134,16 +127,6 @@ const createRepositories = async (
         ? new PgFormEstablishmentRepository(await injector.pgPool.connect())
         : new InMemoryFormEstablishmentRepository(),
 
-    immersionOfferForSearch:
-      config.repositories === "PG"
-        ? new PgImmersionOfferRepositoryForSearch(
-            // Details in https://node-postgres.com/features/pooling
-            // Now using connection pool
-            // TODO: Still we would need to release the connection
-            await injector.pgPool.connect(),
-          )
-        : new InMemoryImmersionOfferRepositoryForSearch(),
-
     agency:
       config.repositories === "PG"
         ? new PgAgencyRepository(await injector.pgPool.connect())
@@ -157,11 +140,7 @@ const createRepositories = async (
     rome:
       config.romeGateway === "POLE_EMPLOI"
         ? new PoleEmploiRomeGateway(
-            new CachingAccessTokenGateway(
-              new PoleEmploiAccessTokenGateway(
-                config.poleEmploiAccessTokenConfig,
-              ),
-            ),
+            injector.poleEmploiAccessTokenGateway,
             config.poleEmploiClientId,
           )
         : new InMemoryRomeGateway(),
@@ -203,7 +182,6 @@ const createUseCases = (
   generateJwtFn: GenerateJwtFn,
   generateMagicLinkFn: GenerateVerificationMagicLink,
   emailFilter: EmailFilter,
-  addressGateway: APIAdresseGateway,
 ) => {
   return {
     addDemandeImmersion: new AddImmersionApplication(
@@ -244,7 +222,7 @@ const createUseCases = (
     generateMagicLink: new GenerateMagicLink(generateJwtFn),
 
     // immersionOffer
-    searchImmersion: new SearchImmersion(repositories.immersionOfferForSearch),
+    searchImmersion: new SearchImmersion(injector.immersionOfferRepository),
 
     addFormEstablishment: new AddFormEstablishment(
       repositories.formEstablishment,
@@ -255,8 +233,8 @@ const createUseCases = (
     tranformFormEstablishmentToSearchData:
       new TransformFormEstablishmentIntoSearchData(
         repositories.formEstablishment,
-        repositories.immersionOfferForSearch,
-        addressGateway.getGPSFromAddressAPIAdresse,
+        injector.immersionOfferRepository,
+        injector.addressGateway.getGPSFromAddressAPIAdresse,
         injector.sireneRepository,
         repositories.rome,
         sequenceRunner,
