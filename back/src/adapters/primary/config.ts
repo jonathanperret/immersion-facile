@@ -3,14 +3,14 @@ import { InMemoryAuthChecker } from "../../domain/auth/InMemoryAuthChecker";
 import { GenerateJwtFn, makeGenerateJwt } from "../../domain/auth/jwt";
 import {
   EventBus,
-  makeCreateNewEvent,
+  makeCreateNewEvent
 } from "../../domain/core/eventBus/EventBus";
 import { EventCrawler } from "../../domain/core/eventBus/EventCrawler";
 import { EmailFilter } from "../../domain/core/ports/EmailFilter";
 import { OutboxRepository } from "../../domain/core/ports/OutboxRepository";
 import {
   AddImmersionApplication,
-  AddImmersionApplicationML,
+  AddImmersionApplicationML
 } from "../../domain/immersionApplication/useCases/AddImmersionApplication";
 import { GenerateMagicLink } from "../../domain/immersionApplication/useCases/GenerateMagicLink";
 import { GetImmersionApplication } from "../../domain/immersionApplication/useCases/GetImmersionApplication";
@@ -30,28 +30,25 @@ import { AddFormEstablishment } from "../../domain/immersionOffer/useCases/AddFo
 import { SearchImmersion } from "../../domain/immersionOffer/useCases/SearchImmersion";
 import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
 import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
-import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { ImmersionApplicationId } from "../../shared/ImmersionApplicationDto";
 import {
   createMagicLinkPayload,
-  Role,
+  Role
 } from "../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../utils/logger";
 import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import {
   AllowListEmailFilter,
-  AlwaysAllowEmailFilter,
+  AlwaysAllowEmailFilter
 } from "../secondary/core/EmailFilterImplementations";
 import {
   BasicEventCrawler,
-  RealEventCrawler,
+  RealEventCrawler
 } from "../secondary/core/EventCrawlerImplementations";
 import { InMemoryEventBus } from "../secondary/core/InMemoryEventBus";
-import { InMemoryOutboxRepository } from "../secondary/core/InMemoryOutboxRepository";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
-import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
 import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
 import { InMemoryImmersionOfferRepository as InMemoryImmersionOfferRepositoryForSearch } from "../secondary/immersionOffer/InMemoryImmersonOfferRepository";
 import { PoleEmploiAccessTokenGateway } from "../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
@@ -59,17 +56,14 @@ import { PoleEmploiRomeGateway } from "../secondary/immersionOffer/PoleEmploiRom
 import { InMemoryAgencyRepository } from "../secondary/InMemoryAgencyRepository";
 import { InMemoryEmailGateway } from "../secondary/InMemoryEmailGateway";
 import { InMemoryFormEstablishmentRepository } from "../secondary/InMemoryFormEstablishmentRepository";
-import { InMemoryImmersionApplicationRepository } from "../secondary/InMemoryImmersionApplicationRepository";
 import { InMemoryRomeGateway } from "../secondary/InMemoryRomeGateway";
-import { InMemorySireneRepository } from "../secondary/InMemorySireneRepository";
 import { PgAgencyRepository } from "../secondary/pg/PgAgencyRepository";
 import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
-import { PgImmersionApplicationRepository } from "../secondary/pg/PgImmersionApplicationRepository";
 import { PgImmersionOfferRepository as PgImmersionOfferRepositoryForSearch } from "../secondary/pg/PgImmersionOfferRepository";
-import { PgOutboxRepository } from "../secondary/pg/PgOutboxRepository";
 import { SendinblueEmailGateway } from "../secondary/SendinblueEmailGateway";
 import { AppConfig } from "./appConfig";
 import { createAuthMiddleware } from "./authMiddleware";
+import { DependencyInjector } from "./dependencyInjector";
 
 const logger = createLogger(__filename);
 
@@ -77,8 +71,11 @@ const clock = new RealClock();
 const uuidGenerator = new UuidV4Generator();
 const sequenceRunner = new ThrottledSequenceRunner(1500, 3);
 
-export const createAppDependencies = async (config: AppConfig) => {
-  const repositories = await createRepositories(config);
+export const createLegacyAppDependencies = async (
+  config: AppConfig,
+  injector: DependencyInjector,
+) => {
+  const repositories = await createRepositories(config, injector);
   const eventBus = createEventBus();
   const generateJwtFn = createGenerateJwtFn(config);
   const generateMagicLinkFn = createGenerateVerificationMagicLink(config);
@@ -90,6 +87,7 @@ export const createAppDependencies = async (config: AppConfig) => {
   return {
     useCases: createUseCases(
       config,
+      injector,
       repositories,
       generateJwtFn,
       generateMagicLinkFn,
@@ -100,12 +98,16 @@ export const createAppDependencies = async (config: AppConfig) => {
     authMiddleware: createAuthMiddleware(config),
     generateJwtFn,
     eventBus,
-    eventCrawler: createEventCrawler(config, repositories.outbox, eventBus),
+    eventCrawler: createEventCrawler(
+      config,
+      injector.outboxRepository,
+      eventBus,
+    ),
   };
 };
 
-export type AppDependencies = ReturnType<
-  typeof createAppDependencies
+export type LegacyAppDependencies = ReturnType<
+  typeof createLegacyAppDependencies
 > extends Promise<infer T>
   ? T
   : never;
@@ -117,22 +119,19 @@ type Repositories = ReturnType<typeof createRepositories> extends Promise<infer 
   ? T
   : never;
 
-export const createRepositories = async (config: AppConfig) => {
+const createRepositories = async (
+  config: AppConfig,
+  injector: DependencyInjector,
+) => {
   logger.info({
-    repositories: config.repositories,
-    sireneRepository: config.sireneRepository,
     emailGateway: config.emailGateway,
     romeGateway: config.romeGateway,
   });
 
   return {
-    demandeImmersion:
-      config.repositories === "PG"
-        ? new PgImmersionApplicationRepository(await config.pgPool.connect())
-        : new InMemoryImmersionApplicationRepository(),
     formEstablishment:
       config.repositories === "PG"
-        ? new PgFormEstablishmentRepository(await config.pgPool.connect())
+        ? new PgFormEstablishmentRepository(await injector.pgPool.connect())
         : new InMemoryFormEstablishmentRepository(),
 
     immersionOfferForSearch:
@@ -141,19 +140,14 @@ export const createRepositories = async (config: AppConfig) => {
             // Details in https://node-postgres.com/features/pooling
             // Now using connection pool
             // TODO: Still we would need to release the connection
-            await config.pgPool.connect(),
+            await injector.pgPool.connect(),
           )
         : new InMemoryImmersionOfferRepositoryForSearch(),
 
     agency:
       config.repositories === "PG"
-        ? new PgAgencyRepository(await config.pgPool.connect())
+        ? new PgAgencyRepository(await injector.pgPool.connect())
         : new InMemoryAgencyRepository(),
-
-    sirene:
-      config.sireneRepository === "HTTPS"
-        ? HttpsSireneRepository.create(config.sireneHttpsConfig, clock)
-        : new InMemorySireneRepository(),
 
     email:
       config.emailGateway === "SENDINBLUE"
@@ -171,11 +165,6 @@ export const createRepositories = async (config: AppConfig) => {
             config.poleEmploiClientId,
           )
         : new InMemoryRomeGateway(),
-
-    outbox:
-      config.repositories === "PG"
-        ? new PgOutboxRepository(await config.pgPool.connect())
-        : new InMemoryOutboxRepository(),
   };
 };
 
@@ -209,49 +198,48 @@ export const createGenerateVerificationMagicLink = (config: AppConfig) => {
 
 const createUseCases = (
   config: AppConfig,
+  injector: DependencyInjector,
   repositories: Repositories,
   generateJwtFn: GenerateJwtFn,
   generateMagicLinkFn: GenerateVerificationMagicLink,
   emailFilter: EmailFilter,
   addressGateway: APIAdresseGateway,
 ) => {
-  const siretGetter = new GetSiret(repositories.sirene);
-
   return {
     addDemandeImmersion: new AddImmersionApplication(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
       createNewEvent,
-      repositories.outbox,
-      siretGetter,
+      injector.outboxRepository,
+      injector.getSiretUseCase,
     ),
     addDemandeImmersionML: new AddImmersionApplicationML(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
       createNewEvent,
-      repositories.outbox,
+      injector.outboxRepository,
       generateJwtFn,
-      siretGetter,
+      injector.getSiretUseCase,
     ),
     getDemandeImmersion: new GetImmersionApplication(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
     ),
     listDemandeImmersion: new ListImmersionApplication(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
     ),
     updateDemandeImmersion: new UpdateImmersionApplication(
       createNewEvent,
-      repositories.outbox,
-      repositories.demandeImmersion,
+      injector.outboxRepository,
+      injector.immersionApplicationRepository,
       config.featureFlags,
     ),
     validateDemandeImmersion: new ValidateImmersionApplication(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
       createNewEvent,
-      repositories.outbox,
+      injector.outboxRepository,
     ),
     updateImmersionApplicationStatus: new UpdateImmersionApplicationStatus(
-      repositories.demandeImmersion,
+      injector.immersionApplicationRepository,
       createNewEvent,
-      repositories.outbox,
+      injector.outboxRepository,
     ),
     generateMagicLink: new GenerateMagicLink(generateJwtFn),
 
@@ -261,7 +249,7 @@ const createUseCases = (
     addFormEstablishment: new AddFormEstablishment(
       repositories.formEstablishment,
       createNewEvent,
-      repositories.outbox,
+      injector.outboxRepository,
     ),
 
     tranformFormEstablishmentToSearchData:
@@ -269,13 +257,10 @@ const createUseCases = (
         repositories.formEstablishment,
         repositories.immersionOfferForSearch,
         addressGateway.getGPSFromAddressAPIAdresse,
-        repositories.sirene,
+        injector.sireneRepository,
         repositories.rome,
         sequenceRunner,
       ),
-
-    // siret
-    getSiret: new GetSiret(repositories.sirene),
 
     // rome
     romeSearch: new RomeSearch(repositories.rome),

@@ -75,14 +75,6 @@ export class AppConfig {
     return `postgresql://immersion:pg-password@localhost:5432/immersion-db`;
   }
 
-  public get pgPool(): Pool {
-    if (this.repositories !== "PG")
-      throw new Error(
-        `No pool provided if repositories are not PG, received ${this.repositories}`,
-      );
-    return new Pool({ connectionString: this.pgImmersionDbUrl });
-  }
-
   // == Sirene repository ==
 
   public get sireneRepository() {

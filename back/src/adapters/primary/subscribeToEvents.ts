@@ -1,6 +1,6 @@
-import { AppDependencies } from "./config";
+import { LegacyAppDependencies } from "./config";
 
-export const subscribeToEvents = (deps: AppDependencies) => {
+export const subscribeToEvents = (deps: LegacyAppDependencies) => {
   // Notification for information  Wiring
   deps.eventBus.subscribe(
     "ImmersionApplicationSubmittedByBeneficiary",

@@ -3,7 +3,7 @@ import express, { Express, Router } from "express";
 import PinoHttp from "pino-http";
 import {
   immersionApplicationSchema,
-  listImmersionApplicationRequestDtoSchema,
+  listImmersionApplicationRequestDtoSchema
 } from "../../shared/ImmersionApplicationDto";
 import { romeSearchRequestSchema } from "../../shared/rome";
 import {
@@ -14,13 +14,14 @@ import {
   romeRoute,
   searchImmersionRoute,
   siretRoute,
-  validateDemandeRoute,
+  validateDemandeRoute
 } from "../../shared/routes";
 import { searchImmersionRequestSchema } from "../../shared/SearchImmersionDto";
 import { getSiretRequestSchema } from "../../shared/siret";
 import { createLogger } from "../../utils/logger";
 import { AppConfig } from "./appConfig";
-import { createAppDependencies } from "./config";
+import { createLegacyAppDependencies } from "./config";
+import { DependencyInjector } from "./dependencyInjector";
 import { callUseCase } from "./helpers/callUseCase";
 import { sendHttpResponse } from "./helpers/sendHttpResponse";
 import { createMagicLinkRouter } from "./MagicLinkRouter";
@@ -47,13 +48,14 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     return res.json({ message: "Hello World !" });
   });
 
-  const deps = await createAppDependencies(config);
+  const injector = new DependencyInjector(config);
+  const legacyDependencies = await createLegacyAppDependencies(config, injector);
 
   router
     .route(`/${immersionApplicationsRoute}`)
     .post(async (req, res) =>
       sendHttpResponse(req, res, () =>
-        deps.useCases.addDemandeImmersion.execute(req.body),
+        injector.addImmersionApplicationUseCase.execute(req.body),
       ),
     )
     .get(async (req, res) => {
@@ -62,11 +64,11 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
         res,
         () =>
           callUseCase({
-            useCase: deps.useCases.listDemandeImmersion,
+            useCase: legacyDependencies.useCases.listDemandeImmersion,
             validationSchema: listImmersionApplicationRequestDtoSchema,
             useCaseParams: req.query,
           }),
-        deps.authChecker,
+        legacyDependencies.authChecker,
       );
     });
 
@@ -74,8 +76,8 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     sendHttpResponse(
       req,
       res,
-      () => deps.useCases.validateDemandeImmersion.execute(req.params.id),
-      deps.authChecker,
+      () => legacyDependencies.useCases.validateDemandeImmersion.execute(req.params.id),
+      legacyDependencies.authChecker,
     );
   });
 
@@ -84,11 +86,11 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
       req,
       res,
       () =>
-        deps.useCases.generateMagicLink.execute({
+        legacyDependencies.useCases.generateMagicLink.execute({
           applicationId: req.query.id,
           role: req.query.role,
         } as any),
-      deps.authChecker,
+      legacyDependencies.authChecker,
     );
   });
 
@@ -101,8 +103,8 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
       sendHttpResponse(
         req,
         res,
-        () => deps.useCases.getDemandeImmersion.execute(req.params),
-        deps.authChecker,
+        () => legacyDependencies.useCases.getDemandeImmersion.execute(req.params),
+        legacyDependencies.authChecker,
       ),
     );
 
@@ -110,14 +112,14 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     .route(`/${immersionOffersRoute}`)
     .post(async (req, res) =>
       sendHttpResponse(req, res, () =>
-        deps.useCases.addFormEstablishment.execute(req.body),
+        legacyDependencies.useCases.addFormEstablishment.execute(req.body),
       ),
     );
 
   router.route(`/${searchImmersionRoute}`).post(async (req, res) =>
     sendHttpResponse(req, res, () =>
       callUseCase({
-        useCase: deps.useCases.searchImmersion,
+        useCase: legacyDependencies.useCases.searchImmersion,
         validationSchema: searchImmersionRequestSchema,
         useCaseParams: req.body,
       }),
@@ -128,7 +130,7 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
     sendHttpResponse(req, res, async () => {
       logger.info(req);
       return callUseCase({
-        useCase: deps.useCases.romeSearch,
+        useCase: legacyDependencies.useCases.romeSearch,
         validationSchema: romeSearchRequestSchema,
         useCaseParams: req.query.searchText,
       });
@@ -138,7 +140,7 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
   router.route(`/${siretRoute}/:siret`).get(async (req, res) =>
     sendHttpResponse(req, res, async () =>
       callUseCase({
-        useCase: deps.useCases.getSiret,
+        useCase: injector.getSiretUseCase,
         validationSchema: getSiretRequestSchema,
         useCaseParams: req.params,
       }),
@@ -148,7 +150,7 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
   router.route(`/${immersionApplicationsRoute}`).post(async (req, res) =>
     sendHttpResponse(req, res, () =>
       callUseCase({
-        useCase: deps.useCases.addDemandeImmersionML,
+        useCase: legacyDependencies.useCases.addDemandeImmersionML,
         validationSchema: immersionApplicationSchema,
         useCaseParams: req.body,
       }),
@@ -158,15 +160,15 @@ export const createApp = async (config: AppConfig): Promise<Express> => {
   router
     .route(`/${agenciesRoute}`)
     .get(async (req, res) =>
-      sendHttpResponse(req, res, () => deps.useCases.listAgencies.execute()),
+      sendHttpResponse(req, res, () => legacyDependencies.useCases.listAgencies.execute()),
     );
 
   app.use(router);
-  app.use("/auth", createMagicLinkRouter(deps));
+  app.use("/auth", createMagicLinkRouter(legacyDependencies));
 
-  subscribeToEvents(deps);
+  subscribeToEvents(legacyDependencies);
 
-  deps.eventCrawler.startCrawler();
+  legacyDependencies.eventCrawler.startCrawler();
 
   return app;
 };

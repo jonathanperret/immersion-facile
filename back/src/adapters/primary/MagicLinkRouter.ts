@@ -8,11 +8,11 @@ import {
   immersionApplicationsRoute,
   updateApplicationStatusRoute,
 } from "../../shared/routes";
-import { AppDependencies } from "./config";
+import { LegacyAppDependencies } from "./config";
 import { callUseCase } from "./helpers/callUseCase";
 import { sendHttpResponse } from "./helpers/sendHttpResponse";
 
-export const createMagicLinkRouter = (deps: AppDependencies) => {
+export const createMagicLinkRouter = (deps: LegacyAppDependencies) => {
   const authenticatedRouter = Router({ mergeParams: true });
 
   authenticatedRouter.use("/:jwt", deps.authMiddleware);
