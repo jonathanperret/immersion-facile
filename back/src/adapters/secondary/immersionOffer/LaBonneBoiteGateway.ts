@@ -27,7 +27,7 @@ export type HttpCallsToLaBonneBoite = {
   ) => Promise<EstablishmentFromLaBonneBoite[]>;
 };
 
-export const httpCallToLaBonneBoite: HttpCallsToLaBonneBoite = {
+const httpCallToLaBonneBoite: HttpCallsToLaBonneBoite = {
   getEstablishments: (searchParams: SearchParams, accessToken: string) => {
     const headers = {
       Authorization: "Bearer " + accessToken,

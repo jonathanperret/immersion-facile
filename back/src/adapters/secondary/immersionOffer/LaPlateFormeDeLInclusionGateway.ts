@@ -67,7 +67,7 @@ export type HttpCallsToLaPlateFormeDeLInclusion = {
 };
 
 //TODO delete
-export const httpCallToLaPlateFormeDeLInclusion: HttpCallsToLaPlateFormeDeLInclusion =
+const httpCallToLaPlateFormeDeLInclusion: HttpCallsToLaPlateFormeDeLInclusion =
   {
     getEstablishments: async (searchParams: SearchParams) => {
       const apiAdresseGateway = new APIAdresseGateway();
