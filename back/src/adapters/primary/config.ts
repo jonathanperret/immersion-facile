@@ -3,14 +3,14 @@ import { InMemoryAuthChecker } from "../../domain/auth/InMemoryAuthChecker";
 import { GenerateJwtFn, makeGenerateJwt } from "../../domain/auth/jwt";
 import {
   EventBus,
-  makeCreateNewEvent,
+  makeCreateNewEvent
 } from "../../domain/core/eventBus/EventBus";
 import { EventCrawler } from "../../domain/core/eventBus/EventCrawler";
 import { EmailFilter } from "../../domain/core/ports/EmailFilter";
 import { OutboxRepository } from "../../domain/core/ports/OutboxRepository";
 import {
   AddImmersionApplication,
-  AddImmersionApplicationML,
+  AddImmersionApplicationML
 } from "../../domain/immersionApplication/useCases/AddImmersionApplication";
 import { GenerateMagicLink } from "../../domain/immersionApplication/useCases/GenerateMagicLink";
 import { GetImmersionApplication } from "../../domain/immersionApplication/useCases/GetImmersionApplication";
@@ -34,18 +34,18 @@ import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { ImmersionApplicationId } from "../../shared/ImmersionApplicationDto";
 import {
   createMagicLinkPayload,
-  Role,
+  Role
 } from "../../shared/tokens/MagicLinkPayload";
 import { createLogger } from "../../utils/logger";
 import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import {
   AllowListEmailFilter,
-  AlwaysAllowEmailFilter,
+  AlwaysAllowEmailFilter
 } from "../secondary/core/EmailFilterImplementations";
 import {
   BasicEventCrawler,
-  RealEventCrawler,
+  RealEventCrawler
 } from "../secondary/core/EventCrawlerImplementations";
 import { InMemoryEventBus } from "../secondary/core/InMemoryEventBus";
 import { InMemoryOutboxRepository } from "../secondary/core/InMemoryOutboxRepository";

@@ -139,7 +139,9 @@ export const httpCallToLaPlateFormeDeLInclusion: HttpCallsToLaPlateFormeDeLInclu
   };
 
 export class LaPlateFormeDeLInclusionGateway implements EstablishmentsGateway {
-  constructor(private httpCalls: HttpCallsToLaPlateFormeDeLInclusion) {}
+  constructor(
+    private httpCalls: HttpCallsToLaPlateFormeDeLInclusion = httpCallToLaPlateFormeDeLInclusion,
+  ) {}
 
   async getEstablishments(
     searchParams: SearchParams,
