@@ -225,6 +225,14 @@ export const generateMagicLinkResponseSchema = z.object({
   jwt: z.string(),
 });
 
+// prettier-ignore
+export type RenewMagicLinkRequestDto = z.infer<typeof renewMagicLinkRequestSchema>;
+export const renewMagicLinkRequestSchema = z.object({
+  applicationId: immersionApplicationIdSchema,
+  role: z.enum(allRoles),
+  linkFormat: z.string(),
+});
+
 export const IMMERSION_APPLICATION_TEMPLATE: ImmersionApplicationDto = {
   id: "fake-test-id",
   status: "DRAFT",

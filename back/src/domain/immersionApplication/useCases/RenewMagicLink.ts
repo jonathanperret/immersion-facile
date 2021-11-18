@@ -45,7 +45,7 @@ export class RenewMagicLink extends UseCase<RenewMagicLinkRequestDto, void> {
         { agencyId: dto.agencyId },
         "No Agency Config found for this agency code",
       );
-      return;
+      throw new BadRequestError(dto.agencyId);
     }
 
     let emails = [];
@@ -67,6 +67,10 @@ export class RenewMagicLink extends UseCase<RenewMagicLinkRequestDto, void> {
     }
 
     const jwt = this.generateJwtFn(createMagicLinkPayload(applicationId, role));
+
+    if (!linkFormat.includes("%jwt%")) {
+      throw new BadRequestError(linkFormat);
+    }
 
     const magicLink = linkFormat.replaceAll("%jwt%", jwt);
 

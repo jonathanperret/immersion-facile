@@ -27,14 +27,7 @@ export const createAuthMiddleware =
           if (!expiredPayload) {
             sendForbiddenError(res, err);
           } else {
-            res.redirect(
-              301,
-              createRenewMagicLinkUrl(
-                config,
-                expiredPayload.roles[0],
-                expiredPayload.applicationId,
-              ),
-            );
+            sendNeedsRenewedLinkError(res, err);
           }
 
           return;
@@ -53,5 +46,14 @@ const sendForbiddenError = (res: Response, err: Error) => {
   res.status(403);
   return res.json({
     message: "Provided token is invalid",
+  });
+};
+
+const sendNeedsRenewedLinkError = (res: Response, err: Error) => {
+  logger.info({ err }, "unsupported or expired magic link used");
+  res.status(403);
+  return res.json({
+    message: "Le lien magique est périmé",
+    needsNewMagicLink: true,
   });
 };
