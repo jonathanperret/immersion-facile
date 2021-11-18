@@ -1,5 +1,5 @@
-// Parse search params from a location. 
-// Example usage: 
+// Parse search params from a location.
+// Example usage:
 // // Current location is localhost/some/path?fruit=apple&color=green
 // const params = parseSearchParams(location.search)
 // assert(params.fruit === apple)
@@ -14,7 +14,7 @@ export const parseSearchParams = (search: string) => {
   const retObj = {} as any;
   for (const p of pairs) {
     const [k, v] = p.split("=");
-    retObj[k] = v;
+    retObj[decodeURIComponent(k)] = decodeURIComponent(v);
   }
   return retObj;
 };

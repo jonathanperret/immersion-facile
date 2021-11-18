@@ -169,9 +169,12 @@ export class HttpImmersionApplicationGateway extends ImmersionApplicationGateway
   public async renewMagicLink(
     applicationId: ImmersionApplicationId,
     role: Role,
+    linkFormat: string,
   ): Promise<void> {
     await axios.get(
-      `/${prefix}/${renewMagicLinkRoute}?id=${applicationId}&role=${role}`,
+      `/${prefix}/${renewMagicLinkRoute}?id=${applicationId}&role=${role}&linkFormat=${encodeURIComponent(
+        linkFormat,
+      )}`,
     );
   }
 

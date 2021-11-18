@@ -25,6 +25,7 @@ export const RenewExpiredLink = ({ route }: RenewExpiredLinkProps) => {
     }
 
     const params = parseSearchParams(location.search);
+
     if (!params.id || !params.role) {
       setRequestSuccessful(false);
       setErrorMessage("URL invalide");
@@ -33,7 +34,7 @@ export const RenewExpiredLink = ({ route }: RenewExpiredLinkProps) => {
 
     setRequested(true);
     immersionApplicationGateway
-      .renewMagicLink(params.id, params.role)
+      .renewMagicLink(params.id, params.role, params.originalURL)
       .then(() => {
         setRequestSuccessful(true);
       })
