@@ -36,7 +36,7 @@ import { ImmersionApplicationEntityBuilder } from "../../_testBuilders/Immersion
 
 const adminEmail = "admin@email.fr";
 
-describe("Add immersionApplication Notifications, then checks the mails are sent (trigerred by events)", () => {
+describe("Magic link renewal flow", () => {
   let applicationRepository: InMemoryImmersionApplicationRepository;
   let outboxRepository: OutboxRepository;
   let clock: CustomClock;
@@ -92,16 +92,16 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
   });
 
   test("sends the updated magic link", async () => {
-    eventBus.subscribe("RenewMagicLink", (event) =>
+    eventBus.subscribe("MagicLinkRenewalRequested", (event) =>
       deliverRenewedMagicLink.execute(event.payload),
     );
 
     const linkFormat = "immersionfacile.fr/%jwt%";
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: validDemandeImmersion.id,
       role: "beneficiary",
       linkFormat,
-    } as RenewMagicLinkRequestDto;
+    };
 
     await renewMagicLink.execute(request);
 

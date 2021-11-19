@@ -27,7 +27,7 @@ export type DomainEvent =
   // prettier-ignore
   | GenericEvent<"ImmersionApplicationRequiresModification", ImmersionApplicationRequiresModificationPayload>
   | GenericEvent<"FormEstablishmentAdded", FormEstablishmentDto>
-  | GenericEvent<"RenewMagicLink", RenewMagicLinkPayload>;
+  | GenericEvent<"MagicLinkRenewalRequested", RenewMagicLinkPayload>;
 
 export type DomainTopic = DomainEvent["topic"];
 

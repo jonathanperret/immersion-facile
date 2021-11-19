@@ -77,13 +77,13 @@ describe("RenewMagicLink use case", () => {
   };
 
   it("requires a valid application id", async () => {
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: "not-a-valid-id",
       role: "counsellor",
       linkFormat: "immersionfacile.com/%jwt%",
-    } as RenewMagicLinkRequestDto;
+    };
 
-    expectPromiseToFailWithError(
+    await expectPromiseToFailWithError(
       createUseCase().execute(request),
       new NotFoundError("not-a-valid-id"),
     );
@@ -96,13 +96,13 @@ describe("RenewMagicLink use case", () => {
       .build();
     applicationRepository.setDemandesImmersion({ [entity.id]: entity });
 
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: validDemandeImmersion.id,
       role: "counsellor",
       linkFormat: "immersionfacile.fr/%jwt%",
-    } as RenewMagicLinkRequestDto;
+    };
 
-    expectPromiseToFailWithError(
+    await expectPromiseToFailWithError(
       createUseCase().execute(request),
       new BadRequestError(storedUnknownId),
     );
@@ -110,26 +110,26 @@ describe("RenewMagicLink use case", () => {
 
   // Admins use non-magic-link based authentication, so no need to renew these.
   it("Refuses to generate admin magic links", async () => {
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: validDemandeImmersion.id,
       role: "admin",
       linkFormat: "immersionfacile.fr/%jwt%",
-    } as RenewMagicLinkRequestDto;
+    };
 
-    expectPromiseToFailWithError(
+    await expectPromiseToFailWithError(
       createUseCase().execute(request),
       new BadRequestError("L'admin n'a pas de liens magiques."),
     );
   });
 
   it("requires a link format that includes %jwt% string", async () => {
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: validDemandeImmersion.id,
       role: "counsellor",
       linkFormat: "immersionfacile.fr/",
-    } as RenewMagicLinkRequestDto;
+    };
 
-    expectPromiseToFailWithError(
+    await expectPromiseToFailWithError(
       createUseCase().execute(request),
       new BadRequestError(request.linkFormat),
     );
@@ -137,11 +137,11 @@ describe("RenewMagicLink use case", () => {
 
   it("Posts an event to deliver a correct JWT for correct responses", async () => {
     const linkFormat = "immersionfacile.fr/%jwt%";
-    const request = {
+    const request: RenewMagicLinkRequestDto = {
       applicationId: validDemandeImmersion.id,
       role: "beneficiary",
       linkFormat,
-    } as RenewMagicLinkRequestDto;
+    };
 
     await createUseCase().execute(request);
 
@@ -151,7 +151,7 @@ describe("RenewMagicLink use case", () => {
 
     expect(outboxRepository.events).toEqual([
       createNewEvent({
-        topic: "RenewMagicLink",
+        topic: "MagicLinkRenewalRequested",
         payload: {
           emails: [validDemandeImmersion.email],
           magicLink: "immersionfacile.fr/" + expectedJWT,

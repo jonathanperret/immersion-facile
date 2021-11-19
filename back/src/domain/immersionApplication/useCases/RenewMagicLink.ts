@@ -75,7 +75,7 @@ export class RenewMagicLink extends UseCase<RenewMagicLinkRequestDto, void> {
     const magicLink = linkFormat.replaceAll("%jwt%", jwt);
 
     const event = this.createNewEvent({
-      topic: "RenewMagicLink",
+      topic: "MagicLinkRenewalRequested",
       payload: {
         emails,
         magicLink,
