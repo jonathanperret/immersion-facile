@@ -6,14 +6,13 @@ import {
   formEstablishmentSchema,
 } from "../../../../shared/FormEstablishmentDto";
 
-export class NotifConfirmationEstablishmentCreatedToEstablishment extends UseCase<FormEstablishmentDto> {
+export class NotifConfirmationEstablishmentCreated extends UseCase<FormEstablishmentDto> {
   constructor(
     private readonly emailFilter: EmailFilter,
     private readonly emailGateway: EmailGateway,
   ) {
     super();
   }
-
   inputSchema = formEstablishmentSchema;
 
   public async _execute(

@@ -35,7 +35,7 @@ export class InMemoryEmailGateway implements EmailGateway {
       "sendNewEstablismentContactConfirmation",
     );
     this.sentEmails.push({
-      type: "NEW_ESTABLISHMENT_CONTACT_CONFIRMATION",
+      type: "NEW_ESTABLISHMENT_CREATED_CONTACT_CONFIRMATION",
       recipients: [recipient],
       params,
     });
