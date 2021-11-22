@@ -5,6 +5,7 @@ export const getFeatureFlags = (processEnv: ProcessEnv) => {
 
   return {
     enableAdminUi: getBooleanVariable("ENABLE_ADMIN_UI"),
+    enableEnterpriseSignature: getBooleanVariable("ENABLE_ENTERPRISE_SIGNATURE"),
   };
 };
 
