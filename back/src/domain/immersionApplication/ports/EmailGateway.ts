@@ -24,10 +24,6 @@ export type NewApplicationMentorConfirmationParams = {
   beneficiaryLastName: string;
 };
 
-export type NewEstablishmentContactConfirmationParams = {
-  establishmentDto: FormEstablishmentDto;
-};
-
 export type ValidatedApplicationFinalConfirmationParams = {
   beneficiaryFirstName: string;
   beneficiaryLastName: string;
@@ -86,7 +82,7 @@ export type EmailType =
   | "VALIDATED_APPLICATION_FINAL_CONFIRMATION"
   | "REJECTED_APPLICATION_NOTIFICATION"
   | "MODIFICATION_REQUEST_APPLICATION_NOTIFICATION"
-  | "MAGIC_LINK_RENEWAL";
+  | "MAGIC_LINK_RENEWAL"
   | "NEW_ESTABLISHMENT_CREATED_CONTACT_CONFIRMATION";
 
 export interface EmailGateway {
@@ -96,7 +92,7 @@ export interface EmailGateway {
   ) => Promise<void>;
   sendNewEstablismentContactConfirmation: (
     recipients: string,
-    params: NewEstablishmentContactConfirmationParams,
+    params: FormEstablishmentDto,
   ) => Promise<void>;
   sendNewApplicationMentorConfirmation: (
     recipient: string,
