@@ -16,8 +16,8 @@ import { AllowListEmailFilter } from "./../../adapters/secondary/core/EmailFilte
 // - SENDINBLUE_API_KEY
 
 const validDemandeImmersion = new ImmersionApplicationDtoBuilder()
-  .withEmail("jean-francois.macresy@beta.gouv.fr")
-  .withMentorEmail("jean-francois.macresy+mentor@beta.gouv.fr")
+  .withEmail("recette@immersion-facile.beta.gouv.fr")
+  .withMentorEmail("recette+mentor@immersion-facile.beta.gouv.fr")
   .build();
 const counsellorEmail = "jean-francois.macresy@beta.gouv.fr";
 
@@ -40,8 +40,9 @@ describe("NotifyApplicationRejectedToBeneficiaryAndEnterprise", () => {
   });
 
   test("Sends rejection email", async () => {
-    validDemandeImmersion.mentorEmail = "jeanfrancois.macresy@gmail.com";
-    validDemandeImmersion.email = "jeanfrancois.macresy+beneficiary@gmail.com";
+    validDemandeImmersion.mentorEmail = "recette@immersion-facile.beta.gouv.fr";
+    validDemandeImmersion.email =
+      "recette+beneficiary@immersion-facile.beta.gouv.fr";
 
     const emailFilter = new AllowListEmailFilter([
       validDemandeImmersion.mentorEmail,
