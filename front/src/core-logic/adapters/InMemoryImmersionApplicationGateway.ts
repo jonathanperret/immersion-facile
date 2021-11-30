@@ -164,6 +164,27 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
     return { id: payload.applicationId };
   }
 
+  public async signApplication(
+    jwt: string,
+  ): Promise<UpdateImmersionApplicationStatusResponseDto> {
+    await sleep(SIMULATED_LATENCY_MS);
+    const payload = decodeJwt(jwt);
+    
+    const application = this._demandesImmersion[payload.applicationId];
+    const enterpriseAccepted = payload.roles.includes("establishment") ? true : application.beneficiaryAccepted;
+    const beneficiaryAccepted =  payload.roles.includes("beneficiary") ? true : application.beneficiaryAccepted;
+    // const status = "READY_TO_SIGN";
+
+
+    this._demandesImmersion[payload.applicationId] = {
+      ...application,
+      beneficiaryAccepted,
+      enterpriseAccepted,
+      status: 
+    };
+    return { id: payload.applicationId };
+  }
+
   public async validate(id: ImmersionApplicationId): Promise<string> {
     console.log("InMemoryImmersionApplicationGateway.validate: ", id);
     await sleep(SIMULATED_LATENCY_MS);

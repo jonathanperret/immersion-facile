@@ -22,7 +22,7 @@ import type {
   ImmersionApplicationDto,
 } from "src/shared/ImmersionApplicationDto";
 
-const { dev } = ENV;
+const { featureFlags, dev } = ENV;
 
 const FrozenMessage = () => (
   <>
@@ -43,12 +43,14 @@ type ApplicationFieldsProps = {
   isFrozen?: boolean;
   submitError: Error | null;
   successInfos: SuccessInfos | null;
+  isSignOnly?: boolean;
 };
 
 export const ApplicationFormFields = ({
   isFrozen,
   submitError,
   successInfos,
+  isSignOnly,
 }: ApplicationFieldsProps) => {
   const { errors, submitCount, setFieldValue, isSubmitting, submitForm } =
     useFormikContext<ImmersionApplicationDto>();
@@ -69,6 +71,8 @@ export const ApplicationFormFields = ({
   ) {
     errorMessage = submitError["response"]["data"]["errors"];
   }
+
+  const isSignatureMode = featureFlags.enableEnterpriseSignature && isSignOnly;
 
   return (
     <>
@@ -261,26 +265,29 @@ export const ApplicationFormFields = ({
       />
 
       <p />
+      {!isSignatureMode && (
+        <>
+          <BoolCheckboxGroup
+            name="beneficiaryAccepted"
+            label={
+              "Je (bénéficiaire de l'immersion) m'engage à avoir pris connaissance des dispositions réglementaires de la PMSMP et à les respecter *"
+            }
+            description="Avant de répondre, consultez ces dispositions ici"
+            descriptionLink="https://docs.google.com/document/d/1siwGSE4fQB5hGWoppXLMoUYX42r9N-mGZbM_Gz_iS7c/edit?usp=sharing"
+            disabled={isFrozen}
+          />
 
-      <BoolCheckboxGroup
-        name="beneficiaryAccepted"
-        label={
-          "Je (bénéficiaire de l'immersion) m'engage à avoir pris connaissance des dispositions réglementaires de la PMSMP et à les respecter *"
-        }
-        description="Avant de répondre, consultez ces dispositions ici"
-        descriptionLink="https://docs.google.com/document/d/1siwGSE4fQB5hGWoppXLMoUYX42r9N-mGZbM_Gz_iS7c/edit?usp=sharing"
-        disabled={isFrozen}
-      />
-
-      <BoolCheckboxGroup
-        name="enterpriseAccepted"
-        label={
-          "Je (représentant de la structure d'accueil ) m'engage à avoir pris connaissance des dispositions réglementaires de la PMSMP et à les respecter *"
-        }
-        description="Avant de répondre, consultez ces dispositions ici"
-        descriptionLink="https://docs.google.com/document/d/1siwGSE4fQB5hGWoppXLMoUYX42r9N-mGZbM_Gz_iS7c/edit?usp=sharing"
-        disabled={isFrozen}
-      />
+          <BoolCheckboxGroup
+            name="enterpriseAccepted"
+            label={
+              "Je (représentant de la structure d'accueil ) m'engage à avoir pris connaissance des dispositions réglementaires de la PMSMP et à les respecter *"
+            }
+            description="Avant de répondre, consultez ces dispositions ici"
+            descriptionLink="https://docs.google.com/document/d/1siwGSE4fQB5hGWoppXLMoUYX42r9N-mGZbM_Gz_iS7c/edit?usp=sharing"
+            disabled={isFrozen}
+          />
+        </>
+      )}
 
       <p />
 
@@ -305,8 +312,12 @@ export const ApplicationFormFields = ({
 
       <p />
 
-      {!isFrozen && (
+      {!isFrozen && !isSignatureMode && (
         <SubmitButton isSubmitting={isSubmitting} onSubmit={submitForm} />
+      )}
+
+      {isSignatureMode && (
+        <SignButton isSubmitting={isSubmitting} onSubmit={submitForm} />
       )}
     </>
   );
@@ -343,6 +354,18 @@ const SubmitButton = ({ onSubmit, isSubmitting }: SubmitButtonProps) => {
       onClick={makeInReviewAndSubmit}
     >
       {isSubmitting ? "Éxecution" : "Envoyer la demande"}
+    </button>
+  );
+};
+
+const SignButton = ({ onSubmit, isSubmitting }: SubmitButtonProps) => {
+  return (
+    <button
+      className="fr-btn fr-fi-checkbox-circle-line fr-btn--icon-left"
+      type="button"
+      onClick={onSubmit}
+    >
+      {isSubmitting ? "Éxecution" : "Confirmer et signer"}
     </button>
   );
 };
