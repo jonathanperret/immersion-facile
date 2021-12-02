@@ -16,20 +16,22 @@ import {
 } from "src/shared/ImmersionApplicationDto";
 import { Route } from "type-route";
 
-type ApplicationFormRoute = Route<typeof routes.immersionApplication>;
+type SignFormRoute = Route<typeof routes.immersionApplicationsToSign>;
 
-interface ApplicationFormProps {
-  route: ApplicationFormRoute;
+interface SignFormProps {
+  route: SignFormRoute;
 }
-
-const isDemandeImmersionFrozen = (
-  demandeImmersion: Partial<ImmersionApplicationDto>,
-): boolean => !demandeImmersion.status || demandeImmersion.status !== "DRAFT";
 
 const { featureFlags, dev } = ENV;
 
 
-export const ApplicationForm = ({ route }: ApplicationFormProps) => {
+export const SignForm = ({ route }: SignFormProps) => {
+  if (!featureFlags.enableEnterpriseSignature) {
+    return (
+      <div>Feature not implemented</div>
+    );
+  }
+
   const [initialValues, setInitialValues] = useState<Partial<ImmersionApplicationDto>|null>(null)
   const [submitError, setSubmitError] = useState<Error | null>(null);
   const [successInfos, setSuccessInfos] = useState<SuccessInfos | null>(null);
@@ -79,9 +81,8 @@ export const ApplicationForm = ({ route }: ApplicationFormProps) => {
             )}
             onSubmit={async (values, { setSubmitting }) => {
               try {
-                // await signDemandeImmersion(route.params.jwt );
-                
-                // TODO: change success message to show both new links
+                await immersionApplicationGateway.signApplication(route.params.jwt);
+
                 setSuccessInfos(createSuccessInfos(undefined));
                 setSubmitError(null);
               } catch (e: any) {

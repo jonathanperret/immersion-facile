@@ -173,14 +173,21 @@ export class InMemoryImmersionApplicationGateway extends ImmersionApplicationGat
     const application = this._demandesImmersion[payload.applicationId];
     const enterpriseAccepted = payload.roles.includes("establishment") ? true : application.beneficiaryAccepted;
     const beneficiaryAccepted =  payload.roles.includes("beneficiary") ? true : application.beneficiaryAccepted;
-    // const status = "READY_TO_SIGN";
+    let status : ApplicationStatus = "READY_TO_SIGN";
+    // if beneficiaryAccepted XOR enterpise accepted
+    if ((enterpriseAccepted && !beneficiaryAccepted) || (!enterpriseAccepted && beneficiaryAccepted)) {
+      status = "PARTIALLY_SIGNED";
+    }
+    if (enterpriseAccepted && beneficiaryAccepted) {
+      status = "IN_REVIEW";
+    }
 
 
     this._demandesImmersion[payload.applicationId] = {
       ...application,
       beneficiaryAccepted,
       enterpriseAccepted,
-      status: 
+      status
     };
     return { id: payload.applicationId };
   }

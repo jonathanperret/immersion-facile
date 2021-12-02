@@ -24,6 +24,7 @@ import {
   siretRoute,
   updateApplicationStatusRoute,
   validateDemandeRoute,
+  signApplicationRoute,
 } from "src/shared/routes";
 import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
 import { Role } from "src/shared/tokens/MagicLinkPayload";
@@ -137,6 +138,20 @@ export class HttpImmersionApplicationGateway extends ImmersionApplicationGateway
       `/${prefix}/auth/${updateApplicationStatusRoute}/${jwt}`,
       params,
     );
+
+    const response = updateImmersionApplicationStatusResponseSchema.parse(
+      httpResponse.data,
+    );
+    return response;
+  }
+
+  public async signDemandeImmersion(
+    jwt: string,
+  ): Promise<UpdateImmersionApplicationStatusResponseDto> {
+    throw new Error("not implemented!")
+
+    const httpResponse = await axios.post(
+      `/${prefix}/auth/${signApplicationRoute}/${jwt}`);
 
     const response = updateImmersionApplicationStatusResponseSchema.parse(
       httpResponse.data,
