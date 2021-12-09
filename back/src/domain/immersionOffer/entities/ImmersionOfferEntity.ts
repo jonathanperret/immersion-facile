@@ -1,28 +1,17 @@
-import { ImmersionContactInEstablishmentId } from "../../../shared/FormEstablishmentDto";
 import { ImmersionOfferId } from "../../../shared/SearchImmersionDto";
-import { Position } from "./EstablishmentEntity";
+import { SearchImmersionResultDto } from "./../../../shared/SearchImmersionDto";
+import { EstablishmentEntity, Position } from "./EstablishmentEntity";
 
 export type ImmersionOfferProps = {
   id: ImmersionOfferId;
   rome: string;
-  naf?: string;
-  siret: string;
   name: string;
   voluntaryToImmersion: boolean;
   data_source: string;
-  contactInEstablishment?: ImmersionEstablishmentContact;
+  establishment: EstablishmentEntity;
   score: number;
   position: Position;
-};
-
-export type ImmersionEstablishmentContact = {
-  id: ImmersionContactInEstablishmentId;
-  name: string;
-  firstname: string;
-  email: string;
-  role: string;
-  siretEstablishment: string;
-  phone: string;
+  distance_m?: number;
 };
 
 export class ImmersionOfferEntity {
@@ -44,30 +33,52 @@ export class ImmersionOfferEntity {
     return this.props.rome;
   }
 
+  public toSearchImmersionResultDto(
+    withContactDetails?: boolean,
+  ): SearchImmersionResultDto {
+    const contactInEstablishment = this.props.establishment.getContact();
+    return {
+      id: this.props.id,
+      rome: this.props.rome,
+      romeLabel: "xxxx",
+      naf: this.props.establishment.getNaf(),
+      nafLabel: "xxxx",
+      siret: this.props.establishment.getSiret(),
+      name: this.props.name,
+      voluntaryToImmersion: this.props.voluntaryToImmersion,
+      location: this.props.position,
+      address: this.props.establishment.getAddress(),
+      city: "xxxx",
+      contactId: this.props.establishment.getContact()?.id,
+      contactMode: this.props.establishment.getContactMode(),
+      distance_m: this.props.distance_m,
+      ...(withContactDetails &&
+        contactInEstablishment && {
+          contactDetails: {
+            id: contactInEstablishment.id,
+            firstName: contactInEstablishment.firstname,
+            lastName: contactInEstablishment.name,
+            email: contactInEstablishment.email,
+            phone: contactInEstablishment.phone,
+            role: contactInEstablishment.role,
+          },
+        }),
+    };
+  }
+
   public toArrayOfProps() {
-    let idContactInEstablishment = null;
-    if (this.props.contactInEstablishment) {
-      idContactInEstablishment = this.props.contactInEstablishment;
-    }
     return [
       this.props.id,
       this.props.rome,
-      this.extractCategory(),
-      this.props.siret,
-      this.props.naf,
+      this.props.establishment.extractNafDivision(),
+      this.props.establishment.getSiret(),
+      this.props.establishment.getNaf(),
       this.props.name,
       this.props.voluntaryToImmersion,
       this.props.data_source,
-      idContactInEstablishment,
+      this.props.establishment.getContact() || null,
       this.props.score,
       this.props.position,
     ];
-  }
-
-  extractCategory(): number {
-    if (this.props.naf) {
-      return parseInt(this.props.naf.substring(0, 2));
-    }
-    return -1;
   }
 }

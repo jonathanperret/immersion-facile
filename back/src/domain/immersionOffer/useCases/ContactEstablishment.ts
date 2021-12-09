@@ -1,4 +1,3 @@
-import { createLogger } from "./../../../utils/logger";
 import {
   BadRequestError,
   NotFoundError,
@@ -34,13 +33,16 @@ export class ContactEstablishment extends TransactionalUseCase<
       );
 
     if (!immersionOffer) throw new NotFoundError(params.immersionOfferId);
-    if (params.contactMode !== immersionOffer.contactMode)
+    if (
+      params.contactMode !==
+      immersionOffer.getProps().establishment.getContactMode()
+    )
       throw new BadRequestError(
         `contact mode mismatch: ${params.contactMode} in immersion offer: ${params.immersionOfferId}`,
       );
 
     if (params.contactMode === "EMAIL") {
-      if (!immersionOffer.contactId) {
+      if (!immersionOffer.getProps().establishment.getContact()) {
         throw new BadRequestError(
           `no contact id in immersion offer: ${params.immersionOfferId}`,
         );

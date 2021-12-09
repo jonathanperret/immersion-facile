@@ -147,19 +147,6 @@ describe("UpdateEstablishmentsAndImmersionOffersFromLastSearches", () => {
     await updateEstablishmentsAndImmersionOffersFromLastSearches.execute();
 
     // assert
-    const exectedImmersionOffer = new ImmersionOfferEntity({
-      id: "c005bb90-703d-4477-a5ac-b006c631a736",
-      rome: "A1203",
-      naf: "8559A",
-      siret: "24570135400111",
-      name: "Chantier d'insertion de l'Arc Mosellan (CCAM)",
-      voluntaryToImmersion: false,
-      data_source: "api_laplateformedelinclusion",
-      contactInEstablishment: undefined,
-      score: 6,
-      position: { lat: 43.8666, lon: 1.3333 },
-    });
-
     expect(immersionOfferRepository.searches).toHaveLength(0);
 
     //We expect to find the immersion in results

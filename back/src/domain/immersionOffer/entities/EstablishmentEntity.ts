@@ -1,10 +1,10 @@
 import { v4 as uuidV4 } from "uuid";
-import { ContactMethod } from "../../../shared/FormEstablishmentDto";
-import { Flavor } from "../../../shared/typeFlavors";
 import {
-  ImmersionEstablishmentContact,
-  ImmersionOfferEntity,
-} from "./ImmersionOfferEntity";
+  ContactMethod,
+  ImmersionContactInEstablishmentId,
+} from "../../../shared/FormEstablishmentDto";
+import { Flavor } from "../../../shared/typeFlavors";
+import { ImmersionOfferEntity } from "./ImmersionOfferEntity";
 
 export type EstablishmentId = Flavor<string, "EstablishmentId">;
 
@@ -51,6 +51,16 @@ export type EstablishmentFieldsToRetrieve = {
   numberEmployeesRange: TefenCode;
   position: Position;
   naf: string;
+};
+
+export type ImmersionEstablishmentContact = {
+  id: ImmersionContactInEstablishmentId;
+  name: string;
+  firstname: string;
+  email: string;
+  role: string;
+  siretEstablishment: string;
+  phone: string;
 };
 
 export type OptionalEstablishmentFields = {
@@ -131,6 +141,13 @@ export class EstablishmentEntity {
     this.props.contactInEstablishment = immersionEstablishmentContact;
   }
 
+  extractNafDivision(): number {
+    if (this.props.naf) {
+      return parseInt(this.props.naf.substring(0, 2));
+    }
+    return -1;
+  }
+
   public extractImmersions(): ImmersionOfferEntity[] {
     const romeArray = this.getRomeCodesArray();
 
@@ -139,12 +156,10 @@ export class EstablishmentEntity {
         new ImmersionOfferEntity({
           id: uuidV4(),
           rome,
-          naf: this.props.naf,
-          siret: this.props.siret,
           name: this.props.name,
           voluntaryToImmersion: this.props.voluntaryToImmersion,
           data_source: this.getDataSource(),
-          contactInEstablishment: this.props.contactInEstablishment,
+          establishment: new EstablishmentEntity({ ...this.props }),
           score: this.getScore(),
           position: this.getPosition(),
         }),

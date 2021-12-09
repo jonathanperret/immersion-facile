@@ -1,12 +1,12 @@
+import { NotFoundError } from "../../../adapters/primary/helpers/sendHttpResponse";
 import {
-  SearchImmersionResultDto,
-  immersionOfferIdSchema,
   ImmersionOfferId,
+  immersionOfferIdSchema,
+  SearchImmersionResultDto,
 } from "../../../shared/SearchImmersionDto";
+import { ApiConsumer } from "../../../shared/tokens/ApiConsumer";
 import { UseCase } from "../../core/UseCase";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
-import { NotFoundError } from "../../../adapters/primary/helpers/sendHttpResponse";
-import { ApiConsumer } from "../../../shared/tokens/ApiConsumer";
 
 export class GetImmersionOfferById extends UseCase<
   ImmersionOfferId,
@@ -27,11 +27,8 @@ export class GetImmersionOfferById extends UseCase<
   ): Promise<SearchImmersionResultDto> {
     const withContactDetails = !!apiConsumer;
     const immersionOffer =
-      await this.immersionOfferRepository.getImmersionFromUuid(
-        id,
-        withContactDetails,
-      );
+      await this.immersionOfferRepository.getImmersionFromUuid(id);
     if (!immersionOffer) throw new NotFoundError(id);
-    return immersionOffer;
+    return immersionOffer.toSearchImmersionResultDto(withContactDetails);
   }
 }

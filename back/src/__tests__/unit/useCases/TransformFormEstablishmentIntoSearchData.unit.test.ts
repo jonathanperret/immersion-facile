@@ -123,11 +123,14 @@ describe("Transform FormEstablishment into search data", () => {
     //Verify that immersion matches
     expect(immersionsBoulanger).toHaveLength(1);
     const immersionBoulanger = immersionsBoulanger[0];
-    expect(immersionBoulanger.getProps().siret).toEqual(expected.siret);
+    expect(immersionBoulanger.getProps().establishment.getSiret()).toEqual(
+      expected.siret,
+    );
 
     //Verify that the company contact is here
-    const boulangerEstablishmentContact =
-      immersionsBoulanger[0].getProps().contactInEstablishment;
+    const boulangerEstablishmentContact = immersionsBoulanger[0]
+      .getProps()
+      .establishment.getContact();
     expect(boulangerEstablishmentContact).toBeDefined();
     expect(boulangerEstablishmentContact?.email).toEqual(expected.contactEmail);
   };

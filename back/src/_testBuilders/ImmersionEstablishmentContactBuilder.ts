@@ -1,4 +1,4 @@
-import { ImmersionEstablishmentContact } from "../domain/immersionOffer/entities/ImmersionOfferEntity";
+import { ImmersionEstablishmentContact } from "../domain/immersionOffer/entities/EstablishmentEntity";
 import { Builder } from "./Builder";
 
 const validImmersionEstablishmentContact: ImmersionEstablishmentContact = {

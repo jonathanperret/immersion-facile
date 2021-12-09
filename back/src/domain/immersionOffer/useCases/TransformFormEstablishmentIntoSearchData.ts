@@ -9,7 +9,6 @@ import { SequenceRunner } from "../../core/ports/SequenceRunner";
 import { UseCase } from "../../core/UseCase";
 import { RomeGateway } from "../../rome/ports/RomeGateway";
 import { SireneRepository } from "../../sirene/ports/SireneRepository";
-import { ImmersionEstablishmentContact } from "../entities/ImmersionOfferEntity";
 import {
   GetPosition,
   UncompleteEstablishmentEntity,
@@ -17,6 +16,7 @@ import {
 import { FormEstablishmentRepository } from "../ports/FormEstablishmentRepository";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
 import { createLogger } from "../../../utils/logger";
+import { ImmersionEstablishmentContact } from "../entities/EstablishmentEntity";
 
 const logger = createLogger(__filename);
 

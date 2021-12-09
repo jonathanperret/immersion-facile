@@ -3,25 +3,39 @@ import { CustomClock } from "../../../adapters/secondary/core/ClockImplementatio
 import { InMemoryOutboxRepository } from "../../../adapters/secondary/core/InMemoryOutboxRepository";
 import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
 import { InMemoryImmersionOfferRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersonOfferRepository";
+import { makeCreateInMemoryUow } from "../../../adapters/secondary/InMemoryUnitOfWork";
 import { InMemoryUowPerformer } from "../../../adapters/secondary/InMemoryUowPerformer";
 import { makeCreateNewEvent } from "../../../domain/core/eventBus/EventBus";
 import { UnitOfWorkPerformer } from "../../../domain/core/ports/UnitOfWork";
 import { ContactEstablishment } from "../../../domain/immersionOffer/useCases/ContactEstablishment";
 import { ContactEstablishmentRequestDto } from "../../../shared/contactEstablishment";
-import { ImmersionEstablishmentContactBuilder } from "../../../_testBuilders/ImmersionEstablishmentContactBuilder";
 import { ImmersionOfferEntityBuilder } from "../../../_testBuilders/ImmersionOfferEntityBuilder";
-import { makeCreateInMemoryUow } from "../../../_testBuilders/makeCreateInMemoryUow";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
 import { BadRequestError } from "./../../../adapters/primary/helpers/sendHttpResponse";
+import { ImmersionEstablishmentContact } from "./../../../domain/immersionOffer/entities/EstablishmentEntity";
 import { EstablishmentEntityBuilder } from "./../../../_testBuilders/EstablishmentEntityBuilder";
 
-const establishment = new EstablishmentEntityBuilder().build();
-const establishmentContact = new ImmersionEstablishmentContactBuilder()
-  .withSiret(establishment.getSiret())
+const siret = "12354678901234";
+const contact: ImmersionEstablishmentContact = {
+  id: "37dd0b5e-3270-11ec-8d3d-0242ac130003",
+  name: "Dupont",
+  firstname: "Pierre",
+  email: "test@email.fr",
+  role: "Directeur",
+  siretEstablishment: siret,
+  phone: "0640295453",
+};
+const establishment = new EstablishmentEntityBuilder()
+  .withSiret(siret)
+  .withRomes([])
+  .withNaf("8539A")
+  .withContact(contact)
+  .withContactMode("EMAIL")
   .build();
 const immersionOffer = new ImmersionOfferEntityBuilder()
-  .withSiret(establishment.getSiret())
-  .withContactInEstablishment(establishmentContact)
+  .withRome("M1607")
+  .withPosition({ lat: 43.8666, lon: 8.3333 })
+  .withEstablishment(establishment)
   .build();
 
 const validRequest: ContactEstablishmentRequestDto = {
@@ -41,7 +55,7 @@ describe("ContactEstablishment", () => {
   let clock: CustomClock;
 
   beforeEach(() => {
-    immersionOfferRepository = new InMemoryImmersionOfferRepository().empty();
+    immersionOfferRepository = new InMemoryImmersionOfferRepository();
     outboxRepository = new InMemoryOutboxRepository();
     uowPerformer = new InMemoryUowPerformer(
       makeCreateInMemoryUow({
@@ -60,8 +74,6 @@ describe("ContactEstablishment", () => {
   });
 
   test("schedules event for valid EMAIL contact request", async () => {
-    await immersionOfferRepository.insertEstablishments([establishment]);
-    await immersionOfferRepository.insertEstablishmentContact(establishmentContact);
     await immersionOfferRepository.insertImmersions([immersionOffer]);
 
     const eventId = "event_id";
@@ -85,29 +97,33 @@ describe("ContactEstablishment", () => {
   });
 
   test("schedules no event for valid PHONE contact requests", async () => {
+    await immersionOfferRepository.insertImmersions([immersionOffer]);
     await immersionOfferRepository.insertEstablishments([
       new EstablishmentEntityBuilder(establishment)
         .withContactMode("PHONE")
         .build(),
     ]);
-    await immersionOfferRepository.insertEstablishmentContact(establishmentContact);
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
 
-    await contactEstablishment.execute({...validRequest, contactMode: "PHONE"});
+    await contactEstablishment.execute({
+      ...validRequest,
+      contactMode: "PHONE",
+    });
 
     expect(outboxRepository.events).toHaveLength(0);
   });
 
   test("schedules no event for valid IN_PERSON contact requests", async () => {
+    await immersionOfferRepository.insertImmersions([immersionOffer]);
     await immersionOfferRepository.insertEstablishments([
       new EstablishmentEntityBuilder(establishment)
         .withContactMode("IN_PERSON")
         .build(),
     ]);
-    await immersionOfferRepository.insertEstablishmentContact(establishmentContact);
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
 
-    await contactEstablishment.execute({...validRequest, contactMode: "IN_PERSON"});
+    await contactEstablishment.execute({
+      ...validRequest,
+      contactMode: "IN_PERSON",
+    });
 
     expect(outboxRepository.events).toHaveLength(0);
   });
@@ -125,13 +141,12 @@ describe("ContactEstablishment", () => {
   });
 
   test("throws BadRequestError for contact mode mismatch", async () => {
+    await immersionOfferRepository.insertImmersions([immersionOffer]);
     await immersionOfferRepository.insertEstablishments([
       new EstablishmentEntityBuilder(establishment)
         .withContactMode("PHONE")
         .build(),
     ]);
-    await immersionOfferRepository.insertEstablishmentContact(establishmentContact);
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
 
     await expectPromiseToFailWithError(
       contactEstablishment.execute({
@@ -145,10 +160,11 @@ describe("ContactEstablishment", () => {
   });
 
   test("throws BadRequestError immersion offer without contact id", async () => {
-    await immersionOfferRepository.insertEstablishments([establishment]);
     await immersionOfferRepository.insertImmersions([
       new ImmersionOfferEntityBuilder(immersionOffer.getProps())
-        .clearContactInEstablishment()
+        .withEstablishment(
+          new EstablishmentEntityBuilder(establishment).clearContact().build(),
+        )
         .build(),
     ]);
 

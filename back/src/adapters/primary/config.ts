@@ -75,6 +75,10 @@ import { InMemoryFormEstablishmentRepository } from "../secondary/InMemoryFormEs
 import { InMemoryImmersionApplicationRepository } from "../secondary/InMemoryImmersionApplicationRepository";
 import { InMemoryRomeGateway } from "../secondary/InMemoryRomeGateway";
 import { InMemorySireneRepository } from "../secondary/InMemorySireneRepository";
+import {
+  createInMemoryUow,
+  InMemoryUnitOfWork,
+} from "../secondary/InMemoryUnitOfWork";
 import { InMemoryUowPerformer } from "../secondary/InMemoryUowPerformer";
 import { PgAgencyRepository } from "../secondary/pg/PgAgencyRepository";
 import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
@@ -229,13 +233,6 @@ const createRomeGateway = async (
       return new InMemoryRomeGateway();
   }
 };
-
-export type InMemoryUnitOfWork = ReturnType<typeof createInMemoryUow>;
-export const createInMemoryUow = () => ({
-  outboxRepo: new InMemoryOutboxRepository(),
-  formEstablishmentRepo: new InMemoryFormEstablishmentRepository(),
-  immersionOfferRepo: new InMemoryImmersionOfferRepository(),
-});
 
 // following function is for type check only, it is verifies InMemoryUnitOfWork is assignable to UnitOfWork
 const isAssignable = (): UnitOfWork => {
