@@ -3,8 +3,8 @@ import { Builder } from "./Builder";
 
 const validImmersionEstablishmentContact: ImmersionEstablishmentContact = {
   id: "3ca6e619-d654-4d0d-8fa6-2febefbe953d",
-  name: "Prost",
-  firstname: "Alain",
+  lastName: "Prost",
+  firstName: "Alain",
   email: "alain.prost@email.fr",
   role: "le big boss",
   siretEstablishment: "78000403200029",
@@ -25,6 +25,18 @@ export class ImmersionEstablishmentContactBuilder
     });
   }
 
+  public withEmail(email: string) {
+    return new ImmersionEstablishmentContactBuilder({
+      ...this.immersionEstablishmentContact,
+      email,
+    });
+  }
+  public withId(id: string) {
+    return new ImmersionEstablishmentContactBuilder({
+      ...this.immersionEstablishmentContact,
+      id,
+    });
+  }
   public build() {
     return { ...this.immersionEstablishmentContact };
   }

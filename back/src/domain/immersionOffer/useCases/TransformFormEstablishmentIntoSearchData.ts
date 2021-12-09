@@ -125,8 +125,8 @@ const convertBusinessContactDtoToImmersionEstablishmentContact = (
   siret_institution: string,
 ): ImmersionEstablishmentContact => ({
   id: uuidV4(),
-  name: businessContactDto.lastName,
-  firstname: businessContactDto.firstName,
+  lastName: businessContactDto.lastName,
+  firstName: businessContactDto.firstName,
   email: businessContactDto.email,
   role: businessContactDto.job,
   siretEstablishment: siret_institution,

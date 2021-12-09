@@ -21,7 +21,9 @@ const validEstablishment: EstablishmentProps = {
   voluntaryToImmersion: true,
   dataSource: "form",
   contactMode: "EMAIL",
-  contactInEstablishment: new ImmersionEstablishmentContactBuilder().build(),
+  contactInEstablishment: new ImmersionEstablishmentContactBuilder()
+    .withSiret(siret)
+    .build(),
 };
 
 export class EstablishmentEntityBuilder
@@ -36,9 +38,17 @@ export class EstablishmentEntityBuilder
   withSiret(siret: string) {
     return new EstablishmentEntityBuilder(
       new EstablishmentEntity({ ...this.entity.getProps(), siret }),
+    ).withContact(
+      new ImmersionEstablishmentContactBuilder(this.entity.getContact())
+        .withSiret(siret)
+        .build(),
     );
   }
-
+  withName(name: string) {
+    return new EstablishmentEntityBuilder(
+      new EstablishmentEntity({ ...this.entity.getProps(), name }),
+    );
+  }
   withRomes(romes: string[]) {
     return new EstablishmentEntityBuilder(
       new EstablishmentEntity({ ...this.entity.getProps(), romes }),
@@ -61,7 +71,11 @@ export class EstablishmentEntityBuilder
       new EstablishmentEntity({ ...this.entity.getProps(), address }),
     );
   }
-
+  withPosition(position: { lon: number; lat: number }) {
+    return new EstablishmentEntityBuilder(
+      new EstablishmentEntity({ ...this.entity.getProps(), position }),
+    );
+  }
   withContact(contactInEstablishment: ImmersionEstablishmentContact) {
     return new EstablishmentEntityBuilder(
       new EstablishmentEntity({

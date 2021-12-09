@@ -14,7 +14,7 @@ const validImmersionOfferProps: ImmersionOfferProps = {
   rome: "M1907",
   name: "Company inside repository",
   voluntaryToImmersion: false,
-  data_source: "api_labonneboite",
+  dataSource: "api_labonneboite",
   score: 4.5,
   position: { lat: 35, lon: 50 },
   establishment: new EstablishmentEntityBuilder().build(),

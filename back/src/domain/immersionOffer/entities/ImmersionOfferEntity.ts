@@ -1,13 +1,17 @@
 import { ImmersionOfferId } from "../../../shared/SearchImmersionDto";
 import { SearchImmersionResultDto } from "./../../../shared/SearchImmersionDto";
-import { EstablishmentEntity, Position } from "./EstablishmentEntity";
+import {
+  DataSource,
+  EstablishmentEntity,
+  Position,
+} from "./EstablishmentEntity";
 
 export type ImmersionOfferProps = {
   id: ImmersionOfferId;
   rome: string;
   name: string;
   voluntaryToImmersion: boolean;
-  data_source: string;
+  dataSource: DataSource;
   establishment: EstablishmentEntity;
   score: number;
   position: Position;
@@ -56,8 +60,8 @@ export class ImmersionOfferEntity {
         contactInEstablishment && {
           contactDetails: {
             id: contactInEstablishment.id,
-            firstName: contactInEstablishment.firstname,
-            lastName: contactInEstablishment.name,
+            firstName: contactInEstablishment.firstName,
+            lastName: contactInEstablishment.lastName,
             email: contactInEstablishment.email,
             phone: contactInEstablishment.phone,
             role: contactInEstablishment.role,
@@ -75,7 +79,7 @@ export class ImmersionOfferEntity {
       this.props.establishment.getNaf(),
       this.props.name,
       this.props.voluntaryToImmersion,
-      this.props.data_source,
+      this.props.dataSource,
       this.props.establishment.getContact() || null,
       this.props.score,
       this.props.position,

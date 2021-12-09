@@ -13,6 +13,12 @@ export type Position = {
   lon: number;
 };
 
+export type DataSource =
+  | "api_labonneboite"
+  | "api_laplateformedelinclusion"
+  | "form"
+  | "api_sirene";
+
 export type MandatoryEstablishmentFields = {
   id: EstablishmentId;
   siret: string;
@@ -21,11 +27,7 @@ export type MandatoryEstablishmentFields = {
   score: number;
   romes: string[];
   voluntaryToImmersion: boolean;
-  dataSource:
-    | "api_labonneboite"
-    | "api_laplateformedelinclusion"
-    | "form"
-    | "api_sirene";
+  dataSource: DataSource;
 };
 
 // Code Tefen : Tranche Effectif Entreprise
@@ -55,8 +57,8 @@ export type EstablishmentFieldsToRetrieve = {
 
 export type ImmersionEstablishmentContact = {
   id: ImmersionContactInEstablishmentId;
-  name: string;
-  firstname: string;
+  lastName: string;
+  firstName: string;
   email: string;
   role: string;
   siretEstablishment: string;
@@ -158,7 +160,7 @@ export class EstablishmentEntity {
           rome,
           name: this.props.name,
           voluntaryToImmersion: this.props.voluntaryToImmersion,
-          data_source: this.getDataSource(),
+          dataSource: this.getDataSource(),
           establishment: new EstablishmentEntity({ ...this.props }),
           score: this.getScore(),
           position: this.getPosition(),

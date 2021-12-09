@@ -2,21 +2,16 @@ import { PoolClient } from "pg";
 import format from "pg-format";
 import {
   EstablishmentEntity,
+  ImmersionEstablishmentContact,
   Position,
 } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
-import {
-  ImmersionEstablishmentContact,
-  ImmersionOfferEntity,
-} from "../../../domain/immersionOffer/entities/ImmersionOfferEntity";
+import { ImmersionOfferEntity } from "../../../domain/immersionOffer/entities/ImmersionOfferEntity";
 import {
   ImmersionOfferRepository,
   SearchParams,
 } from "../../../domain/immersionOffer/ports/ImmersionOfferRepository";
 import { ContactMethod } from "../../../shared/FormEstablishmentDto";
-import {
-  SearchContact,
-  SearchImmersionResultDto,
-} from "../../../shared/SearchImmersionDto";
+
 import { createLogger } from "../../../utils/logger";
 
 const logger = createLogger(__filename);
@@ -110,14 +105,15 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
   ): Promise<void> {
     if (establishments.length == 0)
       throw new Error(
-        "Inavlid argument 'establishments': array must not be empty",
+        "Invalid argument 'establishments': array must not be empty",
       );
 
+    // First, insert establishment themselves
     const arrayOfEstablishments = establishments.map((establishment) =>
       establishment.toArrayOfProps(),
     );
 
-    //We deduplicate establishments because postgres does not support duplicate rows
+    // We deduplicate establishments because postgres does not support duplicate rows
     const deduplicatedArrayOfEstablishments: any[][] =
       arrayOfEstablishments.reduce((acc, cur) => {
         const alreadyExist = acc.some((item: any[]) => item[0] === cur[0]);
@@ -184,19 +180,38 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
     await this.client.query(query).catch((e) => {
       logger.error("Error when trying to insert establishment " + e);
     });
+
+    // Then, insert establishment contacts
+    await Promise.all(
+      establishments.map((establishment) => {
+        const establishmentContact =
+          establishment.getProps().contactInEstablishment;
+        if (establishmentContact) {
+          return this.insertEstablishmentContact(establishmentContact);
+        }
+      }),
+    );
   }
 
   async insertEstablishmentContact(
     immersionEstablishmentContact: ImmersionEstablishmentContact,
   ) {
-    const { id, name, firstname, email, role, siretEstablishment, phone } =
-      immersionEstablishmentContact;
+    const {
+      id,
+      lastName: name,
+      firstName: firstname,
+      email,
+      role,
+      siretEstablishment,
+      phone,
+    } = immersionEstablishmentContact;
     await this.client.query(
       `INSERT INTO immersion_contacts (uuid, name, firstname, email, role,  siret_establishment, phone)
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [id, name, firstname, email, role, siretEstablishment, phone],
     );
   }
+
   async insertImmersions(
     immersionOffers: ImmersionOfferEntity[],
   ): Promise<void> {
@@ -277,8 +292,7 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
 
   async getImmersionFromUuid(
     uuid: string,
-    withContactDetails = false,
-  ): Promise<SearchImmersionResultDto | undefined> {
+  ): Promise<ImmersionOfferEntity | undefined> {
     return this.client
       .query(
         `SELECT
@@ -303,10 +317,7 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
       )
       .then((res) => {
         const firstResult = res.rows[0];
-        return (
-          firstResult &&
-          this.buildImmersionOfferFromResults(firstResult, withContactDetails)
-        );
+        return firstResult && this.buildImmersionOfferFromResults(firstResult);
       })
       .catch((e) => {
         logger.error(e);
@@ -316,8 +327,7 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
 
   async getFromSearch(
     searchParams: SearchParams,
-    withContactDetails = false,
-  ): Promise<SearchImmersionResultDto[]> {
+  ): Promise<ImmersionOfferEntity[]> {
     let nafCategoryFilter = "";
     let siretCategoryFilter = "";
 
@@ -353,6 +363,9 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
             establishments.contact_mode as establishment_contact_mode,
             establishments.address as establishment_address,
             establishments.naf as establishment_naf,
+            establishments.name as establishment_name,
+            establishments.score as establishment_score,
+            establishments.data_source as establishment_data_source,
             st_distance(immersion_offers.gps, st_geographyfromtext($2)) as distance_m,
             st_asgeojson(immersion_offers.gps) as position
          FROM (SELECT * FROM immersion_offers WHERE ROME=$1 ${nafCategoryFilter} ${siretCategoryFilter} AND ST_DWithin(
@@ -367,10 +380,7 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
       )
       .then((res) => {
         return res.rows.map((result) => {
-          return this.buildImmersionOfferFromResults(
-            result,
-            withContactDetails,
-          );
+          return this.buildImmersionOfferFromResults(result);
         });
       })
       .catch((e) => {
@@ -379,21 +389,19 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
       });
   }
 
-  buildImmersionOfferFromResults(
-    result: any,
-    withContactDetails: boolean,
-  ): SearchImmersionResultDto {
-    let immersionContact: SearchContact | null = null;
-    if (result.contact_in_establishment_uuid != null) {
-      immersionContact = {
-        id: result.immersion_contacts_uuid,
-        firstName: result.immersion_contacts_firstname,
-        lastName: result.immersion_contacts_name,
-        email: result.immersion_contacts_email,
-        role: result.immersion_contacts_role,
-        phone: result.immersion_contacts_phone,
-      };
-    }
+  buildImmersionOfferFromResults(result: any): ImmersionOfferEntity {
+    const immersionContact: ImmersionEstablishmentContact | undefined =
+      result.contact_in_establishment_uuid != null
+        ? {
+            id: result.immersion_contacts_uuid,
+            firstName: result.immersion_contacts_firstname,
+            lastName: result.immersion_contacts_name,
+            email: result.immersion_contacts_email,
+            role: result.immersion_contacts_role,
+            phone: result.immersion_contacts_phone,
+            siretEstablishment: result.immersion_contacts_siret_establishment,
+          }
+        : undefined;
 
     const pgContactMode = result.establishment_contact_mode as PgContactMethod;
 
@@ -402,26 +410,42 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
         ? pgContactToContactMethod[pgContactMode]
         : "UNKNOWN";
 
-    const contactId = immersionContact ? immersionContact.id : undefined;
+    const establishmentCoordinates =
+      result.position && parseGeoJson(result.position);
 
-    return {
+    const score = result.establishment_score;
+    const establishmentDataSource = result.establishment_data_source;
+    const offerDataSource = result.data_source;
+
+    // TODO / Questions :
+    // - Why score, position are repeted in offer and establishment ?
+    // - Same for data_source ? (also in PG tables ! )
+
+    return new ImmersionOfferEntity({
       id: result.uuid,
       rome: result.rome,
-      naf: result.establishment_naf,
-      siret: result.siret,
       name: result.name,
       voluntaryToImmersion: result.voluntary_to_immersion,
-      address: result.establishment_address,
-      contactId,
-      contactMode,
-      location: result.position && parseGeoJson(result.position),
+      dataSource: offerDataSource,
+      establishment: new EstablishmentEntity({
+        id: "",
+        siret: result.siret,
+        name: result.establishment_name,
+        address: result.establishment_address,
+        score,
+        romes: [],
+        voluntaryToImmersion: true,
+        dataSource: establishmentDataSource,
+        contactMode,
+        contactInEstablishment: immersionContact,
+        numberEmployeesRange: 1,
+        position: establishmentCoordinates,
+        naf: result.establishment_naf,
+      }),
+      score,
+      position: establishmentCoordinates,
       distance_m: Math.round(result.distance_m),
-      city: "xxxx",
-      nafLabel: "xxxx",
-      romeLabel: "xxxx",
-      ...(withContactDetails &&
-        immersionContact && { contactDetails: immersionContact }),
-    };
+    });
   }
 
   async getAllSearches() {

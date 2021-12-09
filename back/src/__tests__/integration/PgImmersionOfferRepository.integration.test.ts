@@ -1,18 +1,26 @@
 import { Pool, PoolClient } from "pg";
 import { EstablishmentEntityBuilder } from "../../_testBuilders/EstablishmentEntityBuilder";
 import { PgImmersionOfferRepository } from "../../adapters/secondary/pg/PgImmersionOfferRepository";
-import { EstablishmentEntity } from "../../domain/immersionOffer/entities/EstablishmentEntity";
 import {
+  EstablishmentEntity,
   ImmersionEstablishmentContact,
-  ImmersionOfferEntity,
-} from "../../domain/immersionOffer/entities/ImmersionOfferEntity";
+} from "../../domain/immersionOffer/entities/EstablishmentEntity";
+import { ImmersionOfferEntity } from "../../domain/immersionOffer/entities/ImmersionOfferEntity";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
-import {
-  SearchContact,
-  SearchImmersionResultDto,
-} from "../../shared/SearchImmersionDto";
+import { ImmersionOfferEntityBuilder } from "../../_testBuilders/ImmersionOfferEntityBuilder";
+import { ImmersionEstablishmentContactBuilder } from "../../_testBuilders/ImmersionEstablishmentContactBuilder";
 
-describe("Postgres implementation of immersion offer repository", () => {
+// Repo methods :
+// --------------
+// insertEstablishmentContact  ==> Does this one becomes private ?
+// insertSearch
+// insertImmersions
+// insertEstablishments
+// markPendingResearchesAsProcessedAndRetrieveThem => This one is not tested here /!\
+// getImmersionFromUuid
+// getFromSearch => This one is not tested here /!\
+
+describe("Postgres implementation of ImmersionOfferRepository", () => {
   let pool: Pool;
   let client: PoolClient;
   let pgImmersionOfferRepository: PgImmersionOfferRepository;
@@ -35,45 +43,148 @@ describe("Postgres implementation of immersion offer repository", () => {
     await pool.end();
   });
 
-  test("Insert search", async () => {
-    await populateWithImmersionSearches(pgImmersionOfferRepository);
+  describe("Method insertSearch", () => {
+    beforeEach(async () => {
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1607",
+        distance_km: 30,
+        lat: 49.119146,
+        lon: 6.17602,
+      });
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1607",
+        distance_km: 30,
+        lat: 48.119146,
+        lon: 6.17602,
+      });
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1607",
+        distance_km: 30,
+        lat: 48.119146,
+        lon: 5.17602,
+      });
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1607",
+        distance_km: 30,
+        lat: 48.119146,
+        lon: 4.17602,
+      });
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1607",
+        distance_km: 30,
+        lat: 48.129146,
+        lon: 4.17602,
+      });
+      await pgImmersionOfferRepository.insertSearch({
+        rome: "M1608",
+        distance_km: 30,
+        lat: 48.129146,
+        lon: 4.17602,
+      });
+    });
+    afterEach(async () => {
+      // We empty the searches for the next tests
+      await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem();
+    });
+    test("Should insert search in database", async () => {
+      // TODO : do not use a (private ?) repo method to test that the entity has been saved !
+      expect(
+        (
+          await pgImmersionOfferRepository.getSearchInDatabase({
+            rome: "M1607",
+            distance_km: 30,
+            lat: 49.119146,
+            lon: 6.17602,
+          })
+        )[0].rome,
+      ).toBe("M1607");
+    });
 
-    expect(
-      (
-        await pgImmersionOfferRepository.getSearchInDatabase({
-          rome: "M1607",
-          distance_km: 30,
-          lat: 49.119146,
-          lon: 6.17602,
-        })
-      )[0].rome,
-    ).toBe("M1607");
+    test("Should group searches close geographically", async () => {
+      // We expect that two of the 6 searches have been grouped by
+      expect(
+        await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem(),
+      ).toHaveLength(5);
 
-    //We empty the searches for the next tests
-    await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem();
-  });
+      // We expect then that all searches have been retrieved
+      expect(
+        await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem(),
+      ).toHaveLength(0);
 
-  test("Grouping searches close geographically", async () => {
-    await populateWithImmersionSearches(pgImmersionOfferRepository);
-
-    //We expect that two of the 6 searches have been grouped by
-    expect(
-      await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem(),
-    ).toHaveLength(5);
-
-    //We expect then that all searches have been retrieved
-    expect(
-      await pgImmersionOfferRepository.markPendingResearchesAsProcessedAndRetrieveThem(),
-    ).toHaveLength(0);
-
-    //We expect that all searches are not to be searched anymore
-    const allSearches = (await pgImmersionOfferRepository.getAllSearches())
-      .rows;
-    allSearches.map((row) => {
-      expect(row.needstobesearched).toBe(false);
+      // We expect that all searches are not to be searched anymore
+      const allSearches = (await pgImmersionOfferRepository.getAllSearches())
+        .rows;
+      allSearches.map((row) => {
+        expect(row.needstobesearched).toBe(false);
+      });
     });
   });
 
+  describe("Method getFromSearch", () => {
+    const targetRome = "M1907";
+    const targetNafDivision = "85";
+
+    const establishment_targetRome_insideCoordinates =
+      new EstablishmentEntityBuilder()
+        .withRomes([targetRome])
+        .withPosition({ lat: 10, lon: 15 })
+        .withNaf(targetNafDivision)
+        .build();
+
+    const establishment_targetRome_oustideCoordinates =
+      new EstablishmentEntityBuilder()
+        .withRomes([targetRome])
+        .withPosition({ lat: 100, lon: 300 })
+        .withNaf(targetNafDivision)
+        .build();
+
+    const immersionOffer_match1 = new ImmersionOfferEntityBuilder()
+      .withEstablishment(establishment_targetRome_insideCoordinates)
+      .withPosition(establishment_targetRome_insideCoordinates.getPosition())
+      .withRome(targetRome)
+      .build();
+
+    const immersionOffer_match2 = new ImmersionOfferEntityBuilder()
+      .withEstablishment(establishment_targetRome_insideCoordinates)
+      .withPosition(establishment_targetRome_insideCoordinates.getPosition())
+      .withRome(targetRome)
+      .build();
+
+    const immersionOffer_noPositionMatch = new ImmersionOfferEntityBuilder()
+      .withEstablishment(establishment_targetRome_oustideCoordinates)
+      .withPosition(establishment_targetRome_oustideCoordinates.getPosition())
+      .withRome(targetRome)
+      .build();
+
+    const immersionOffer_noRomeMatch = new ImmersionOfferEntityBuilder()
+      .withEstablishment(establishment_targetRome_insideCoordinates)
+      .withPosition(establishment_targetRome_insideCoordinates.getPosition())
+      .withRome("M1908")
+      .build();
+
+    beforeEach(() => {
+      pgImmersionOfferRepository.insertEstablishments([
+        establishment_targetRome_insideCoordinates,
+        establishment_targetRome_oustideCoordinates,
+      ]);
+      pgImmersionOfferRepository.insertImmersions([
+        immersionOffer_match1,
+        immersionOffer_match2,
+        immersionOffer_noPositionMatch,
+        immersionOffer_noRomeMatch,
+      ]);
+    });
+    test("Should return offers within given a perimeter, given a ROME and a nafDivision", async () => {
+      const searchResult = await pgImmersionOfferRepository.getFromSearch({
+        rome: targetRome,
+        distance_km: 30,
+        lat: 10.5,
+        lon: 16.6,
+        nafDivision: "85",
+      });
+      expect(searchResult).toHaveLength(2);
+    });
+  });
   test("Insert immersions and retrieves them back", async () => {
     await pgImmersionOfferRepository.insertEstablishments([
       new EstablishmentEntity({
@@ -110,379 +221,370 @@ describe("Postgres implementation of immersion offer repository", () => {
 
     const contactInEstablishment: ImmersionEstablishmentContact = {
       id: "93144fe8-56a7-4807-8990-726badc6332b",
-      name: "Doe",
-      firstname: "John",
+      lastName: "Doe",
+      firstName: "John",
       email: "joe@mail.com",
       role: "super job",
       siretEstablishment: "78000403200040",
       phone: "0640404040",
     };
 
-    await pgImmersionOfferRepository.insertEstablishmentContact(
-      contactInEstablishment,
-    );
+    //   await pgImmersionOfferRepository.insertEstablishmentContact(
+    //     contactInEstablishment,
+    //   );
 
-    await pgImmersionOfferRepository.insertImmersions([
-      new ImmersionOfferEntity({
-        id: "13df03a5-a2a5-430a-b558-111111111122",
-        rome: "M1907",
-        naf: "8539A",
-        siret: "78000403200029",
-        name: "Company from la bonne boite for search",
-        voluntaryToImmersion: false,
-        data_source: "api_labonneboite",
-        contactInEstablishment: undefined,
-        score: 4.5,
-        position: { lat: 49, lon: 6 },
-      }),
-    ]);
+    //   await pgImmersionOfferRepository.insertImmersions([
+    //     new ImmersionOfferEntity({
+    //       id: "13df03a5-a2a5-430a-b558-111111111122",
+    //       rome: "M1907",
+    //       // naf: "8539A",
+    //       // siret: "78000403200029",
+    //       name: "Company from la bonne boite for search",
+    //       voluntaryToImmersion: false,
+    //       dataSource: "api_labonneboite",
+    //       contactInEstablishment: undefined,
+    //       score: 4.5,
+    //       position: { lat: 49, lon: 6 },
+    //     }),
+    //   ]);
 
-    await pgImmersionOfferRepository.insertImmersions([
-      new ImmersionOfferEntity({
-        id: "13df03a5-a2a5-430a-b558-333333333344",
-        rome: "M1907",
-        naf: "8539A",
-        siret: "78000403200040",
-        name: "Company from api sirene for search",
-        voluntaryToImmersion: false,
-        data_source: "api_sirene",
-        contactInEstablishment,
-        score: 4.5,
-        position: { lat: 49.05, lon: 6.05 },
-      }),
-    ]);
+    //   await pgImmersionOfferRepository.insertImmersions([
+    //     new ImmersionOfferEntity({
+    //       id: "13df03a5-a2a5-430a-b558-333333333344",
+    //       rome: "M1907",
+    //       // naf: "8539A",
+    //       // siret: "78000403200040",
+    //       name: "Company from api sirene for search",
+    //       voluntaryToImmersion: false,
+    //       dataSource: "api_sirene",
+    //       contactInEstablishment,
+    //       score: 4.5,
+    //       position: { lat: 49.05, lon: 6.05 },
+    //     }),
+    //   ]);
 
-    const searchResult = await pgImmersionOfferRepository.getFromSearch({
-      rome: "M1907",
-      distance_km: 30,
-      lat: 49.1,
-      lon: 6.1,
-      nafDivision: "85",
+    //   const searchResult = await pgImmersionOfferRepository.getFromSearch({
+    //     rome: "M1907",
+    //     distance_km: 30,
+    //     lat: 49.1,
+    //     lon: 6.1,
+    //     nafDivision: "85",
+    //   });
+    //   expect(searchResult).toHaveLength(2);
+    //   const expectedResult1: SearchImmersionResultDto = {
+    //     id: "13df03a5-a2a5-430a-b558-333333333344",
+    //     address: "fake address establishment 2",
+    //     name: "Company from api sirene for search",
+    //     naf: "8539A",
+    //     contactMode: "PHONE",
+    //     location: { lat: 49.05, lon: 6.05 },
+    //     voluntaryToImmersion: false,
+    //     rome: "M1907",
+    //     siret: "78000403200040",
+    //     distance_m: 6653,
+    //     city: "xxxx",
+    //     nafLabel: "xxxx",
+    //     romeLabel: "xxxx",
+    //   };
+    //   const expectedResult2: SearchImmersionResultDto = {
+    //     id: "13df03a5-a2a5-430a-b558-111111111122",
+    //     address: "fake address establishment 1",
+    //     name: "Company from la bonne boite for search",
+    //     voluntaryToImmersion: false,
+    //     rome: "M1907",
+    //     siret: "78000403200029",
+    //     location: { lat: 49, lon: 6 },
+    //     distance_m: 13308,
+    //     naf: "8539A",
+    //     contactMode: "EMAIL",
+    //     city: "xxxx",
+    //     nafLabel: "xxxx",
+    //     romeLabel: "xxxx",
+    //   };
+
+    //   expect(
+    //     searchResult.sort((a, b) => a.distance_m! - b.distance_m!),
+    //   ).toMatchObject([expectedResult1, expectedResult2]);
+
+    //   const searchResuts = await pgImmersionOfferRepository.getFromSearch({
+    //     rome: "M1907",
+    //     distance_km: 30,
+    //     lat: 49.1,
+    //     lon: 6.1,
+    //     nafDivision: "85",
+    //     siret: "78000403200040",
+    //   });
+    //   expect(searchResuts).toHaveLength(1);
+    //   expect(searchResuts[0].siret).toBe("78000403200040");
+    //   expect(searchResuts[0].contactDetails).toBeUndefined();
+
+    //   const searchResultsWithDetails =
+    //     await pgImmersionOfferRepository.getFromSearch(
+    //       {
+    //         rome: "M1907",
+    //         distance_km: 30,
+    //         lat: 49.1,
+    //         lon: 6.1,
+    //         nafDivision: "85",
+    //         siret: "78000403200040",
+    //       },
+    //     );
+    //   expect(searchResultsWithDetails).toHaveLength(1);
+    //   expect(searchResultsWithDetails[0].siret).toBe("78000403200040");
+
+    //   const expectedContactDetails: SearchContact = {
+    //     id: "93144fe8-56a7-4807-8990-726badc6332b",
+    //     lastName: "Doe",
+    //     firstName: "John",
+    //     email: "joe@mail.com",
+    //     role: "super job",
+    //     phone: "0640404040",
+    //   };
+    //   expect(searchResultsWithDetails[0].contactDetails).toEqual(
+    //     expectedContactDetails,
+    //   );
+    // });
+  });
+
+  describe("Method insertImmersions", () => {
+    test("Should not crash if empty array is provided", async () => {
+      await pgImmersionOfferRepository.insertImmersions([]);
     });
-    expect(searchResult).toHaveLength(2);
-    const expectedResult1: SearchImmersionResultDto = {
-      id: "13df03a5-a2a5-430a-b558-333333333344",
-      address: "fake address establishment 2",
-      name: "Company from api sirene for search",
-      naf: "8539A",
-      contactMode: "PHONE",
-      location: { lat: 49.05, lon: 6.05 },
-      voluntaryToImmersion: false,
-      rome: "M1907",
-      siret: "78000403200040",
-      distance_m: 6653,
-      city: "xxxx",
-      nafLabel: "xxxx",
-      romeLabel: "xxxx",
-    };
-    const expectedResult2: SearchImmersionResultDto = {
-      id: "13df03a5-a2a5-430a-b558-111111111122",
-      address: "fake address establishment 1",
-      name: "Company from la bonne boite for search",
-      voluntaryToImmersion: false,
-      rome: "M1907",
-      siret: "78000403200029",
-      location: { lat: 49, lon: 6 },
-      distance_m: 13308,
-      naf: "8539A",
-      contactMode: "EMAIL",
-      city: "xxxx",
-      nafLabel: "xxxx",
-      romeLabel: "xxxx",
-    };
-
-    expect(
-      searchResult.sort((a, b) => a.distance_m! - b.distance_m!),
-    ).toMatchObject([expectedResult1, expectedResult2]);
-
-    const searchResuts = await pgImmersionOfferRepository.getFromSearch({
-      rome: "M1907",
-      distance_km: 30,
-      lat: 49.1,
-      lon: 6.1,
-      nafDivision: "85",
-      siret: "78000403200040",
+    test("Should insert immersion", async () => {
+      const newImmersion = new ImmersionOfferEntityBuilder().build();
+      await pgImmersionOfferRepository.insertImmersions([newImmersion]);
+      const retrieved = selectAllOffersRows();
+      expect(retrieved).toHaveLength(1);
     });
-    expect(searchResuts).toHaveLength(1);
-    expect(searchResuts[0].siret).toBe("78000403200040");
-    expect(searchResuts[0].contactDetails).toBeUndefined();
-
-    const searchResultsWithDetails =
-      await pgImmersionOfferRepository.getFromSearch(
-        {
-          rome: "M1907",
-          distance_km: 30,
-          lat: 49.1,
-          lon: 6.1,
-          nafDivision: "85",
-          siret: "78000403200040",
-        },
-        true,
-      );
-    expect(searchResultsWithDetails).toHaveLength(1);
-    expect(searchResultsWithDetails[0].siret).toBe("78000403200040");
-
-    const expectedContactDetails: SearchContact = {
-      id: "93144fe8-56a7-4807-8990-726badc6332b",
-      lastName: "Doe",
-      firstName: "John",
-      email: "joe@mail.com",
-      role: "super job",
-      phone: "0640404040",
-    };
-    expect(searchResultsWithDetails[0].contactDetails).toEqual(
-      expectedContactDetails,
-    );
+    test("Should insert immersion related establishment when refering to a new establishment", () => {
+      return;
+    });
+    test("Should update establishment if immersion refers to an existing establishment", () => {
+      return;
+    });
   });
+  describe("Method insertEstablishments should update establishment and establishment_contact tables", () => {
+    const siret = "78000403200019";
+    const name = "Google";
+    const initialEstablishmentAdress = "5 avenue des champs elysees";
+    const initialContactId = "93144fe8-56a7-4807-8990-726badc6332b";
+    const initialContactEmail = "clem@gmail.com";
 
-  test("Insert immersion does not crash if empty array is provided", async () => {
-    await pgImmersionOfferRepository.insertImmersions([]);
-  });
-
-  test("Insert establishments & immersions and retrieves them back", async () => {
-    await pgImmersionOfferRepository.insertEstablishments([
-      new EstablishmentEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f035443",
-        address: "fake address",
-        name: "Fake Establishment from la plate forme de l'inclusion",
-        score: 5,
-        voluntaryToImmersion: false,
-        romes: ["M1607"],
-        siret: "78000403200019",
-        dataSource: "api_labonneboite",
-        numberEmployeesRange: 1,
-        position: { lat: 10.1, lon: 10.1 },
-        naf: "8539A",
-      }),
-    ]);
-    await pgImmersionOfferRepository.insertEstablishments([
-      new EstablishmentEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f035443",
-        address: "fake address",
-        name: "Fake Establishment from form",
-        score: 5,
-        voluntaryToImmersion: false,
-        romes: ["M1607"],
-        siret: "78000403200019",
-        dataSource: "form",
-        numberEmployeesRange: 1,
-        position: { lat: 10.1, lon: 10.2 },
-        naf: "8539A",
-      }),
-    ]);
-    await pgImmersionOfferRepository.insertEstablishments([
-      new EstablishmentEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f035443",
-        address: "fake address",
-        name: "Fake Establishment from la bonne boite",
-        voluntaryToImmersion: false,
-        score: 5,
-        romes: ["M1607"],
-        siret: "78000403200019",
-        dataSource: "api_labonneboite",
-        numberEmployeesRange: 1,
-        position: { lat: 10.0, lon: 10.3 },
-        naf: "8539A",
-      }),
-    ]);
-
-    const establishments = await getEstablishmentsFromSiret("78000403200019");
-    expect(establishments).toHaveLength(1);
-    expect(establishments[0].name).toBe("Fake Establishment from form");
-
-    const contactInEstablishment: ImmersionEstablishmentContact = {
-      id: "93144fe8-56a7-4807-8990-726badc6332b",
-      name: "Doe",
-      firstname: "John",
-      email: "joe@mail.com",
-      role: "super job",
-      siretEstablishment: "78000403200019",
-      phone: "0640295453",
-    };
-
-    await pgImmersionOfferRepository.insertEstablishmentContact(
-      contactInEstablishment,
-    );
-
-    await pgImmersionOfferRepository.insertImmersions([
-      new ImmersionOfferEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f03536d",
-        rome: "M1607",
-        naf: "8539A",
-        siret: "78000403200019",
-        name: "Company from form",
-        voluntaryToImmersion: false,
-        data_source: "form",
-        contactInEstablishment,
-        score: 4.5,
-        position: { lat: 48.8666, lon: 2.3333 },
-      }),
-      new ImmersionOfferEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f03536d",
-        rome: "M1607",
-        naf: "8539A",
-        siret: "78000403200019",
-        name: "Company from la bonne boite",
-        voluntaryToImmersion: false,
-        data_source: "api_labonneboite",
-        contactInEstablishment: undefined,
-        score: 4.5,
-        position: { lat: 46.8666, lon: 3.3333 },
-      }),
-    ]);
-  });
-
-  test("getImmersionFromUuid", async () => {
-    const immersionOfferId = "11111111-1111-1111-1111-111111111111";
-    const siret = "11112222333344";
-    const establishment = new EstablishmentEntityBuilder()
+    const initialEstablishment = new EstablishmentEntityBuilder()
+      .withName(name)
       .withSiret(siret)
+      .withAddress(initialEstablishmentAdress)
+      .withContact(
+        new ImmersionEstablishmentContactBuilder()
+          .withSiret(siret)
+          .withId(initialContactId)
+          .withEmail(initialContactEmail)
+          .build(),
+      )
       .build();
 
-    await pgImmersionOfferRepository.insertEstablishments([establishment]);
+    beforeEach(async () => {
+      await pgImmersionOfferRepository.insertEstablishments([
+        initialEstablishment,
+      ]);
+    });
+    test("Insertion of a new establishment", async () => {
+      const establishments = await selectEstablishmentRowsWhereSiretEquals(
+        siret,
+      );
+      const establishmentContacts =
+        await selectEstablishmentContactRowsWhereSiretEquals(siret);
+
+      expect(establishments).toHaveLength(1);
+      expect(establishments[0].address).toBe(initialEstablishmentAdress);
+      console.log(establishments[0]);
+
+      expect(establishmentContacts).toHaveLength(1);
+      console.log("establishmentContacts: ", establishmentContacts);
+
+      expect(establishmentContacts[0].uuid).toBe(initialContactId);
+      expect(establishmentContacts[0].email).toBe(initialContactEmail);
+    });
+    test("Update establishment address ", async () => {
+      const updatedEstablishmentAddress = "33 avenue des champs elysees";
+      const updatedEstablishment = new EstablishmentEntityBuilder(
+        initialEstablishment,
+      )
+        .withAddress(updatedEstablishmentAddress)
+        .build();
+
+      await pgImmersionOfferRepository.insertEstablishments([
+        updatedEstablishment,
+      ]);
+      const establishmentsAfterUpdate =
+        await selectEstablishmentRowsWhereSiretEquals(siret);
+      expect(establishmentsAfterUpdate[0].address).toBe(
+        updatedEstablishmentAddress,
+      );
+    });
+
+    test("Update contact email", async () => {
+      const updatedContactEmail = "clem92@gmail.com";
+      const updatedEstablishment = new EstablishmentEntityBuilder(
+        initialEstablishment,
+      )
+        .withContact(
+          new ImmersionEstablishmentContactBuilder(
+            initialEstablishment.getContact(),
+          )
+            .withEmail(updatedContactEmail)
+            .build(),
+        )
+        .build();
+
+      await pgImmersionOfferRepository.insertEstablishments([
+        updatedEstablishment,
+      ]);
+      const establishmentContactsAfterUpdate =
+        await selectEstablishmentContactRowsWhereSiretEquals(siret);
+      expect(establishmentContactsAfterUpdate[0].email).toBe(
+        updatedContactEmail,
+      );
+    });
+    test("Update contact (someone new !)", async () => {
+      const newContactId = "88884fe8-56a7-4807-8990-726badc6332b";
+      const updatedEstablishment = new EstablishmentEntityBuilder(
+        initialEstablishment,
+      )
+        .withContact(
+          new ImmersionEstablishmentContactBuilder()
+            .withId(newContactId)
+            .withSiret(siret)
+            .build(),
+        )
+        .build();
+      await pgImmersionOfferRepository.insertEstablishments([
+        updatedEstablishment,
+      ]);
+      const establishmentContactsAfterUpdate =
+        await selectEstablishmentContactRowsWhereSiretEquals(siret);
+      expect(establishmentContactsAfterUpdate).toHaveLength(2);
+    });
+  });
+  test("Method getImmersionFromUuid", async () => {
+    const immersionOfferId = "11111111-1111-1111-1111-111111111111";
+    const siret = "11112222333344";
 
     const contactInEstablishment: ImmersionEstablishmentContact = {
       id: "11111111-0000-0000-0000-111111111111",
-      name: "Doe",
-      firstname: "John",
+      lastName: "Doe",
+      firstName: "John",
       email: "joe@mail.com",
       role: "super job",
       siretEstablishment: siret,
       phone: "0640295453",
     };
-    await pgImmersionOfferRepository.insertEstablishmentContact(
-      contactInEstablishment,
-    );
+
+    const establishment = new EstablishmentEntityBuilder()
+      .withSiret(siret)
+      .withContact(contactInEstablishment)
+      .build();
+
+    await pgImmersionOfferRepository.insertEstablishments([establishment]);
 
     await pgImmersionOfferRepository.insertImmersions([
       new ImmersionOfferEntity({
         id: immersionOfferId,
         rome: "M1607",
-        naf: "8539A",
-        siret: siret,
         name: "Company from la bonne boite",
         voluntaryToImmersion: false,
-        data_source: "api_labonneboite",
-        contactInEstablishment,
+        dataSource: "api_labonneboite",
+        establishment,
         score: 4.5,
         position: { lat: 43.8666, lon: 8.3333 },
       }),
     ]);
-
     const immersionSearchResult =
       await pgImmersionOfferRepository.getImmersionFromUuid(immersionOfferId);
     expect(immersionSearchResult).toBeDefined();
-    expect(immersionSearchResult!.name).toBe("Company from la bonne boite");
-    expect(immersionSearchResult!.contactDetails).toBeUndefined();
-
-    const immersionSearchResultWithDetails =
-      await pgImmersionOfferRepository.getImmersionFromUuid(
-        immersionOfferId,
-        true,
-      );
-    expect(immersionSearchResultWithDetails).toBeDefined();
-    const expectedSearchContact: SearchContact = {
-      id: contactInEstablishment.id,
-      firstName: contactInEstablishment.firstname,
-      lastName: contactInEstablishment.name,
-      email: contactInEstablishment.email,
-      phone: contactInEstablishment.phone,
-      role: contactInEstablishment.role,
-    };
-    expect(immersionSearchResultWithDetails!.contactDetails).toEqual(
-      expectedSearchContact,
+    expect(immersionSearchResult!.getProps().name).toBe(
+      "Company from la bonne boite",
     );
+
+    expect(
+      immersionSearchResult!.getProps().establishment.getContact(),
+    ).toEqual(contactInEstablishment);
   });
 
-  test("Insert establishment contact", async () => {
-    await pgImmersionOfferRepository.insertEstablishments([
-      new EstablishmentEntity({
-        id: "13df03a5-a2a5-430a-b558-ed3e2f035443",
-        address: "fake address",
-        name: "Fake Establishment from form",
-        score: 5,
-        voluntaryToImmersion: false,
-        romes: ["M1607"],
-        siret: "11112222333344",
-        dataSource: "form",
-        numberEmployeesRange: 1,
-        position: { lat: 10.1, lon: 10.2 },
-        naf: "8539A",
-      }),
-    ]);
-
+  describe("Method insertEstablishmentContact", () => {
+    const siret = "11112222333355";
     const establishmentContact: ImmersionEstablishmentContact = {
       id: "84007f00-f1fb-4458-a41f-492143ffc8df",
       email: "some@mail.com",
-      firstname: "Bob",
-      name: "MyName",
+      firstName: "Bob",
+      lastName: "MyName",
       role: "Chauffeur",
-      siretEstablishment: "11112222333344",
+      siretEstablishment: siret,
       phone: "0640295453",
     };
 
-    await pgImmersionOfferRepository.insertEstablishmentContact(
-      establishmentContact,
-    );
+    beforeEach(async () => {
+      await pgImmersionOfferRepository.insertEstablishments([
+        new EstablishmentEntityBuilder().withSiret(siret).build(),
+      ]);
+    });
 
-    const { rows } = await client.query("SELECT * FROM immersion_contacts");
-    expect(rows).toHaveLength(1);
-    expect(rows).toEqual([
-      {
-        uuid: "84007f00-f1fb-4458-a41f-492143ffc8df",
-        name: "MyName",
-        firstname: "Bob",
-        email: "some@mail.com",
-        role: "Chauffeur",
-        siret_establishment: "11112222333344",
-        phone: "0640295453",
-      },
-    ]);
+    test("Inserts contact of existing establishment siret", async () => {
+      await pgImmersionOfferRepository.insertEstablishmentContact(
+        establishmentContact,
+      );
+      const rows = selectEstablishmentContactRowsWhereSiretEquals(siret);
+      expect(rows).toHaveLength(1);
+      expect(rows).toEqual([
+        {
+          uuid: establishmentContact.id,
+          name: establishmentContact.lastName,
+          firstname: establishmentContact.firstName,
+          email: establishmentContact.email,
+          role: establishmentContact.role,
+          siret_establishment: siret,
+          phone: establishmentContact.phone,
+        },
+      ]);
+    });
+
+    test("Updates contact informations", async () => {
+      await pgImmersionOfferRepository.insertEstablishmentContact(
+        establishmentContact,
+      );
+      await pgImmersionOfferRepository.insertEstablishmentContact(
+        new ImmersionEstablishmentContactBuilder(establishmentContact)
+          .withEmail("updated@email.com")
+          .build(),
+      );
+      const rows = selectEstablishmentContactRowsWhereSiretEquals(siret);
+      expect(rows).toHaveLength(1);
+      expect(rows).toEqual([
+        {
+          uuid: establishmentContact.id,
+          name: establishmentContact.lastName,
+          firstname: establishmentContact.firstName,
+          email: "updated@email.com",
+          role: establishmentContact.role,
+          siret_establishment: siret,
+          phone: establishmentContact.phone,
+        },
+      ]);
+    });
   });
 
-  const getEstablishmentsFromSiret = (siret: string) =>
+  const selectEstablishmentRowsWhereSiretEquals = (siret: string) =>
     client
       .query("SELECT * FROM establishments WHERE siret=$1", [siret])
       .then((res) => res.rows);
-});
 
-const populateWithImmersionSearches = async (
-  pgImmersionOfferRepository: PgImmersionOfferRepository,
-) => {
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1607",
-    distance_km: 30,
-    lat: 49.119146,
-    lon: 6.17602,
-  });
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1607",
-    distance_km: 30,
-    lat: 48.119146,
-    lon: 6.17602,
-  });
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1607",
-    distance_km: 30,
-    lat: 48.119146,
-    lon: 5.17602,
-  });
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1607",
-    distance_km: 30,
-    lat: 48.119146,
-    lon: 4.17602,
-  });
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1607",
-    distance_km: 30,
-    lat: 48.129146,
-    lon: 4.17602,
-  });
-  await pgImmersionOfferRepository.insertSearch({
-    rome: "M1608",
-    distance_km: 30,
-    lat: 48.129146,
-    lon: 4.17602,
-  });
-};
+  const selectEstablishmentContactRowsWhereSiretEquals = (siret: string) =>
+    client
+      .query("SELECT * FROM immersion_contacts WHERE siret_establishment=$1", [
+        siret,
+      ])
+      .then((res) => res.rows);
+
+  const selectAllOffersRows = () =>
+    client.query("SELECT * FROM immersion_offers;").then((res) => res.rows);
+});

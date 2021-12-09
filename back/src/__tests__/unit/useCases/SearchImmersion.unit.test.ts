@@ -20,8 +20,8 @@ describe("SearchImmersion", () => {
           .withNaf("8539A")
           .withContact({
             id: "37dd0b5e-3270-11ec-8d3d-0242ac130003",
-            name: "Dupont",
-            firstname: "Pierre",
+            lastName: "Dupont",
+            firstName: "Pierre",
             email: "test@email.fr",
             role: "Directeur",
             siretEstablishment: siret,
