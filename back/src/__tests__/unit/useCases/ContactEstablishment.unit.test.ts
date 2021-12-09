@@ -12,29 +12,20 @@ import { ContactEstablishmentRequestDto } from "../../../shared/contactEstablish
 import { ImmersionOfferEntityBuilder } from "../../../_testBuilders/ImmersionOfferEntityBuilder";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
 import { BadRequestError } from "./../../../adapters/primary/helpers/sendHttpResponse";
-import { ImmersionEstablishmentContact } from "./../../../domain/immersionOffer/entities/EstablishmentEntity";
 import { EstablishmentEntityBuilder } from "./../../../_testBuilders/EstablishmentEntityBuilder";
+import { ImmersionEstablishmentContactBuilder } from "./../../../_testBuilders/ImmersionEstablishmentContactBuilder";
 
 const siret = "12354678901234";
-const contact: ImmersionEstablishmentContact = {
-  id: "37dd0b5e-3270-11ec-8d3d-0242ac130003",
-  name: "Dupont",
-  firstname: "Pierre",
-  email: "test@email.fr",
-  role: "Directeur",
-  siretEstablishment: siret,
-  phone: "0640295453",
-};
+
+const contact = new ImmersionEstablishmentContactBuilder()
+  .withSiret(siret)
+  .build();
 const establishment = new EstablishmentEntityBuilder()
   .withSiret(siret)
-  .withRomes([])
-  .withNaf("8539A")
   .withContact(contact)
   .withContactMode("EMAIL")
   .build();
 const immersionOffer = new ImmersionOfferEntityBuilder()
-  .withRome("M1607")
-  .withPosition({ lat: 43.8666, lon: 8.3333 })
   .withEstablishment(establishment)
   .build();
 
@@ -97,10 +88,13 @@ describe("ContactEstablishment", () => {
   });
 
   test("schedules no event for valid PHONE contact requests", async () => {
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
-    await immersionOfferRepository.insertEstablishments([
-      new EstablishmentEntityBuilder(establishment)
-        .withContactMode("PHONE")
+    await immersionOfferRepository.insertImmersions([
+      new ImmersionOfferEntityBuilder(immersionOffer.getProps())
+        .withEstablishment(
+          new EstablishmentEntityBuilder(establishment)
+            .withContactMode("PHONE")
+            .build(),
+        )
         .build(),
     ]);
 
@@ -113,10 +107,13 @@ describe("ContactEstablishment", () => {
   });
 
   test("schedules no event for valid IN_PERSON contact requests", async () => {
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
-    await immersionOfferRepository.insertEstablishments([
-      new EstablishmentEntityBuilder(establishment)
-        .withContactMode("IN_PERSON")
+    await immersionOfferRepository.insertImmersions([
+      new ImmersionOfferEntityBuilder(immersionOffer.getProps())
+        .withEstablishment(
+          new EstablishmentEntityBuilder(establishment)
+            .withContactMode("IN_PERSON")
+            .build(),
+        )
         .build(),
     ]);
 
@@ -141,10 +138,13 @@ describe("ContactEstablishment", () => {
   });
 
   test("throws BadRequestError for contact mode mismatch", async () => {
-    await immersionOfferRepository.insertImmersions([immersionOffer]);
-    await immersionOfferRepository.insertEstablishments([
-      new EstablishmentEntityBuilder(establishment)
-        .withContactMode("PHONE")
+    await immersionOfferRepository.insertImmersions([
+      new ImmersionOfferEntityBuilder(immersionOffer.getProps())
+        .withEstablishment(
+          new EstablishmentEntityBuilder(establishment)
+            .withContactMode("PHONE")
+            .build(),
+        )
         .build(),
     ]);
 
