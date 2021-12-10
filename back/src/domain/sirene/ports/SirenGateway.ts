@@ -1,6 +1,6 @@
 import { SiretDto } from "../../../shared/siret";
 
-export type Establishment = {
+export type SirenEstablishment = {
   siret: string;
   uniteLegale: Partial<{
     denominationUniteLegale?: string;
@@ -20,7 +20,7 @@ export type Establishment = {
   }>;
 };
 
-export type SireneRepositoryAnswer = {
+export type SirenResponse = {
   header: {
     statut: number;
     message: string;
@@ -28,12 +28,12 @@ export type SireneRepositoryAnswer = {
     debut: number;
     nombre: number;
   };
-  etablissements: Establishment[];
+  etablissements: SirenEstablishment[];
 };
 
-export interface SireneRepository {
+export interface SirenGateway {
   get: (
     siret: SiretDto,
     includeClosedEstablishments?: boolean,
-  ) => Promise<SireneRepositoryAnswer | undefined>;
+  ) => Promise<SirenResponse | undefined>;
 }

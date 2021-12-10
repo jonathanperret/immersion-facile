@@ -1,7 +1,7 @@
 import { AppConfig } from "../../adapters/primary/appConfig";
 import { RealClock } from "../../adapters/secondary/core/ClockImplementations";
-import { HttpsSireneRepository } from "./../../adapters/secondary/HttpsSireneRepository";
-import { SireneRepository } from "./../../domain/sirene/ports/SireneRepository";
+import { HttpsSirenGateway } from "../../adapters/secondary/HttpsSirenGateway";
+import { SirenGateway } from "../../domain/sirene/ports/SirenGateway";
 import { PoleEmploiRomeGateway } from "../../adapters/secondary/immersionOffer/PoleEmploiRomeGateway";
 import { PoleEmploiAccessTokenGateway } from "../../adapters/secondary/immersionOffer/PoleEmploiAccessTokenGateway";
 

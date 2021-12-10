@@ -64,7 +64,7 @@ import { InMemoryEventBus } from "../secondary/core/InMemoryEventBus";
 import { InMemoryOutboxRepository } from "../secondary/core/InMemoryOutboxRepository";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
-import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
+import { HttpsSirenGateway } from "../secondary/HttpsSirenGateway";
 import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
 import { InMemoryImmersionOfferRepository } from "../secondary/immersionOffer/InMemoryImmersonOfferRepository";
 import { PoleEmploiAccessTokenGateway } from "../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
@@ -74,7 +74,7 @@ import { InMemoryEmailGateway } from "../secondary/InMemoryEmailGateway";
 import { InMemoryFormEstablishmentRepository } from "../secondary/InMemoryFormEstablishmentRepository";
 import { InMemoryImmersionApplicationRepository } from "../secondary/InMemoryImmersionApplicationRepository";
 import { InMemoryRomeGateway } from "../secondary/InMemoryRomeGateway";
-import { InMemorySireneRepository } from "../secondary/InMemorySireneRepository";
+import { InMemorySirenGateway } from "../secondary/InMemorySirenGateway";
 import { InMemoryUowPerformer } from "../secondary/InMemoryUowPerformer";
 import { PgAgencyRepository } from "../secondary/pg/PgAgencyRepository";
 import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
@@ -196,8 +196,8 @@ export const createRepositories = async (
 
     sirene:
       config.sireneRepository === "HTTPS"
-        ? new HttpsSireneRepository(config.sireneHttpsConfig, clock)
-        : new InMemorySireneRepository(),
+        ? new HttpsSirenGateway(config.sireneHttpsConfig, clock)
+        : new InMemorySirenGateway(),
 
     email:
       config.emailGateway === "SENDINBLUE"

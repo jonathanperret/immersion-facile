@@ -1,7 +1,7 @@
 import { AppConfig } from "../../adapters/primary/appConfig";
 import { RealClock } from "../../adapters/secondary/core/ClockImplementations";
-import { HttpsSireneRepository } from "./../../adapters/secondary/HttpsSireneRepository";
-import { SireneRepository } from "./../../domain/sirene/ports/SireneRepository";
+import { HttpsSirenGateway } from "../../adapters/secondary/HttpsSirenGateway";
+import { SirenGateway } from "../../domain/sirene/ports/SirenGateway";
 
 // These tests are not hermetic and not meant for automated testing. They will make requests to the
 // real SIRENE API, use up production quota, and fail for uncontrollable reasons such as quota
@@ -11,11 +11,11 @@ import { SireneRepository } from "./../../domain/sirene/ports/SireneRepository";
 // - SIRENE_ENDPOINT
 // - SIRENE_BEARER_TOKEN
 describe("HttpsSireneRepository", () => {
-  let sireneRepository: SireneRepository;
+  let sireneRepository: SirenGateway;
 
   beforeEach(() => {
     const config = AppConfig.createFromEnv();
-    sireneRepository = new HttpsSireneRepository(
+    sireneRepository = new HttpsSirenGateway(
       config.sireneHttpsConfig,
       new RealClock(),
     );

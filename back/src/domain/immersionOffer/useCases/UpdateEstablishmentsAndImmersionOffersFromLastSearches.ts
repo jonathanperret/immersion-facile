@@ -1,6 +1,6 @@
 import { createLogger } from "../../../utils/logger";
 import { PipelineStats } from "../../../utils/pipelineStats";
-import { SireneRepository } from "../../sirene/ports/SireneRepository";
+import { SirenGateway } from "../../sirene/ports/SirenGateway";
 import { EstablishmentEntity } from "../entities/EstablishmentEntity";
 import { GetPosition } from "../entities/UncompleteEstablishmentEntity";
 import { EstablishmentsGateway } from "../ports/EstablishmentsGateway";
@@ -17,7 +17,7 @@ export class UpdateEstablishmentsAndImmersionOffersFromLastSearches {
     private readonly laBonneBoiteGateway: EstablishmentsGateway,
     private readonly laPlateFormeDeLInclusionGateway: EstablishmentsGateway,
     private readonly getPosition: GetPosition,
-    private readonly sireneRepository: SireneRepository,
+    private readonly sireneRepository: SirenGateway,
     private readonly immersionOfferRepository: ImmersionOfferRepository,
   ) {}
 
@@ -34,7 +34,7 @@ export class UpdateEstablishmentsAndImmersionOffersFromLastSearches {
       searchesMade.length,
     );
 
-    for (let searchParams of searchesMade) {
+    for (const searchParams of searchesMade) {
       await this.processSearchMade(searchParams);
     }
   }
@@ -133,7 +133,7 @@ export class UpdateEstablishmentsAndImmersionOffersFromLastSearches {
     const completeEstablishments: EstablishmentEntity[] = [];
 
     // TODO(nsw): Parallelize once we have request throttling.
-    for (let uncompleteEstablishment of uncompleteEstablishments) {
+    for (const uncompleteEstablishment of uncompleteEstablishments) {
       this.stats.startAggregateTimer("search_for_missing_fields-latency");
       const completeEstablishment =
         await uncompleteEstablishment.searchForMissingFields(

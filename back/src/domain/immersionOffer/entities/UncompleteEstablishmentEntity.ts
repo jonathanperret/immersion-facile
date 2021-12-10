@@ -1,7 +1,4 @@
-import {
-  SireneRepository,
-  SireneRepositoryAnswer,
-} from "../../sirene/ports/SireneRepository";
+import { SirenGateway, SirenResponse } from "../../sirene/ports/SirenGateway";
 import { logAxiosError } from "./../../../utils/axiosUtils";
 import { createLogger } from "./../../../utils/logger";
 import type {
@@ -61,8 +58,8 @@ export class UncompleteEstablishmentEntity {
   }
 
   public async updateExtraEstablishmentInfos(
-    sireneRepositiory: SireneRepository,
-  ): Promise<SireneRepositoryAnswer | undefined> {
+    sireneRepositiory: SirenGateway,
+  ): Promise<SirenResponse | undefined> {
     logger.debug({ props: this.props }, "updateExtraEstablishmentInfos");
 
     try {
@@ -98,7 +95,7 @@ export class UncompleteEstablishmentEntity {
 
   public async searchForMissingFields(
     getPosition: GetPosition,
-    sireneRepository: SireneRepository,
+    sireneRepository: SirenGateway,
   ): Promise<EstablishmentEntity | undefined> {
     logger.debug({ props: this.props }, "searchForMissingFields");
 

@@ -3,7 +3,7 @@ import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersion
 import { createLogger } from "../../utils/logger";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
-import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
+import { HttpsSirenGateway } from "../secondary/HttpsSirenGateway";
 import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
 import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
 import { PgImmersionOfferRepository } from "../secondary/pg/PgImmersionOfferRepository";
@@ -39,7 +39,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
   );
   const apiAdresseGateway = new APIAdresseGateway();
   const sequenceRunner = new ThrottledSequenceRunner(100, 3);
-  const sireneRepository = new HttpsSireneRepository(
+  const sireneRepository = new HttpsSirenGateway(
     config.sireneHttpsConfig,
     new RealClock(),
   );

@@ -8,7 +8,7 @@ import { ProfessionDto } from "../../../shared/rome";
 import { SequenceRunner } from "../../core/ports/SequenceRunner";
 import { UseCase } from "../../core/UseCase";
 import { RomeGateway } from "../../rome/ports/RomeGateway";
-import { SireneRepository } from "../../sirene/ports/SireneRepository";
+import { SirenGateway } from "../../sirene/ports/SirenGateway";
 import { ImmersionEstablishmentContact } from "../entities/ImmersionOfferEntity";
 import {
   GetPosition,
@@ -28,7 +28,7 @@ export class TransformFormEstablishmentIntoSearchData extends UseCase<
     private readonly formEstablishmentRepository: FormEstablishmentRepository,
     private immersionOfferRepository: ImmersionOfferRepository,
     private getPosition: GetPosition,
-    private sireneRepository: SireneRepository,
+    private sireneRepository: SirenGateway,
     private romeGateway: RomeGateway,
     private sequenceRunner: SequenceRunner,
   ) {

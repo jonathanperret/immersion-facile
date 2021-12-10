@@ -1,18 +1,18 @@
 import { formatISO } from "date-fns";
 import { Clock } from "../../domain/core/ports/Clock";
 import {
-  SireneRepository,
-  SireneRepositoryAnswer,
-} from "../../domain/sirene/ports/SireneRepository";
+  SirenGateway,
+  SirenResponse,
+} from "../../domain/sirene/ports/SirenGateway";
 import { SiretDto } from "../../shared/siret";
 import { logAxiosError } from "../../utils/axiosUtils";
 import { createLogger } from "../../utils/logger";
 import { AxiosConfig } from "../primary/appConfig";
-import { createAxiosInstance } from "./../../utils/axiosUtils";
+import { createAxiosInstance } from "../../utils/axiosUtils";
 
 const logger = createLogger(__filename);
 
-export class HttpsSireneRepository implements SireneRepository {
+export class HttpsSirenGateway implements SirenGateway {
   public constructor(
     private readonly axiosConfig: AxiosConfig,
     private readonly clock: Clock,
@@ -31,7 +31,7 @@ export class HttpsSireneRepository implements SireneRepository {
   public async get(
     siret: SiretDto,
     includeClosedEstablishments = false,
-  ): Promise<SireneRepositoryAnswer | undefined> {
+  ): Promise<SirenResponse | undefined> {
     logger.debug({ siret, includeClosedEstablishments }, "get");
 
     try {

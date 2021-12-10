@@ -1,10 +1,10 @@
 import { NotFoundError } from "../../../adapters/primary/helpers/sendHttpResponse";
-import { InMemorySireneRepository } from "../../../adapters/secondary/InMemorySireneRepository";
+import { InMemorySirenGateway } from "../../../adapters/secondary/InMemorySirenGateway";
 import { GetSiret } from "../../../domain/sirene/useCases/GetSiret";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
-import { Establishment } from "./../../../domain/sirene/ports/SireneRepository";
+import { SirenEstablishment } from "../../../domain/sirene/ports/SirenGateway";
 
-const validEstablishment: Establishment = {
+const validEstablishment: SirenEstablishment = {
   siret: "12345678901234",
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE",
@@ -22,11 +22,11 @@ const validEstablishment: Establishment = {
 };
 
 describe("GetSiret", () => {
-  let repository: InMemorySireneRepository;
+  let repository: InMemorySirenGateway;
   let getSiret: GetSiret;
 
   beforeEach(() => {
-    repository = new InMemorySireneRepository();
+    repository = new InMemorySirenGateway();
     getSiret = new GetSiret(repository);
   });
 

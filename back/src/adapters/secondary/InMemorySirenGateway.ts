@@ -1,9 +1,9 @@
-import { createLogger } from "./../../utils/logger";
+import { createLogger } from "../../utils/logger";
 import {
-  Establishment,
-  SireneRepositoryAnswer,
-  SireneRepository,
-} from "../../domain/sirene/ports/SireneRepository";
+  SirenEstablishment,
+  SirenResponse,
+  SirenGateway,
+} from "../../domain/sirene/ports/SirenGateway";
 import { SiretDto } from "../../shared/siret";
 
 const logger = createLogger(__filename);
@@ -14,7 +14,7 @@ export const TEST_ESTABLISHMENT3_SIRET = "77561959600155";
 export const TEST_ESTABLISHMENT4_SIRET = "24570135400111";
 export const TEST_ESTABLISHMENT5_SIRET = "01234567890123";
 
-export const TEST_ESTABLISHMENT1: Establishment = {
+export const TEST_ESTABLISHMENT1: SirenEstablishment = {
   siret: TEST_ESTABLISHMENT1_SIRET,
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE",
@@ -32,7 +32,7 @@ export const TEST_ESTABLISHMENT1: Establishment = {
   },
 };
 
-export const TEST_ESTABLISHMENT2: Establishment = {
+export const TEST_ESTABLISHMENT2: SirenEstablishment = {
   siret: TEST_ESTABLISHMENT2_SIRET,
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE 2",
@@ -49,7 +49,7 @@ export const TEST_ESTABLISHMENT2: Establishment = {
   },
 };
 
-export const TEST_ESTABLISHMENT3: Establishment = {
+export const TEST_ESTABLISHMENT3: SirenEstablishment = {
   siret: TEST_ESTABLISHMENT3_SIRET,
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE 2",
@@ -65,7 +65,7 @@ export const TEST_ESTABLISHMENT3: Establishment = {
     libelleCommuneEtablissement: "PARIS 7",
   },
 };
-export const TEST_ESTABLISHMENT4: Establishment = {
+export const TEST_ESTABLISHMENT4: SirenEstablishment = {
   siret: TEST_ESTABLISHMENT4_SIRET,
   uniteLegale: {
     denominationUniteLegale: "MA P'TITE BOITE 2",
@@ -82,9 +82,9 @@ export const TEST_ESTABLISHMENT4: Establishment = {
   },
 };
 
-type EstablishmentBySiret = { [siret: string]: Establishment };
+type EstablishmentBySiret = { [siret: string]: SirenEstablishment };
 
-export class InMemorySireneRepository implements SireneRepository {
+export class InMemorySirenGateway implements SirenGateway {
   private readonly _repo: EstablishmentBySiret = {
     [TEST_ESTABLISHMENT1.siret]: TEST_ESTABLISHMENT1,
   };
@@ -99,7 +99,7 @@ export class InMemorySireneRepository implements SireneRepository {
   public async get(
     siret: SiretDto,
     includeClosedEstablishments = false,
-  ): Promise<SireneRepositoryAnswer | undefined> {
+  ): Promise<SirenResponse | undefined> {
     logger.info({ siret, includeClosedEstablishments }, "get");
     const establishment = this._repo[siret];
     if (!establishment) return undefined;
@@ -122,7 +122,7 @@ export class InMemorySireneRepository implements SireneRepository {
   }
 
   // Visible for testing
-  public setEstablishment(establishment: Establishment) {
+  public setEstablishment(establishment: SirenEstablishment) {
     this._repo[establishment.siret] = establishment;
   }
 }

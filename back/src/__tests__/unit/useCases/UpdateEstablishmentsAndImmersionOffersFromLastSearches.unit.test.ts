@@ -9,7 +9,7 @@ import {
   HttpCallsToLaPlateFormeDeLInclusion,
   LaPlateFormeDeLInclusionGateway,
 } from "../../../adapters/secondary/immersionOffer/LaPlateFormeDeLInclusionGateway";
-import { InMemorySireneRepository } from "../../../adapters/secondary/InMemorySireneRepository";
+import { InMemorySirenGateway } from "../../../adapters/secondary/InMemorySirenGateway";
 import { ImmersionOfferEntity } from "../../../domain/immersionOffer/entities/ImmersionOfferEntity";
 import { SearchParams } from "../../../domain/immersionOffer/ports/ImmersionOfferRepository";
 import { UpdateEstablishmentsAndImmersionOffersFromLastSearches } from "../../../domain/immersionOffer/useCases/UpdateEstablishmentsAndImmersionOffersFromLastSearches";
@@ -103,7 +103,7 @@ export const fakeHttpCallToLaBonneBoite: HttpCallsToLaBonneBoite = {
   ],
 };
 
-const inMemorySireneRepository = new InMemorySireneRepository();
+const inMemorySireneRepository = new InMemorySirenGateway();
 
 describe("UpdateEstablishmentsAndImmersionOffersFromLastSearches", () => {
   let updateEstablishmentsAndImmersionOffersFromLastSearches: UpdateEstablishmentsAndImmersionOffersFromLastSearches;

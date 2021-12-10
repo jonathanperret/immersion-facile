@@ -1,4 +1,4 @@
-import { InMemorySireneRepository } from "./../../adapters/secondary/InMemorySireneRepository";
+import { InMemorySirenGateway } from "../../adapters/secondary/InMemorySirenGateway";
 import { GetSiret } from "./../../domain/sirene/useCases/GetSiret";
 import { parseISO } from "date-fns";
 import { CustomClock } from "../../adapters/secondary/core/ClockImplementations";
@@ -44,7 +44,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
   let addDemandeImmersion: AddImmersionApplication;
   let validateDemandeImmersion: ValidateImmersionApplication;
   let applicationRepository: InMemoryImmersionApplicationRepository;
-  let sireneRepository: InMemorySireneRepository;
+  let sireneRepository: InMemorySirenGateway;
   let outboxRepository: OutboxRepository;
   let clock: CustomClock;
   let uuidGenerator: TestUuidGenerator;
@@ -71,7 +71,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
     validDemandeImmersion = new ImmersionApplicationDtoBuilder().build();
     eventBus = new InMemoryEventBus();
     eventCrawler = new BasicEventCrawler(eventBus, outboxRepository);
-    sireneRepository = new InMemorySireneRepository();
+    sireneRepository = new InMemorySirenGateway();
     getSiret = new GetSiret(sireneRepository);
 
     addDemandeImmersion = new AddImmersionApplication(
