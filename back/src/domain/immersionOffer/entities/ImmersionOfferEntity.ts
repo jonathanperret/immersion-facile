@@ -25,6 +25,20 @@ export type ImmersionEstablishmentContact = {
   phone: string;
 };
 
+export type ContactV2 = {
+  id: ImmersionContactInEstablishmentId;
+  lastName: string;
+  firstName: string;
+  email: string;
+  job: string;
+  phone: string;
+};
+
+export type ImmersionOfferEntityV2 = {
+  id: ImmersionOfferId;
+  rome: string;
+};
+
 export class ImmersionOfferEntity {
   constructor(private props: ImmersionOfferProps) {}
 

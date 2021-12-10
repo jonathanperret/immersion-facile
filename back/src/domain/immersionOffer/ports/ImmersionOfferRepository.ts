@@ -1,4 +1,5 @@
 import { SearchImmersionResultDto } from "../../../shared/SearchImmersionDto";
+import { EstablishmentAggregate } from "../entities/EstablishmentAggregate";
 import { EstablishmentEntity } from "../entities/EstablishmentEntity";
 import {
   ImmersionOfferEntity,
@@ -33,4 +34,23 @@ export interface ImmersionOfferRepository {
     searchParams: SearchParams,
     withContactDetails?: boolean,
   ) => Promise<SearchImmersionResultDto[]>;
+}
+
+export interface EstablishmentRepository {
+  addEstablishment: (establishment: EstablishmentAggregate) => Promise<void>;
+  // insertSearch: (searchParams: SearchParams) => Promise<void>;
+  // insertImmersions: (immersions: ImmersionOfferEntity[]) => Promise<void>;
+  // insertEstablishments: (
+  //   establishments: EstablishmentEntity[],
+  // ) => Promise<void>;
+  // markPendingResearchesAsProcessedAndRetrieveThem(): Promise<SearchParams[]>;
+
+  // getImmersionFromUuid(
+  //   uuid: string,
+  //   withContactDetails?: boolean,
+  // ): Promise<SearchImmersionResultDto | undefined>;
+  // getFromSearch: (
+  //   searchParams: SearchParams,
+  //   withContactDetails?: boolean,
+  // ) => Promise<SearchImmersionResultDto[]>;
 }

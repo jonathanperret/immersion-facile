@@ -1,4 +1,5 @@
 import { SirenGateway, SirenResponse } from "../../sirene/ports/SirenGateway";
+import { ExtraEstablishmentInfos } from "../domainService/inferExtraEstabishmentInfosFromSirenResponse";
 import { logAxiosError } from "./../../../utils/axiosUtils";
 import { createLogger } from "./../../../utils/logger";
 import type {
@@ -14,12 +15,8 @@ import {
 
 const logger = createLogger(__filename);
 
-export type GetPosition = (address: string) => Promise<Position>;
+export type GetPosition = (address: string) => Promise<Position | undefined>;
 
-export type ExtraEstablishmentInfos = {
-  naf: string;
-  numberEmployeesRange: TefenCode;
-};
 export type GetExtraEstablishmentInfos = (
   siret: string,
 ) => Promise<ExtraEstablishmentInfos>;
@@ -58,14 +55,12 @@ export class UncompleteEstablishmentEntity {
   }
 
   public async updateExtraEstablishmentInfos(
-    sireneRepositiory: SirenGateway,
+    sirenGateway: SirenGateway,
   ): Promise<SirenResponse | undefined> {
     logger.debug({ props: this.props }, "updateExtraEstablishmentInfos");
 
     try {
-      const extraEstablishmentInfo = await sireneRepositiory.get(
-        this.props.siret,
-      );
+      const extraEstablishmentInfo = await sirenGateway.get(this.props.siret);
       if (!extraEstablishmentInfo) return;
 
       this.props.naf =
@@ -95,7 +90,7 @@ export class UncompleteEstablishmentEntity {
 
   public async searchForMissingFields(
     getPosition: GetPosition,
-    sireneRepository: SirenGateway,
+    sirenGateway: SirenGateway,
   ): Promise<EstablishmentEntity | undefined> {
     logger.debug({ props: this.props }, "searchForMissingFields");
 
@@ -108,7 +103,7 @@ export class UncompleteEstablishmentEntity {
     }
 
     if (!this.props.naf || !this.props.numberEmployeesRange) {
-      await this.updateExtraEstablishmentInfos(sireneRepository);
+      await this.updateExtraEstablishmentInfos(sirenGateway);
     }
 
     if (

@@ -39,7 +39,7 @@ import { GetImmersionOfferById } from "../../domain/immersionOffer/useCases/GetI
 import { NotifyConfirmationEstablishmentCreated } from "../../domain/immersionOffer/useCases/notifications/NotifyConfirmationEstablishmentCreated";
 import { NotifyEstablishmentOfContactRequest } from "../../domain/immersionOffer/useCases/notifications/NotifyEstablishmentOfContactRequest";
 import { SearchImmersion } from "../../domain/immersionOffer/useCases/SearchImmersion";
-import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { TransformFormEstablishmentIntoEstablishmentAggregate } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoEstablishmentAggregate";
 import { RomeGateway } from "../../domain/rome/ports/RomeGateway";
 import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
@@ -376,7 +376,7 @@ const createUseCases = (
     ),
 
     transformFormEstablishmentToSearchData:
-      new TransformFormEstablishmentIntoSearchData(
+      new TransformFormEstablishmentIntoEstablishmentAggregate(
         repositories.formEstablishment,
         repositories.immersionOfferForSearch,
         addressGateway.getGPSFromAddressAPIAdresse,

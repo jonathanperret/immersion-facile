@@ -1,9 +1,11 @@
+import { EstablishmentAggregate } from "../../../domain/immersionOffer/entities/EstablishmentAggregate";
 import { EstablishmentEntity } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
 import {
   ImmersionEstablishmentContact,
   ImmersionOfferEntity,
 } from "../../../domain/immersionOffer/entities/ImmersionOfferEntity";
 import {
+  EstablishmentRepository,
   ImmersionOfferRepository,
   SearchParams,
 } from "../../../domain/immersionOffer/ports/ImmersionOfferRepository";
@@ -28,6 +30,23 @@ const immersionOffer = new ImmersionOfferEntityBuilder()
   .withId(validImmersionOfferId)
   .withSiret(establishment.getProps().siret)
   .build();
+
+export class InMemoryEstablishmentRepository
+  implements EstablishmentRepository
+{
+  private _establishments: EstablishmentAggregate[] = [];
+
+  public async addEstablishment(
+    establishment: EstablishmentAggregate,
+  ): Promise<void> {
+    this._establishments.push(establishment);
+  }
+
+  // for test purpose only
+  get establishments() {
+    return this._establishments;
+  }
+}
 
 export class InMemoryImmersionOfferRepository
   implements ImmersionOfferRepository

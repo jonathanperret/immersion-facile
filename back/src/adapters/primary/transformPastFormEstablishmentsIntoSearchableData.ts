@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { TransformFormEstablishmentIntoEstablishmentAggregate } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoEstablishmentAggregate";
 import { createLogger } from "../../utils/logger";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
@@ -46,7 +46,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
   const poleEmploiGateway = new PgRomeGateway(clientOrigin);
 
   const transformFormEstablishmentIntoSearchData =
-    new TransformFormEstablishmentIntoSearchData(
+    new TransformFormEstablishmentIntoEstablishmentAggregate(
       originFormEstablishmentRepository,
       immersionOfferRepository,
       apiAdresseGateway.getGPSFromAddressAPIAdresse,

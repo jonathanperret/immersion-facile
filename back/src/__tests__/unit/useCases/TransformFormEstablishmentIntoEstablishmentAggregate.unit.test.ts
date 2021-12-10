@@ -1,14 +1,14 @@
-import { FormEstablishmentDtoBuilder } from "../../../_testBuilders/FormEstablishmentDtoBuilder";
-import { InMemoryImmersionOfferRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersonOfferRepository";
-import { InMemoryFormEstablishmentRepository } from "../../../adapters/secondary/InMemoryFormEstablishmentRepository";
+import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
+import { InMemoryEstablishmentRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersonOfferRepository";
 import { InMemoryRomeGateway } from "../../../adapters/secondary/InMemoryRomeGateway";
 import { InMemorySirenGateway } from "../../../adapters/secondary/InMemorySirenGateway";
 import { SequenceRunner } from "../../../domain/core/ports/SequenceRunner";
+import { EstablishmentAggregate } from "../../../domain/immersionOffer/entities/EstablishmentAggregate";
 import { Position } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
-import { TransformFormEstablishmentIntoSearchData } from "../../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { TransformFormEstablishmentIntoEstablishmentAggregate } from "../../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoEstablishmentAggregate";
 import { SirenEstablishment } from "../../../domain/sirene/ports/SirenGateway";
 import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";
-import { ProfessionDto } from "../../../shared/rome";
+import { FormEstablishmentDtoBuilder } from "../../../_testBuilders/FormEstablishmentDtoBuilder";
 
 class TestSequenceRunner implements SequenceRunner {
   public run<Input, Output>(array: Input[], cb: (a: Input) => Promise<Output>) {
@@ -17,7 +17,7 @@ class TestSequenceRunner implements SequenceRunner {
 }
 
 const fakePosition: Position = { lat: 49.119146, lon: 6.17602 };
-const getEstablishmentFromSirenApi = (
+const buildSirenEstablishmentFromFormEstablishment = (
   formEstablishment: FormEstablishmentDto,
 ): SirenEstablishment => ({
   siret: formEstablishment.siret,
@@ -35,112 +35,123 @@ const getEstablishmentFromSirenApi = (
   },
 });
 
-describe("Transform FormEstablishment into search data", () => {
-  let formEstablishmentRepository: InMemoryFormEstablishmentRepository;
-  let inMemorySireneRepository: InMemorySirenGateway;
-  let inMemoryImmersionOfferRepository: InMemoryImmersionOfferRepository;
-  let transformFormEstablishmentIntoSearchData: TransformFormEstablishmentIntoSearchData;
+describe("Transform FormEstablishment into EstablishmentAggregate", () => {
+  let sirenRepo: InMemorySirenGateway;
+  let establishmentRepo: InMemoryEstablishmentRepository;
+  let transformFormEstablishmentIntoEstablishmentAggregate: TransformFormEstablishmentIntoEstablishmentAggregate;
+  let uuidGenerator: TestUuidGenerator;
 
   beforeEach(() => {
-    formEstablishmentRepository = new InMemoryFormEstablishmentRepository();
-    inMemorySireneRepository = new InMemorySirenGateway();
-    inMemoryImmersionOfferRepository = new InMemoryImmersionOfferRepository();
+    sirenRepo = new InMemorySirenGateway();
+    establishmentRepo = new InMemoryEstablishmentRepository();
+    uuidGenerator = new TestUuidGenerator();
+
     const getPosition = async () => fakePosition;
     const inMemoryRomeGateway = new InMemoryRomeGateway();
     const sequencerRunner = new TestSequenceRunner();
-    inMemoryImmersionOfferRepository.empty();
-    transformFormEstablishmentIntoSearchData =
-      new TransformFormEstablishmentIntoSearchData(
-        formEstablishmentRepository,
-        inMemoryImmersionOfferRepository,
+
+    transformFormEstablishmentIntoEstablishmentAggregate =
+      new TransformFormEstablishmentIntoEstablishmentAggregate(
+        establishmentRepo,
         getPosition,
-        inMemorySireneRepository,
+        sirenRepo,
         inMemoryRomeGateway,
         sequencerRunner,
+        uuidGenerator,
       );
   });
 
-  it("converts Form Establishment in search format", async () => {
-    const formEstablishment = FormEstablishmentDtoBuilder.valid().build();
-    await formEstablishmentRepository.save(formEstablishment);
-    const establishmentFromApi =
-      getEstablishmentFromSirenApi(formEstablishment);
-    inMemorySireneRepository.setEstablishment(establishmentFromApi);
-
-    await transformFormEstablishmentIntoSearchData.execute(formEstablishment);
-
-    await expectEstablishmentInRepo(formEstablishment);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const romeBoulanger = formEstablishment.professions[0].romeCodeMetier!;
-    await expectImmersionOfferAndContactInRepo(romeBoulanger, {
-      siret: formEstablishment.siret,
-      contactEmail: formEstablishment.businessContacts[0].email,
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const romePatissier = formEstablishment.professions[1].romeCodeMetier!;
-    await expectImmersionOfferAndContactInRepo(romePatissier, {
-      siret: formEstablishment.siret,
-      contactEmail: formEstablishment.businessContacts[0].email,
-    });
-  });
-
-  it("converts Form establishment event when they only have romeAppelation (not romeCode)", async () => {
+  it("converts Form Establishment when siret in sirenGateway and correct given ROME code metier", async () => {
     // prepare
-    const professions: ProfessionDto[] = [
-      { romeCodeAppellation: "11987", description: "métier A" },
-    ];
+    const romeCode = "D1102";
     const formEstablishment = FormEstablishmentDtoBuilder.valid()
-      .withProfessions(professions)
+      .withProfessions([
+        {
+          description: "boulanger",
+          romeCodeMetier: romeCode,
+        },
+      ])
       .build();
-    await formEstablishmentRepository.save(formEstablishment);
-    const establishmentFromApi =
-      getEstablishmentFromSirenApi(formEstablishment);
-    inMemorySireneRepository.setEstablishment(establishmentFromApi);
+    const sirenEstablishment =
+      buildSirenEstablishmentFromFormEstablishment(formEstablishment);
+    sirenRepo.setEstablishment(sirenEstablishment);
+    uuidGenerator.setNextUuids(["my-contact-id", "my-immersion-offer-id"]);
 
     // act
-    await transformFormEstablishmentIntoSearchData.execute(formEstablishment);
+    await transformFormEstablishmentIntoEstablishmentAggregate.execute(
+      formEstablishment,
+    );
 
     // assert
-    const storedImmersion = inMemoryImmersionOfferRepository.immersionOffers;
-    expect(storedImmersion).toHaveLength(1);
-    expect(storedImmersion[0].getProps()).toMatchObject({
-      data_source: "form",
-      rome: "A1101",
+    const establishments = await establishmentRepo.establishments;
+    expect(establishments).toHaveLength(1);
+
+    const establishment = establishments[0];
+
+    expectEstablishmentToEqual(establishment, {
+      siret: formEstablishment.siret,
+      name: formEstablishment.businessName,
+      address: formEstablishment.businessAddress,
+      voluntaryToImmersion: true,
+      dataSource: "form",
+      score: 10,
+      position: fakePosition,
+      naf: "8559A",
+      numberEmployeesRange: 1,
+      immersionOffers: [
+        {
+          id: "my-immersion-offer-id",
+          rome: romeCode,
+        },
+      ],
+      contacts: [
+        {
+          id: "my-contact-id",
+          lastName: formEstablishment.businessContacts[0].lastName,
+          firstName: formEstablishment.businessContacts[0].firstName,
+          email: formEstablishment.businessContacts[0].email,
+          phone: formEstablishment.businessContacts[0].phone,
+          job: formEstablishment.businessContacts[0].job,
+        },
+      ],
     });
   });
 
-  const expectImmersionOfferAndContactInRepo = async (
-    rome: string,
-    expected: { siret: string; contactEmail: string },
+  it("converts Form Establishment when siret in sirenGateway and correct given ROME code metier", async () => {
+    // prepare
+    const romeAppelation = "11987";
+    const formEstablishment = FormEstablishmentDtoBuilder.valid()
+      .withProfessions([
+        {
+          description: "boulanger",
+          romeCodeAppellation: romeAppelation,
+        },
+      ])
+      .build();
+    const sirenEstablishment =
+      buildSirenEstablishmentFromFormEstablishment(formEstablishment);
+    sirenRepo.setEstablishment(sirenEstablishment);
+    uuidGenerator.setNextUuids(["my-contact-id", "my-immersion-offer-id"]);
+
+    // act
+    await transformFormEstablishmentIntoEstablishmentAggregate.execute(
+      formEstablishment,
+    );
+
+    // assert
+    const establishments = await establishmentRepo.establishments;
+    expect(establishments).toHaveLength(1);
+
+    const establishment = establishments[0];
+    expect(establishment.immersionOffers).toEqual([
+      { id: "my-immersion-offer-id", rome: "A1101" },
+    ]);
+  });
+
+  const expectEstablishmentToEqual = (
+    value: EstablishmentAggregate,
+    expected: EstablishmentAggregate,
   ) => {
-    const immersionsBoulanger =
-      await inMemoryImmersionOfferRepository.immersionOffers.filter(
-        (offer) => offer.getRome() === rome,
-      );
-
-    //Verify that immersion matches
-    expect(immersionsBoulanger).toHaveLength(1);
-    const immersionBoulanger = immersionsBoulanger[0];
-    expect(immersionBoulanger.getProps().siret).toEqual(expected.siret);
-
-    //Verify that the company contact is here
-    const boulangerEstablishmentContact =
-      immersionsBoulanger[0].getProps().contactInEstablishment;
-    expect(boulangerEstablishmentContact).toBeDefined();
-    expect(boulangerEstablishmentContact?.email).toEqual(expected.contactEmail);
-  };
-
-  const expectEstablishmentInRepo = async (
-    formEstablishment: FormEstablishmentDto,
-  ) => {
-    const establishment =
-      await inMemoryImmersionOfferRepository.getEstablishmentFromSiret(
-        formEstablishment.siret,
-      );
-
-    expect(establishment.getSiret()).toEqual(formEstablishment.siret);
-    expect(establishment.getNaf().length).toEqual(5);
+    expect(value).toEqual(expected);
   };
 });
