@@ -1,4 +1,4 @@
-import { Position } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
+import { Position } from "../../../domain/immersionOffer/ports/GetPosition";
 import { createAxiosInstance } from "../../../utils/axiosUtils";
 import { logAxiosError } from "./../../../utils/axiosUtils";
 import { createLogger } from "./../../../utils/logger";

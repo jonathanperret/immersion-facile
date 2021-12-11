@@ -3,10 +3,10 @@ import { TransformFormEstablishmentIntoEstablishmentAggregate } from "../../doma
 import { createLogger } from "../../utils/logger";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
+import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
 import { HttpsSirenGateway } from "../secondary/HttpsSirenGateway";
 import { APIAdresseGateway } from "../secondary/immersionOffer/APIAdresseGateway";
-import { PgFormEstablishmentRepository } from "../secondary/pg/PgFormEstablishmentRepository";
-import { PgImmersionOfferRepository } from "../secondary/pg/PgImmersionOfferRepository";
+import { PgEstablishmentRepository } from "../secondary/pg/PgEstabishmentRepository";
 import { PgRomeGateway } from "../secondary/pg/PgRomeGateway";
 import { AppConfig } from "./appConfig";
 
@@ -26,15 +26,12 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
   //We create the use case transformFormEstablishementIntoSearchData
   const poolOrigin = new Pool({ connectionString: originPgConnectionString });
   const clientOrigin = await poolOrigin.connect();
-  const originFormEstablishmentRepository = new PgFormEstablishmentRepository(
-    clientOrigin,
-  );
 
   const poolDestination = new Pool({
     connectionString: destinationPgConnectionString,
   });
   const clientDestination = await poolDestination.connect();
-  const immersionOfferRepository = new PgImmersionOfferRepository(
+  const establishmentRepository = new PgEstablishmentRepository(
     clientDestination,
   );
   const apiAdresseGateway = new APIAdresseGateway();
@@ -47,12 +44,12 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
 
   const transformFormEstablishmentIntoSearchData =
     new TransformFormEstablishmentIntoEstablishmentAggregate(
-      originFormEstablishmentRepository,
-      immersionOfferRepository,
+      establishmentRepository,
       apiAdresseGateway.getGPSFromAddressAPIAdresse,
       sireneRepository,
       poleEmploiGateway,
       sequenceRunner,
+      new UuidV4Generator(),
     );
   const AllIdsResult = await clientOrigin.query(
     "SELECT id FROM public.form_establishments",

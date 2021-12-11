@@ -1,5 +1,5 @@
 import { SirenResponse } from "../../sirene/ports/SirenGateway";
-import { TefenCode } from "../entities/EstablishmentEntity";
+import { TefenCode } from "../entities/EstablishmentAggregate";
 
 export type ExtraEstablishmentInfos = {
   naf?: string;

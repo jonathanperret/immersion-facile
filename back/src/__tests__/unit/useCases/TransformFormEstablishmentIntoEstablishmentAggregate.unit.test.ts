@@ -1,10 +1,10 @@
 import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
-import { InMemoryEstablishmentRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersonOfferRepository";
+import { InMemoryEstablishmentRepository } from "../../../adapters/secondary/immersionOffer/InMemoryEstabishmentRepository";
 import { InMemoryRomeGateway } from "../../../adapters/secondary/InMemoryRomeGateway";
 import { InMemorySirenGateway } from "../../../adapters/secondary/InMemorySirenGateway";
 import { SequenceRunner } from "../../../domain/core/ports/SequenceRunner";
 import { EstablishmentAggregate } from "../../../domain/immersionOffer/entities/EstablishmentAggregate";
-import { Position } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
+import { Position } from "../../../domain/immersionOffer/ports/GetPosition";
 import { TransformFormEstablishmentIntoEstablishmentAggregate } from "../../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoEstablishmentAggregate";
 import { SirenEstablishment } from "../../../domain/sirene/ports/SirenGateway";
 import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";

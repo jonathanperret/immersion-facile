@@ -3,7 +3,7 @@ import { v4 as uuidV4 } from "uuid";
 
 // To be used mostly for tests
 export class TestUuidGenerator implements UuidGenerator {
-  constructor(private _nextUuids: string[] = ["myGeneratedUuid"]) {}
+  constructor(private _nextUuids: string[] = []) {}
 
   public new() {
     return this._nextUuids.shift() ?? "no-uuid-provided";

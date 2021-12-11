@@ -1,16 +1,16 @@
 import { SirenGateway, SirenResponse } from "../../sirene/ports/SirenGateway";
 import { ExtraEstablishmentInfos } from "../domainService/inferExtraEstabishmentInfosFromSirenResponse";
+import { Position } from "../ports/GetPosition";
 import { logAxiosError } from "./../../../utils/axiosUtils";
 import { createLogger } from "./../../../utils/logger";
+import { TefenCode } from "./EstablishmentAggregate";
 import type {
   EstablishmentFieldsToRetrieve,
   MandatoryEstablishmentFields,
-  Position,
 } from "./EstablishmentEntity";
 import {
   EstablishmentEntity,
   OptionalEstablishmentFields,
-  TefenCode,
 } from "./EstablishmentEntity";
 
 const logger = createLogger(__filename);

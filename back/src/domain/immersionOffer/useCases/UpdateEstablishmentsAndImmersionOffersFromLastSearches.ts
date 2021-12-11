@@ -2,11 +2,11 @@ import { createLogger } from "../../../utils/logger";
 import { PipelineStats } from "../../../utils/pipelineStats";
 import { SirenGateway } from "../../sirene/ports/SirenGateway";
 import { EstablishmentEntity } from "../entities/EstablishmentEntity";
-import { GetPosition } from "../entities/UncompleteEstablishmentEntity";
 import { EstablishmentsGateway } from "../ports/EstablishmentsGateway";
+import { GetPosition } from "../ports/GetPosition";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
-import { UncompleteEstablishmentEntity } from "./../entities/UncompleteEstablishmentEntity";
-import { SearchParams } from "./../ports/ImmersionOfferRepository";
+import { UncompleteEstablishmentEntity } from "../entities/UncompleteEstablishmentEntity";
+import { SearchParams } from "../ports/ImmersionOfferRepository";
 
 const logger = createLogger(__filename);
 

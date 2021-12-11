@@ -14,7 +14,7 @@ import {
   ContactV2,
   ImmersionOfferEntityV2,
 } from "../entities/ImmersionOfferEntity";
-import { GetPosition } from "../entities/UncompleteEstablishmentEntity";
+import { GetPosition } from "../ports/GetPosition";
 import { EstablishmentRepository } from "../ports/ImmersionOfferRepository";
 
 const logger = createLogger(__filename);

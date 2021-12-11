@@ -13,12 +13,12 @@ import {
   AccessTokenGateway,
   GetAccessTokenResponse,
 } from "../domain/core/ports/AccessTokenGateway";
-import { Position } from "../domain/immersionOffer/entities/EstablishmentEntity";
+import { ExtraEstablishmentInfos } from "../domain/immersionOffer/domainService/inferExtraEstabishmentInfosFromSirenResponse";
 import {
-  ExtraEstablishmentInfos,
   GetExtraEstablishmentInfos,
   GetPosition,
 } from "../domain/immersionOffer/entities/UncompleteEstablishmentEntity";
+import { Position } from "../domain/immersionOffer/ports/GetPosition";
 import { SearchParams } from "../domain/immersionOffer/ports/ImmersionOfferRepository";
 import { GetEstablishmentsResponse } from "./../adapters/secondary/immersionOffer/LaPlateFormeDeLInclusionGateway";
 

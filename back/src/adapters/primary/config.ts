@@ -91,6 +91,7 @@ import {
 } from "./authMiddleware";
 import { SignImmersionApplication } from "../../domain/immersionApplication/useCases/SignImmersionApplication";
 import { NotifyApplicationPartiallySigned } from "../../domain/immersionApplication/useCases/notifications/NotifyApplicationPartiallySigned";
+import { InMemoryEstablishmentRepository } from "../secondary/immersionOffer/InMemoryEstabishmentRepository";
 
 const logger = createLogger(__filename);
 
@@ -179,6 +180,10 @@ export const createRepositories = async (
         ? new PgFormEstablishmentRepository(await getPgPoolFn().connect())
         : new InMemoryFormEstablishmentRepository(),
 
+    establishment:
+      config.repositories === "PG"
+        ? new InMemoryEstablishmentRepository() // TODO : implement PG.
+        : new InMemoryEstablishmentRepository(),
     immersionOfferForSearch:
       config.repositories === "PG"
         ? new PgImmersionOfferRepositoryForSearch(
@@ -377,12 +382,12 @@ const createUseCases = (
 
     transformFormEstablishmentToSearchData:
       new TransformFormEstablishmentIntoEstablishmentAggregate(
-        repositories.formEstablishment,
-        repositories.immersionOfferForSearch,
+        repositories.establishment,
         addressGateway.getGPSFromAddressAPIAdresse,
         repositories.sirene,
         repositories.rome,
         sequenceRunner,
+        uuidGenerator,
       ),
 
     contactEstablishment: new ContactEstablishment(
