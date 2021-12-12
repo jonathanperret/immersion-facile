@@ -1,11 +1,9 @@
-import { EstablishmentAggregate } from "../../../domain/immersionOffer/entities/EstablishmentAggregate";
 import { EstablishmentEntity } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
 import {
   ImmersionEstablishmentContact,
   ImmersionOfferEntity,
 } from "../../../domain/immersionOffer/entities/ImmersionOfferEntity";
 import {
-  EstablishmentRepository,
   ImmersionOfferRepository,
   SearchParams,
 } from "../../../domain/immersionOffer/ports/ImmersionOfferRepository";

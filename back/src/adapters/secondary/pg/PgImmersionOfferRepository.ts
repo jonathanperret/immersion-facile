@@ -42,6 +42,7 @@ const parseGeoJson = (raw: string): Position => {
   };
 };
 
+// TODO : to be deprecated (replaced by EstablishmentRepo)
 export class PgImmersionOfferRepository implements ImmersionOfferRepository {
   constructor(private client: PoolClient) {}
 

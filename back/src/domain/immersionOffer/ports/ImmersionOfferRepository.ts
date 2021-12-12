@@ -11,8 +11,8 @@ export type SearchParams = {
   distance_km: number;
   lat: number;
   lon: number;
-  nafDivision?: string;
-  siret?: string;
+  nafDivision?: string; // @jerome: Why nafDivision here ?
+  siret?: string; // @jerome: Why siret here ?
 };
 
 export interface ImmersionOfferRepository {
@@ -53,4 +53,15 @@ export interface EstablishmentRepository {
   //   searchParams: SearchParams,
   //   withContactDetails?: boolean,
   // ) => Promise<SearchImmersionResultDto[]>;
+}
+
+export type Search = {
+  searchParams: SearchParams;
+  processed: boolean;
+  madeAt: Date;
+};
+export interface SearchRepository {
+  // TODO : search should probably have an idea (or it could be the date of the search)
+  getUnprocessedSearches(): Promise<Search[]>;
+  setSearchProcessed(madeAt: Date, processed: boolean): Promise<void>;
 }
