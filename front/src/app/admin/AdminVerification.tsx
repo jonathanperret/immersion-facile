@@ -7,6 +7,7 @@ import { ImmersionApplicationDto } from "src/shared/ImmersionApplicationDto";
 import { Route } from "type-route";
 import { routes } from "../routes";
 import { InfoMessage } from "src/components/form/InfoMessage";
+import { successMessageByStatus } from "../Verification/VerificationPage";
 
 // Temporary "final verification" page for the admin to re-verify the form.
 
@@ -26,7 +27,6 @@ export const AdminVerification = ({ route }: AdminVerificationProps) => {
   const validationDisabled = () => {
     return !form || form.status !== "IN_REVIEW";
   };
-
   useEffect(() => {
     immersionApplicationGateway
       .backofficeGet(id)
@@ -54,12 +54,12 @@ export const AdminVerification = ({ route }: AdminVerificationProps) => {
   const sendValidationRequest = () => {
     if (!form) return;
     setSubmitting(true);
+
     immersionApplicationGateway
       .validate(form.id)
       .then(() => {
-        setSuccessMessage(
-          "La demande est validée et les mails de confirmation vont être envoyés au tuteur et demandeur.",
-        );
+        setSuccessMessage(successMessageByStatus[form.status]);
+
         setForm({ ...form, status: "VALIDATED" });
       })
       .catch((err: React.SetStateAction<Error | null>) => {

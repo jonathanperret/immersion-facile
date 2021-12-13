@@ -135,6 +135,17 @@ export const EstablishmentForm = ({ route }: EstablishmentFormProps) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<Error | null>(null);
 
+  let errorMessage = submitError?.message;
+  if (
+    submitError &&
+    "response" in submitError &&
+    "data" in submitError["response"] &&
+    "errors" in submitError["response"]["data"]
+  ) {
+    errorMessage = submitError["response"]["data"]["errors"];
+  }
+
+
   return (
     <>
       <MarianneHeader />
@@ -213,15 +224,15 @@ export const EstablishmentForm = ({ route }: EstablishmentFormProps) => {
                 {submitError && (
                   <>
                     <ErrorMessage title="Veuillez nous excuser. Un problème est survenu qui a compromis l'enregistrement de vos informations. ">
-                      {submitError.message}
+                      {errorMessage}
                     </ErrorMessage>
                     <br />
                   </>
                 )}
                 {isSuccess && (
                   <SuccessMessage title="Succès de l'envoi">
-                    Succès.
-                    Nous avons bien enregistré les informations concernant votre entreprise.
+                    Succès. Nous avons bien enregistré les informations
+                    concernant votre entreprise.
                   </SuccessMessage>
                 )}
                 {!isSuccess && (

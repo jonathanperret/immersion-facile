@@ -52,7 +52,7 @@ const SignOnlyMessage = () => (
       <p>
         <h1 color="red"> TODO: changer ce message </h1>
         Cette demande d'immersion n'est plus possible modifiable. Veuillez
-        signer ou renvoyer pour la modification.
+        signer ou la renvoyer pour modification.
       </p>
     </div>
     <br />
@@ -80,8 +80,14 @@ export const ApplicationFormFields = ({
   alreadySubmitted,
   onRejectForm,
 }: ApplicationFieldsProps) => {
-  const { errors, submitCount, initialValues, setFieldValue, isSubmitting, submitForm } =
-    useFormikContext<ImmersionApplicationDto>();
+  const {
+    errors,
+    submitCount,
+    initialValues,
+    setFieldValue,
+    isSubmitting,
+    submitForm,
+  } = useFormikContext<ImmersionApplicationDto>();
   const { establishmentInfo, isFetchingSiret } = useSiretFetcher();
   useSiretRelatedField("businessName", establishmentInfo);
   useSiretRelatedField(
@@ -254,7 +260,7 @@ export const ApplicationFormFields = ({
 
       <RadioGroup
         name="immersionObjective"
-        label="Objectif  de la période de mise en situation en milieu professionnel"
+        label="Objet de la période de mise en situation en milieu professionnel"
         options={[
           { value: "Confirmer un projet professionnel" },
           { value: "Découvrir un métier ou un secteur d'activité" },
@@ -332,15 +338,13 @@ export const ApplicationFormFields = ({
       )}
 
       {successInfos && (
-        <SuccessMessage
-          title="Succès de l'envoi">
+        <SuccessMessage title="Succès de l'envoi">
           {successInfos.message}
           {successInfos.link && (
             <a href={successInfos.link}>{successInfos.link}</a>
           )}
         </SuccessMessage>
-      )
-      }
+      )}
 
       <p />
 
