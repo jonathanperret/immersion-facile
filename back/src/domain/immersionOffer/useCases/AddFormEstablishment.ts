@@ -1,4 +1,5 @@
 import { ConflictError } from "../../../adapters/primary/helpers/sendHttpResponse";
+import { FeatureFlags } from "../../../shared/featureFlags";
 import {
   AddFormEstablishmentResponseDto,
   FormEstablishmentDto,

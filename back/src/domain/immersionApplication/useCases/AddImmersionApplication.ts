@@ -1,4 +1,5 @@
 import { ConflictError } from "../../../adapters/primary/helpers/sendHttpResponse";
+import { FeatureFlags } from "../../../shared/featureFlags";
 import {
   AddImmersionApplicationResponseDto,
   ImmersionApplicationDto,
@@ -6,6 +7,7 @@ import {
 } from "../../../shared/ImmersionApplicationDto";
 import { createLogger } from "../../../utils/logger";
 import { CreateNewEvent } from "../../core/eventBus/EventBus";
+import { DomainTopic } from "../../core/eventBus/events";
 import { OutboxRepository } from "../../core/ports/OutboxRepository";
 import { UseCase } from "../../core/UseCase";
 import { rejectsSiretIfNotAnOpenCompany } from "../../sirene/rejectsSiretIfNotAnOpenCompany";
@@ -24,6 +26,7 @@ export class AddImmersionApplication extends UseCase<
     private readonly createNewEvent: CreateNewEvent,
     private readonly outboxRepository: OutboxRepository,
     private readonly getSiret: GetSiretUseCase,
+    private readonly featureFlags: FeatureFlags,
   ) {
     super();
   }
@@ -45,8 +48,12 @@ export class AddImmersionApplication extends UseCase<
     const id = await this.applicationRepository.save(applicationEntity);
     if (!id) throw new ConflictError(applicationEntity.id);
 
+    const topic: DomainTopic = this.featureFlags.enableEnterpriseSignature
+      ? "DraftImmersionApplicationSubmitted"
+      : "ImmersionApplicationSubmittedByBeneficiary";
+
     const event = this.createNewEvent({
-      topic: "ImmersionApplicationSubmittedByBeneficiary",
+      topic,
       payload: immersionApplicationDto,
     });
 

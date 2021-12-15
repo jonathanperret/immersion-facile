@@ -2,7 +2,7 @@ import { AccessTokenGateway } from "../../../domain/core/ports/AccessTokenGatewa
 import { SearchParams } from "../../../domain/immersionOffer/ports/ImmersionOfferRepository";
 import {
   LaBonneBoiteAPI,
-  LaBonneBoiteCompany
+  LaBonneBoiteCompany,
 } from "../../../domain/immersionOffer/ports/LaBonneBoiteAPI";
 import { createAxiosInstance, logAxiosError } from "../../../utils/axiosUtils";
 import { createLogger } from "../../../utils/logger";

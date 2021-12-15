@@ -17,6 +17,7 @@ type GenericEvent<T extends string, P> = {
 };
 
 export type DomainEvent =
+  | GenericEvent<"DraftImmersionApplicationSubmitted", ImmersionApplicationDto>
   // prettier-ignore
   | GenericEvent<"ImmersionApplicationSubmittedByBeneficiary", ImmersionApplicationDto>
   // prettier-ignore
@@ -30,10 +31,8 @@ export type DomainEvent =
   | GenericEvent<"ImmersionApplicationRequiresModification", ImmersionApplicationRequiresModificationPayload>
   | GenericEvent<"FormEstablishmentAdded", FormEstablishmentDto>
   | GenericEvent<"MagicLinkRenewalRequested", RenewMagicLinkPayload>
-  | GenericEvent<
-      "EmailContactRequestedByBeneficiary",
-      ContactEstablishmentRequestDto
-    >
+  // prettier-ignore
+  | GenericEvent<"EmailContactRequestedByBeneficiary", ContactEstablishmentRequestDto>
   // prettier-ignore
   | GenericEvent<"ImmersionApplicationPartiallySigned", ImmersionApplicationDto>;
 

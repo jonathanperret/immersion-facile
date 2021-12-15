@@ -85,7 +85,7 @@ import { PgOutboxRepository } from "../secondary/pg/PgOutboxRepository";
 import { PgRomeGateway } from "../secondary/pg/PgRomeGateway";
 import { PgUowPerformer } from "../secondary/pg/PgUowPerformer";
 import { SendinblueEmailGateway } from "../secondary/SendinblueEmailGateway";
-import { unrestrictedRateLimiter } from "./../../domain/core/ports/RateLimiter";
+import { unrestrictedRateLimiter } from "../../domain/core/ports/RateLimiter";
 import { AppConfig } from "./appConfig";
 import {
   createApiKeyAuthMiddleware,
@@ -319,6 +319,7 @@ const createUseCases = (
       createNewEvent,
       repositories.outbox,
       getSiret,
+      config.featureFlags,
     ),
     getDemandeImmersion: new GetImmersionApplication(
       repositories.demandeImmersion,

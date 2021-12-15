@@ -18,20 +18,28 @@ type UseCaseSubscriptionsByTopics = {
 const getUseCasesByTopics = (
   useCases: UseCases,
 ): UseCaseSubscriptionsByTopics => ({
-  ImmersionApplicationSubmittedByBeneficiary: [
-    useCases.confirmToBeneficiaryThatApplicationCorrectlySubmitted,
+  // Immersion Application happy path
+
+  // <<<---- triggered when signature feature flag is ACTIVE
+  DraftImmersionApplicationSubmitted: [
     useCases.confirmToBeneficiaryThatApplicationCorrectlySubmittedRequestSignature,
-    useCases.confirmToMentorThatApplicationCorrectlySubmitted,
     useCases.confirmToMentorThatApplicationCorrectlySubmittedRequestSignature,
+  ],
+  ImmersionApplicationPartiallySigned: [
+    useCases.notifyBeneficiaryOrEnterpriseThatApplicationWasSignedByOtherParty,
+  ],
+  // signature feature flag is ACTIVE ---->>>
+
+  // following event should be renamed: ImmersionApplicationFullySigned
+  ImmersionApplicationSubmittedByBeneficiary: [
+    // <<<---- trigger when signature feature flag is NOT active
+    useCases.confirmToBeneficiaryThatApplicationCorrectlySubmitted,
+    useCases.confirmToMentorThatApplicationCorrectlySubmitted,
+    // signature feature flag is NOT active ---->>>
     useCases.notifyToTeamApplicationSubmittedByBeneficiary,
     useCases.notifyNewApplicationNeedsReview,
   ],
-  ImmersionApplicationRejected: [
-    useCases.notifyBeneficiaryAndEnterpriseThatApplicationIsRejected,
-  ],
-  ImmersionApplicationRequiresModification: [
-    useCases.notifyBeneficiaryAndEnterpriseThatApplicationNeedsModifications,
-  ],
+
   ImmersionApplicationAcceptedByCounsellor: [
     useCases.notifyNewApplicationNeedsReview,
   ],
@@ -41,17 +49,27 @@ const getUseCasesByTopics = (
   FinalImmersionApplicationValidationByAdmin: [
     useCases.notifyAllActorsOfFinalApplicationValidation,
   ],
+
+  // rejected and modification paths
+  ImmersionApplicationRejected: [
+    useCases.notifyBeneficiaryAndEnterpriseThatApplicationIsRejected,
+  ],
+  ImmersionApplicationRequiresModification: [
+    useCases.notifyBeneficiaryAndEnterpriseThatApplicationNeedsModifications,
+  ],
+
+  // magic link renewal
   MagicLinkRenewalRequested: [useCases.deliverRenewedMagicLink],
+
+  // establishments
   FormEstablishmentAdded: [
     useCases.transformFormEstablishmentToSearchData,
     useCases.notifyConfirmationEstablishmentCreated,
   ],
 
+  // search page
   EmailContactRequestedByBeneficiary: [
     useCases.notifyEstablishmentOfContactRequest,
-  ],
-  ImmersionApplicationPartiallySigned: [
-    useCases.notifyBeneficiaryOrEnterpriseThatApplicationWasSignedByOtherParty,
   ],
 });
 

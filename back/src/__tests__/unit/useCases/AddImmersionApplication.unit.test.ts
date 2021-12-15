@@ -1,3 +1,4 @@
+import { FeatureFlagsBuilder } from "../../../_testBuilders/FeatureFlagsBuilder";
 import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
 import { StubGetSiret } from "../../../_testBuilders/StubGetSiret";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
@@ -16,6 +17,7 @@ import {
 import { DomainEvent } from "../../../domain/core/eventBus/events";
 import { ImmersionApplicationEntity } from "../../../domain/immersionApplication/entities/ImmersionApplicationEntity";
 import { AddImmersionApplication } from "../../../domain/immersionApplication/useCases/AddImmersionApplication";
+import { FeatureFlags } from "../../../shared/featureFlags";
 
 describe("Add immersionApplication", () => {
   let addImmersionApplication: AddImmersionApplication;
@@ -35,16 +37,24 @@ describe("Add immersionApplication", () => {
     uuidGenerator = new TestUuidGenerator();
     createNewEvent = makeCreateNewEvent({ clock, uuidGenerator });
     stubGetSiret = new StubGetSiret();
-    addImmersionApplication = createAddDemandeImmersionUseCase();
+    addImmersionApplication = createAddDemandeImmersionUseCase(false);
   });
 
-  const createAddDemandeImmersionUseCase = () =>
-    new AddImmersionApplication(
+  const createAddDemandeImmersionUseCase = (
+    withEnterpriseSignatures: boolean,
+  ) => {
+    const featureFlags = withEnterpriseSignatures
+      ? FeatureFlagsBuilder.allOff().enableEnterpriseSignatures().build()
+      : FeatureFlagsBuilder.allOff().build();
+
+    return new AddImmersionApplication(
       applicationRepository,
       createNewEvent,
       outboxRepository,
       stubGetSiret,
+      featureFlags,
     );
+  };
 
   test("saves valid applications in the repository", async () => {
     const occurredAt = new Date("2021-10-15T15:00");
@@ -66,6 +76,34 @@ describe("Add immersionApplication", () => {
         id,
         occurredAt: occurredAt.toISOString(),
         topic: "ImmersionApplicationSubmittedByBeneficiary",
+        payload: validImmersionApplication,
+        wasPublished: false,
+        wasQuarantined: false,
+      },
+    ]);
+  });
+
+  test("saves valid applications in the repository and triggers event depending on feature flag", async () => {
+    const occurredAt = new Date("2021-10-15T15:00");
+    const id = "eventId";
+    clock.setNextDate(occurredAt);
+    uuidGenerator.setNextUuid(id);
+
+    addImmersionApplication = createAddDemandeImmersionUseCase(true);
+    expect(
+      await addImmersionApplication.execute(validImmersionApplication),
+    ).toEqual({
+      id: validImmersionApplication.id,
+    });
+
+    const storedInRepo = await applicationRepository.getAll();
+    expect(storedInRepo.length).toBe(1);
+    expect(storedInRepo[0].toDto()).toEqual(validImmersionApplication);
+    expectDomainEventsToBeInOutbox([
+      {
+        id,
+        occurredAt: occurredAt.toISOString(),
+        topic: "DraftImmersionApplicationSubmitted",
         payload: validImmersionApplication,
         wasPublished: false,
         wasQuarantined: false,

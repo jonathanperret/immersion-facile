@@ -1,8 +1,8 @@
-import { expectEmailMentorConfirmationSignatureRequesMatchingImmersionApplication } from "./../../_testBuilders/emailAssertions";
-import { ConfirmToMentorThatApplicationCorrectlySubmittedRequestSignature } from "./../../domain/immersionApplication/useCases/notifications/ConfirmToMentorThatApplicationCorrectlySubmittedRequestSignature";
-import { ConfirmToBeneficiaryThatApplicationCorrectlySubmittedRequestSignature } from "./../../domain/immersionApplication/useCases/notifications/ConfirmToBeneficiaryThatApplicationCorrectlySubmittedRequestSignature";
-import { InMemorySireneRepository } from "./../../adapters/secondary/InMemorySireneRepository";
-import { GetSiret } from "./../../domain/sirene/useCases/GetSiret";
+import { expectEmailMentorConfirmationSignatureRequesMatchingImmersionApplication } from "../../_testBuilders/emailAssertions";
+import { ConfirmToMentorThatApplicationCorrectlySubmittedRequestSignature } from "../../domain/immersionApplication/useCases/notifications/ConfirmToMentorThatApplicationCorrectlySubmittedRequestSignature";
+import { ConfirmToBeneficiaryThatApplicationCorrectlySubmittedRequestSignature } from "../../domain/immersionApplication/useCases/notifications/ConfirmToBeneficiaryThatApplicationCorrectlySubmittedRequestSignature";
+import { InMemorySireneRepository } from "../../adapters/secondary/InMemorySireneRepository";
+import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { parseISO } from "date-fns";
 import { CustomClock } from "../../adapters/secondary/core/ClockImplementations";
 import { AlwaysAllowEmailFilter } from "../../adapters/secondary/core/EmailFilterImplementations";
@@ -88,6 +88,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
       createNewEvent,
       outboxRepository,
       getSiret,
+      featureFlags,
     );
     validateDemandeImmersion = new ValidateImmersionApplication(
       applicationRepository,
@@ -132,6 +133,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
       createNewEvent,
       outboxRepository,
       getSiret,
+      featureFlags,
     );
 
     eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
@@ -281,6 +283,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
       createNewEvent,
       outboxRepository,
       getSiret,
+      featureFlags,
     );
     validateDemandeImmersion = new ValidateImmersionApplication(
       applicationRepository,
@@ -341,6 +344,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
       createNewEvent,
       outboxRepository,
       getSiret,
+      featureFlags,
     );
 
     eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
