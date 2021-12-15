@@ -21,7 +21,7 @@ const logger = createLogger(__filename);
 const domainTopicByTargetStatusMap: Partial<
   Record<ApplicationStatus, DomainTopic>
 > = {
-  PARTIALLY_SIGNED: "ImmersionApplicationPartiallySigned",
+  // PARTIALLY_SIGNED: "ImmersionApplicationPartiallySigned",
   IN_REVIEW: "ImmersionApplicationSubmittedByBeneficiary",
 };
 
