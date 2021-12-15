@@ -337,7 +337,7 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
   });
 
   // Creates a DemandeImmersion, check it is saved properly and that event had been triggered (thanks to subscription),
-  // then check mails have been sent trough the inmemory mail gateway
+  // then check mails have been sent through the inmemory mail gateway
   test("saves valid applications in the repository", async () => {
     addDemandeImmersion = new AddImmersionApplication(
       applicationRepository,
@@ -347,27 +347,22 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
       featureFlags,
     );
 
-    eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
+    eventBus.subscribe("DraftImmersionApplicationSubmitted", (event) =>
       confirmToBeneficiaryRequestSignature.execute(event.payload),
     );
-
-    eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
+    eventBus.subscribe("DraftImmersionApplicationSubmitted", (event) =>
       confirmToMentorRequestSignature.execute(event.payload),
     );
 
-    eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
-      notifyToTeam.execute(event.payload),
-    );
-
-    // Remove the following two subscriptions (together with the use cases) when enableEnterpriseSignatures is on by default
-
-    eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
-      confirmToBeneficiary.execute(event.payload),
-    );
-
-    eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
-      confirmToMentor.execute(event.payload),
-    );
+    // eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
+    //   confirmToBeneficiary.execute(event.payload),
+    // );
+    // eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
+    //   confirmToMentor.execute(event.payload),
+    // );
+    // eventBus.subscribe("ImmersionApplicationSubmittedByBeneficiary", (event) =>
+    //   notifyToTeam.execute(event.payload),
+    // );
 
     // We expect this execute to trigger an event on ImmersionApplicationSubmittedByBeneficiary topic
     const result = await addDemandeImmersion.execute(validDemandeImmersion);
@@ -377,35 +372,34 @@ describe("Add immersionApplication Notifications, then checks the mails are sent
     await eventCrawler.processEvents();
 
     sentEmails = emailGw.getSentEmails();
-    expect(sentEmails).toHaveLength(3);
+    expect(sentEmails).toHaveLength(2);
 
     expectEmailBeneficiaryConfirmationSignatureRequestMatchingImmersionApplication(
       sentEmails[0],
       validDemandeImmersion,
     );
-
     expectEmailMentorConfirmationSignatureRequesMatchingImmersionApplication(
       sentEmails[1],
       validDemandeImmersion,
     );
 
-    expectEmailAdminNotificationMatchingImmersionApplication(sentEmails[2], {
-      recipients: [adminEmail],
-      immersionApplication: {
-        ...validDemandeImmersion,
-        dateStart: parseISO(validDemandeImmersion.dateStart).toLocaleDateString(
-          "fr",
-        ),
-        dateEnd: parseISO(validDemandeImmersion.dateEnd).toLocaleDateString(
-          "fr",
-        ),
-      },
-      magicLink: fakeGenerateMagicLinkUrlFn(
-        validDemandeImmersion.id,
-        "admin",
-        frontRoutes.immersionApplicationsToValidate,
-      ),
-      agencyConfig,
-    });
+    // expectEmailAdminNotificationMatchingImmersionApplication(sentEmails[2], {
+    //   recipients: [adminEmail],
+    //   immersionApplication: {
+    //     ...validDemandeImmersion,
+    //     dateStart: parseISO(validDemandeImmersion.dateStart).toLocaleDateString(
+    //       "fr",
+    //     ),
+    //     dateEnd: parseISO(validDemandeImmersion.dateEnd).toLocaleDateString(
+    //       "fr",
+    //     ),
+    //   },
+    //   magicLink: fakeGenerateMagicLinkUrlFn(
+    //     validDemandeImmersion.id,
+    //     "admin",
+    //     frontRoutes.immersionApplicationsToValidate,
+    //   ),
+    //   agencyConfig,
+    // });
   });
 });

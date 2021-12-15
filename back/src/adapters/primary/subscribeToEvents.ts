@@ -28,14 +28,15 @@ const getUseCasesByTopics = (
   ImmersionApplicationPartiallySigned: [
     useCases.notifyBeneficiaryOrEnterpriseThatApplicationWasSignedByOtherParty,
   ],
-  // signature feature flag is ACTIVE ---->>>
+  // when signature feature flag is ACTIVE ---->>>
 
   // following event should be renamed: ImmersionApplicationFullySigned
   ImmersionApplicationSubmittedByBeneficiary: [
     // <<<---- trigger when signature feature flag is NOT active
     useCases.confirmToBeneficiaryThatApplicationCorrectlySubmitted,
     useCases.confirmToMentorThatApplicationCorrectlySubmitted,
-    // signature feature flag is NOT active ---->>>
+    // when signature feature flag is NOT active ---->>>
+
     useCases.notifyToTeamApplicationSubmittedByBeneficiary,
     useCases.notifyNewApplicationNeedsReview,
   ],
