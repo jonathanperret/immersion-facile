@@ -45,7 +45,7 @@ const SignOnlyMessage = () => (
   <>
     <div role="alert" className="fr-alert fr-alert--info">
       <p className="fr-alert__title">
-        Cette demande d'immersion est prête à être signé.
+        Cette demande d'immersion est prête à être signée.
       </p>
       <p>
         Cette demande d'immersion n'est plus modifiable. Veuillez la
