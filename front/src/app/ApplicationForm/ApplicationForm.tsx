@@ -116,8 +116,8 @@ const createInitialApplication = (
     immersionSkills: "Attention au détail",
 
     // Signatures
-    beneficiaryAccepted: true,
-    enterpriseAccepted: true,
+    beneficiaryAccepted: false,
+    enterpriseAccepted: false,
   };
 };
 
