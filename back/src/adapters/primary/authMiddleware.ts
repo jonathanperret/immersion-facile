@@ -7,6 +7,9 @@ import { AppConfig } from "./appConfig";
 import jwt from "jsonwebtoken";
 import { ApiConsumer } from "../../shared/tokens/ApiConsumer";
 import promClient from "prom-client";
+import { ImmersionApplicationRepository } from "../../domain/immersionApplication/ports/ImmersionApplicationRepository";
+import { AgencyRepository } from "../../domain/immersionApplication/ports/AgencyRepository";
+import { ForbiddenError } from "./helpers/sendHttpResponse";
 
 const logger = createLogger(__filename);
 
@@ -66,10 +69,14 @@ export const createApiKeyAuthMiddleware = (config: AppConfig) => {
   };
 };
 
-export const createJwtAuthMiddleware = (config: AppConfig) => {
+export const createJwtAuthMiddleware = (
+  config: AppConfig,
+  immersionApplicationRepository: ImmersionApplicationRepository,
+  agencyRepository: AgencyRepository,
+) => {
   const { verifyJwt, verifyDeprecatedJwt } = verifyJwtConfig(config);
 
-  return (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const pathComponents = req.path.split("/");
     const maybeJwt = pathComponents[pathComponents.length - 1];
     if (!maybeJwt) {
@@ -78,6 +85,32 @@ export const createJwtAuthMiddleware = (config: AppConfig) => {
 
     try {
       const payload = verifyJwt(maybeJwt as string);
+
+      // Verify that the email matches the email corresponding to this role in the application.
+      const application = await immersionApplicationRepository.getById(
+        payload.applicationId,
+      );
+      if (!application) {
+        sendAuthenticationError(res, new ForbiddenError());
+      }
+
+      let expectedEmail: string | undefined;
+      switch (payload.roles[0]) {
+        case "beneficiary":
+          expectedEmail = application!.toDto().email;
+          break;
+        case "establishment":
+          expectedEmail = application!.toDto().mentorEmail;
+          break;
+        default:
+          break;
+      }
+      if (expectedEmail) {
+        if (!expectedEmail === payload.email) {
+          return;
+        }
+      }
+
       req.jwtPayload = payload;
       next();
     } catch (err: any) {
