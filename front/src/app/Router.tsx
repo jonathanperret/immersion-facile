@@ -12,7 +12,7 @@ import { PopulateDB } from "./Debug/PopulateDB";
 import { SearchDebug } from "./Debug/SearchDebug";
 import { RenewExpiredLink } from "../helpers/RenewExpiredLink";
 import { Search } from "./Search/Search";
-import { SignForm } from "./ApplicationForm/SignForm";
+import { SignFormPage } from "./ApplicationForm/SignFormPage";
 
 const { dev, featureFlags } = ENV;
 
@@ -33,7 +33,7 @@ export const Router = () => {
       )}
       {featureFlags.enableEnterpriseSignature &&
         route.name === "immersionApplicationsToSign" && (
-          <SignForm route={route} />
+          <SignFormPage route={route} />
         )}
       {route.name === "immersionApplication" && (
         <ApplicationForm route={route} />
