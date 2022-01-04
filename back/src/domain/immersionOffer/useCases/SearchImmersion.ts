@@ -4,9 +4,11 @@ import {
   SearchImmersionResultDto,
 } from "../../../shared/SearchImmersionDto";
 import { ApiConsumer } from "../../../shared/tokens/ApiConsumer";
+import { uniqBy } from "../../../shared/utils";
 import { UseCase } from "../../core/UseCase";
 import { SearchParams } from "../entities/SearchParams";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
+import { LaBonneBoiteAPI } from "../ports/LaBonneBoiteAPI";
 import { SearchesMadeRepository } from "../ports/SearchesMadeRepository";
 
 export class SearchImmersion extends UseCase<
@@ -17,6 +19,7 @@ export class SearchImmersion extends UseCase<
   constructor(
     private readonly searchesMadeRepository: SearchesMadeRepository,
     private readonly immersionOfferRepository: ImmersionOfferRepository,
+    private readonly laBonneBoiteAPI: LaBonneBoiteAPI,
   ) {
     super();
   }
@@ -31,9 +34,21 @@ export class SearchImmersion extends UseCase<
     await this.searchesMadeRepository.insertSearchMade(searchParams);
     const apiConsumerName = apiConsumer?.consumer;
 
-    return this.immersionOfferRepository.getFromSearch(
-      searchParams,
-      /* withContactDetails= */ apiConsumerName !== undefined,
+    const resultsFromStorage =
+      await this.immersionOfferRepository.getFromSearch(
+        searchParams,
+        /* withContactDetails= */ apiConsumerName !== undefined,
+      );
+
+    const resultsFromLaBonneBoite = await this.laBonneBoiteAPI.searchCompanies({
+      ...params,
+      ...params.location,
+    });
+
+    // TODO : convert resultsFromLaBonneBoite to SearchImmersion result and add rome to unicity check
+    return uniqBy(
+      [...resultsFromStorage /* , ...resultsFromLaBonneBoite */],
+      (searchResult) => searchResult.siret,
     );
   }
 }
