@@ -199,6 +199,8 @@ describe("SearchImmersion", () => {
           },
         ]);
 
+        expect(unauthenticatedResponse[1].contactDetails).toBeUndefined();
+
         expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
           {
             rome: "M1607",
@@ -304,9 +306,10 @@ describe("SearchImmersion", () => {
             city: TEST_CITY,
             nafLabel: TEST_NAF_LABEL,
             romeLabel: TEST_ROME_LABEL,
-            // contactDetails: undefined,
           },
         ]);
+
+        expect(unauthenticatedResponse[0].contactDetails).toBeUndefined();
 
         expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
           {

@@ -52,6 +52,7 @@ import {
   createMagicLinkPayload,
   Role,
 } from "../../shared/tokens/MagicLinkPayload";
+import { random, sleep } from "../../shared/utils";
 import { createLogger } from "../../utils/logger";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import {
@@ -62,13 +63,21 @@ import {
   BasicEventCrawler,
   RealEventCrawler,
 } from "../secondary/core/EventCrawlerImplementations";
+import {
+  defaultMaxBackoffPeriodMs,
+  defaultRetryDeadlineMs,
+  ExponentialBackoffRetryStrategy,
+} from "../secondary/core/ExponentialBackoffRetryStrategy";
 import { InMemoryEventBus } from "../secondary/core/InMemoryEventBus";
 import { InMemoryOutboxRepository } from "../secondary/core/InMemoryOutboxRepository";
+import { QpsRateLimiter } from "../secondary/core/QpsRateLimiter";
 import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunner";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
 import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
 import { HttpAdresseAPI } from "../secondary/immersionOffer/HttpAdresseAPI";
+import { HttpLaBonneBoiteAPI } from "../secondary/immersionOffer/HttpLaBonneBoiteAPI";
 import { InMemoryImmersionOfferRepository } from "../secondary/immersionOffer/InMemoryImmersonOfferRepository";
+import { InMemoryLaBonneBoiteAPI } from "../secondary/immersionOffer/InMemoryLaBonneBoiteAPI";
 import { InMemorySearchesMadeRepository } from "../secondary/immersionOffer/InMemorySearchesMadeRepository";
 import { InMemoryAgencyRepository } from "../secondary/InMemoryAgencyRepository";
 import { InMemoryEmailGateway } from "../secondary/InMemoryEmailGateway";
@@ -91,6 +100,7 @@ import {
   createApiKeyAuthMiddleware,
   createJwtAuthMiddleware,
 } from "./authMiddleware";
+import { getHttpLaBonneBoiteAPI } from "./getHttpLaBonneBoiteAPI";
 
 const logger = createLogger(__filename);
 
@@ -219,6 +229,11 @@ export const createRepositories = async (
       config.repositories === "PG"
         ? new PgOutboxRepository(await getPgPoolFn().connect())
         : new InMemoryOutboxRepository(),
+
+    laBonneBoite:
+      config.laBonneBoiteGateway === "HTTPS"
+        ? getHttpLaBonneBoiteAPI(config, clock)
+        : new InMemoryLaBonneBoiteAPI(),
   };
 };
 
@@ -374,6 +389,9 @@ const createUseCases = (
     searchImmersion: new SearchImmersion(
       repositories.searchesMade,
       repositories.immersionOffer,
+      repositories.laBonneBoite,
+      uuidGenerator,
+      config.featureFlags,
     ),
     getImmersionOfferById: new GetImmersionOfferById(
       repositories.immersionOffer,
