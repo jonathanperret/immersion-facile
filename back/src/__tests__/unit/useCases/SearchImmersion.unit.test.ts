@@ -20,96 +20,122 @@ import { ContactEntityV2Builder } from "../../../_testBuilders/ContactEntityV2Bu
 import { EstablishmentAggregateBuilder } from "../../../_testBuilders/EstablishmentAggregateBuilder";
 import { EstablishmentEntityV2Builder } from "../../../_testBuilders/EstablishmentEntityV2Builder";
 import { ImmersionOfferEntityV2Builder } from "../../../_testBuilders/ImmersionOfferEntityV2Builder";
+import { ApiConsumer } from "../../../shared/tokens/ApiConsumer";
 
 type PrepareSearchableDataProps = {
   withLBBSearchOnFetch?: boolean;
 };
 
-const prepareSearchableData = async ({
-  withLBBSearchOnFetch,
-}: PrepareSearchableDataProps) => {
-  const immersionOfferRepository = new InMemoryImmersionOfferRepository();
-  const searchesMadeRepository = new InMemorySearchesMadeRepository();
-  const laBonneBoiteAPI = new InMemoryLaBonneBoiteAPI();
-  const uuidGenerator = new TestUuidGenerator();
-  const featureFlagBuilder = FeatureFlagsBuilder.allOff();
-  const featureFlags = withLBBSearchOnFetch
-    ? featureFlagBuilder.enableLBBFetchOnSearch().build()
-    : featureFlagBuilder.build();
+const prepareSearchableData =
+  ({ withLBBSearchOnFetch }: PrepareSearchableDataProps) =>
+  async () => {
+    const immersionOfferRepository = new InMemoryImmersionOfferRepository();
+    const searchesMadeRepository = new InMemorySearchesMadeRepository();
+    const laBonneBoiteAPI = new InMemoryLaBonneBoiteAPI();
+    const uuidGenerator = new TestUuidGenerator();
+    const featureFlagBuilder = FeatureFlagsBuilder.allOff();
+    const featureFlags = withLBBSearchOnFetch
+      ? featureFlagBuilder.enableLBBFetchOnSearch().build()
+      : featureFlagBuilder.build();
 
-  const lbbCompany = new LaBonneBoiteCompanyBuilder()
-    .withRome("M1607")
-    .withSiret("11112222333344")
-    .withNaf("8500A")
-    .build();
-  laBonneBoiteAPI.setNextResults([lbbCompany]);
-  const generatedOfferId: ImmersionOfferId = "generated-immersion-offer-id";
-  uuidGenerator.setNextUuid(generatedOfferId);
+    const lbbCompany = new LaBonneBoiteCompanyBuilder()
+      .withRome("M1607")
+      .withSiret("11112222333344")
+      .withNaf("8500A")
+      .build();
+    laBonneBoiteAPI.setNextResults([lbbCompany]);
+    const generatedOfferId: ImmersionOfferId = "generated-immersion-offer-id";
+    uuidGenerator.setNextUuid(generatedOfferId);
 
-  const searchImmersion = new SearchImmersion(
-    searchesMadeRepository,
-    immersionOfferRepository,
-    laBonneBoiteAPI,
-    uuidGenerator,
-    featureFlags,
-  );
-  const siret = "78000403200019";
-  const immersionOfferId = "13df03a5-a2a5-430a-b558-ed3e2f03536d";
-  const establishment = new EstablishmentEntityV2Builder()
-    .withSiret(siret)
-    .withContactMode("EMAIL")
-    .withAddress("55 Rue du Faubourg Saint-Honoré")
-    .withNaf("8539A")
-    .build();
-  const immersionOffer = new ImmersionOfferEntityV2Builder()
-    .withId(immersionOfferId)
-    .withRome("M1607")
-    .build();
-  const contact = new ContactEntityV2Builder().build();
+    const searchImmersion = new SearchImmersion(
+      searchesMadeRepository,
+      immersionOfferRepository,
+      laBonneBoiteAPI,
+      uuidGenerator,
+      featureFlags,
+    );
+    const siret = "78000403200019";
+    const immersionOfferId = "13df03a5-a2a5-430a-b558-ed3e2f03536d";
+    const establishment = new EstablishmentEntityV2Builder()
+      .withSiret(siret)
+      .withContactMode("EMAIL")
+      .withAddress("55 Rue du Faubourg Saint-Honoré")
+      .withNaf("8539A")
+      .build();
+    const immersionOffer = new ImmersionOfferEntityV2Builder()
+      .withId(immersionOfferId)
+      .withRome("M1607")
+      .build();
+    const contact = new ContactEntityV2Builder().build();
 
-  await immersionOfferRepository.insertEstablishmentAggregates([
-    new EstablishmentAggregateBuilder()
-      .withEstablishment(establishment)
-      .withContacts([contact])
-      .withImmersionOffers([immersionOffer])
-      .build(),
-  ]);
+    await immersionOfferRepository.insertEstablishmentAggregates([
+      new EstablishmentAggregateBuilder()
+        .withEstablishment(establishment)
+        .withContacts([contact])
+        .withImmersionOffers([immersionOffer])
+        .build(),
+    ]);
 
-  return {
-    searchImmersion,
-    immersionOfferId,
-    searchesMadeRepository,
-    generatedOfferId,
+    return {
+      searchImmersion,
+      immersionOfferId,
+      searchesMadeRepository,
+      generatedOfferId,
+    };
   };
+
+const prepareSearchableDataWithFeatureFlagON = prepareSearchableData({
+  withLBBSearchOnFetch: true,
+});
+
+const prepareSearchableDataWithFeatureFlagOFF = prepareSearchableData({
+  withLBBSearchOnFetch: false,
+});
+
+const searchSecretariatInMetzParams = {
+  rome: "M1607",
+  nafDivision: "85",
+  distance_km: 30,
+  location: {
+    lat: 49.119146,
+    lon: 6.17602,
+  },
 };
 
-describe("SearchImmersion", () => {
+const authenticatedApiConsumerPayload: ApiConsumer = {
+  consumer: "passeEmploi",
+  id: "my-valid-apikey-id",
+  exp: new Date("2022-01-01").getTime(),
+  iat: new Date("2021-12-20").getTime(),
+};
+
+describe("SearchImmersionUseCase", () => {
+  it("stores searches made", async () => {
+    const { searchImmersion, searchesMadeRepository } =
+      await prepareSearchableDataWithFeatureFlagON();
+
+    await searchImmersion.execute(searchSecretariatInMetzParams);
+
+    expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
+      {
+        rome: "M1607",
+        nafDivision: "85",
+        lat: 49.119146,
+        lon: 6.17602,
+        distance_km: 30,
+      },
+    ]);
+  });
+
   describe("With feature flag ON", () => {
     describe("authenticated with api key", () => {
       test("Search immersion, and provide contact details", async () => {
-        const {
-          searchImmersion,
-          immersionOfferId,
-          searchesMadeRepository,
-          generatedOfferId,
-        } = await prepareSearchableData({ withLBBSearchOnFetch: true });
+        const { searchImmersion, immersionOfferId, generatedOfferId } =
+          await prepareSearchableDataWithFeatureFlagON();
 
         const authenticatedResponse = await searchImmersion.execute(
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            distance_km: 30,
-            location: {
-              lat: 49.119146,
-              lon: 6.17602,
-            },
-          },
-          {
-            consumer: "passeEmploi",
-            id: "my-valid-apikey-id",
-            exp: new Date("2022-01-01").getTime(),
-            iat: new Date("2021-12-20").getTime(),
-          },
+          searchSecretariatInMetzParams,
+          authenticatedApiConsumerPayload,
         );
 
         expectSearchResponseToMatch(authenticatedResponse, [
@@ -144,37 +170,17 @@ describe("SearchImmersion", () => {
         ]);
 
         expect(authenticatedResponse[1].contactDetails).toBeUndefined();
-
-        expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            lat: 49.119146,
-            lon: 6.17602,
-            distance_km: 30,
-          },
-        ]);
       });
     });
 
     describe("Not authenticated with api key", () => {
       test("Search immersion, and do NOT provide contact details", async () => {
-        const {
-          searchImmersion,
-          immersionOfferId,
-          searchesMadeRepository,
-          generatedOfferId,
-        } = await prepareSearchableData({ withLBBSearchOnFetch: true });
+        const { searchImmersion, immersionOfferId, generatedOfferId } =
+          await prepareSearchableDataWithFeatureFlagON();
 
-        const unauthenticatedResponse = await searchImmersion.execute({
-          rome: "M1607",
-          nafDivision: "85",
-          distance_km: 30,
-          location: {
-            lat: 49.119146,
-            lon: 6.17602,
-          },
-        });
+        const unauthenticatedResponse = await searchImmersion.execute(
+          searchSecretariatInMetzParams,
+        );
 
         expectSearchResponseToMatch(unauthenticatedResponse, [
           {
@@ -198,18 +204,7 @@ describe("SearchImmersion", () => {
             siret: "11112222333344",
           },
         ]);
-
         expect(unauthenticatedResponse[1].contactDetails).toBeUndefined();
-
-        expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            lat: 49.119146,
-            lon: 6.17602,
-            distance_km: 30,
-          },
-        ]);
       });
     });
   });
@@ -217,25 +212,12 @@ describe("SearchImmersion", () => {
   describe("With feature flag OFF", () => {
     describe("authenticated with api key", () => {
       test("Search immersion, and provide contact details", async () => {
-        const { searchImmersion, immersionOfferId, searchesMadeRepository } =
-          await prepareSearchableData({ withLBBSearchOnFetch: false });
+        const { searchImmersion, immersionOfferId } =
+          await prepareSearchableDataWithFeatureFlagOFF();
 
         const authenticatedResponse = await searchImmersion.execute(
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            distance_km: 30,
-            location: {
-              lat: 49.119146,
-              lon: 6.17602,
-            },
-          },
-          {
-            consumer: "passeEmploi",
-            id: "my-valid-apikey-id",
-            exp: new Date("2022-01-01").getTime(),
-            iat: new Date("2021-12-20").getTime(),
-          },
+          searchSecretariatInMetzParams,
+          authenticatedApiConsumerPayload,
         );
 
         expectSearchResponseToMatch(authenticatedResponse, [
@@ -263,33 +245,17 @@ describe("SearchImmersion", () => {
             },
           },
         ]);
-
-        expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            lat: 49.119146,
-            lon: 6.17602,
-            distance_km: 30,
-          },
-        ]);
       });
     });
 
     describe("Not authenticated with api key", () => {
       test("Search immersion, and do NOT provide contact details", async () => {
-        const { searchImmersion, immersionOfferId, searchesMadeRepository } =
-          await prepareSearchableData({ withLBBSearchOnFetch: false });
+        const { searchImmersion, immersionOfferId } =
+          await prepareSearchableDataWithFeatureFlagOFF();
 
-        const unauthenticatedResponse = await searchImmersion.execute({
-          rome: "M1607",
-          nafDivision: "85",
-          distance_km: 30,
-          location: {
-            lat: 49.119146,
-            lon: 6.17602,
-          },
-        });
+        const unauthenticatedResponse = await searchImmersion.execute(
+          searchSecretariatInMetzParams,
+        );
 
         expectSearchResponseToMatch(unauthenticatedResponse, [
           {
@@ -308,18 +274,7 @@ describe("SearchImmersion", () => {
             romeLabel: TEST_ROME_LABEL,
           },
         ]);
-
         expect(unauthenticatedResponse[0].contactDetails).toBeUndefined();
-
-        expectSearchesStoredToEqual(searchesMadeRepository.searchesMade, [
-          {
-            rome: "M1607",
-            nafDivision: "85",
-            lat: 49.119146,
-            lon: 6.17602,
-            distance_km: 30,
-          },
-        ]);
       });
     });
   });
