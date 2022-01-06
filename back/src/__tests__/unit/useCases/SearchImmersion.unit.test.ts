@@ -80,6 +80,7 @@ const prepareSearchableData =
       searchImmersion,
       immersionOfferId,
       searchesMadeRepository,
+      immersionOfferRepository,
       generatedOfferId,
     };
   };
@@ -128,6 +129,22 @@ describe("SearchImmersionUseCase", () => {
   });
 
   describe("With feature flag ON", () => {
+    test("when more than 15 results, return unmutated object", async () => {
+      const { searchImmersion, immersionOfferRepository } =
+        await prepareSearchableDataWithFeatureFlagON();
+
+      const fakeSearchResponse = Array(16).fill({} as SearchImmersionResultDto);
+
+      immersionOfferRepository.getFromSearch = async () => fakeSearchResponse;
+
+      const authenticatedResponse = await searchImmersion.execute(
+        searchSecretariatInMetzParams,
+        authenticatedApiConsumerPayload,
+      );
+
+      expect(authenticatedResponse).toBe(fakeSearchResponse);
+    });
+
     describe("authenticated with api key", () => {
       test("Search immersion, and provide contact details", async () => {
         const { searchImmersion, immersionOfferId, generatedOfferId } =
@@ -168,7 +185,6 @@ describe("SearchImmersionUseCase", () => {
             siret: "11112222333344",
           },
         ]);
-
         expect(authenticatedResponse[1].contactDetails).toBeUndefined();
       });
     });
