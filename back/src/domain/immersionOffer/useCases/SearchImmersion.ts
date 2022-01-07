@@ -50,7 +50,11 @@ export class SearchImmersion extends UseCase<
     if (resultsFromStorage.length >= THRESHOLD_TO_FETCH_LBB)
       return resultsFromStorage;
 
-    await this.updateStorageByCallingLaBonneBoite(params);
+    try {
+      await this.updateStorageByCallingLaBonneBoite(params);
+    } catch (e: any) {
+      e;
+    }
 
     return this.immersionOfferRepository.getFromSearch(
       searchParams,

@@ -2,6 +2,7 @@ import { UpdateEstablishmentsAndImmersionOffersFromLastSearches } from "../../do
 import { random, sleep } from "../../shared/utils";
 import { createLogger } from "../../utils/logger";
 import { PipelineStats } from "../../utils/pipelineStats";
+import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
 import {
   defaultMaxBackoffPeriodMs,
@@ -12,15 +13,17 @@ import { QpsRateLimiter } from "../secondary/core/QpsRateLimiter";
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
 import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
 import { HttpAdresseAPI } from "../secondary/immersionOffer/HttpAdresseAPI";
+import { HttpLaBonneBoiteAPI } from "../secondary/immersionOffer/HttpLaBonneBoiteAPI";
 import { HttpLaPlateformeDeLInclusionAPI } from "../secondary/immersionOffer/HttpLaPlateformeDeLInclusionAPI";
+import { PoleEmploiAccessTokenGateway } from "../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
 import { AppConfig } from "./appConfig";
 import { createGetPgPoolFn, createRepositories } from "./config";
-import { getHttpLaBonneBoiteAPI } from "./getHttpLaBonneBoiteAPI";
 
 const logger = createLogger(__filename);
 
 const STATS_LOGGING_INTERVAL_MS = 30_000;
 
+const MAX_QPS_LA_BONNE_BOITE_GATEWAY = 1;
 const MAX_QPS_LA_PLATEFORME_DE_L_INCLUSION = 1;
 const MAX_QPS_API_ADRESSE = 5;
 const MAX_QPS_SIRENE_API = 5;
@@ -37,7 +40,22 @@ const main = async () => {
 
   const uuidGenerator = new UuidV4Generator();
 
-  const laBonneBoiteAPI = getHttpLaBonneBoiteAPI(config, clock);
+  const poleEmploiAccessTokenGateway = new CachingAccessTokenGateway(
+    new PoleEmploiAccessTokenGateway(config.poleEmploiAccessTokenConfig),
+  );
+
+  const laBonneBoiteAPI = new HttpLaBonneBoiteAPI(
+    poleEmploiAccessTokenGateway,
+    config.poleEmploiClientId,
+    new QpsRateLimiter(MAX_QPS_LA_BONNE_BOITE_GATEWAY, clock, sleep),
+    new ExponentialBackoffRetryStrategy(
+      defaultMaxBackoffPeriodMs,
+      defaultRetryDeadlineMs,
+      clock,
+      sleep,
+      random,
+    ),
+  );
 
   const adresseAPI = new HttpAdresseAPI(
     new QpsRateLimiter(MAX_QPS_API_ADRESSE, clock, sleep),
