@@ -1,3 +1,4 @@
+import promClient from "prom-client";
 import { FeatureFlags } from "../../../shared/featureFlags";
 import {
   SearchImmersionRequestDto,
@@ -5,12 +6,36 @@ import {
   SearchImmersionResultDto,
 } from "../../../shared/SearchImmersionDto";
 import { ApiConsumer } from "../../../shared/tokens/ApiConsumer";
+import { createLogger } from "../../../utils/logger";
 import { UuidGenerator } from "../../core/ports/UuidGenerator";
 import { UseCase } from "../../core/UseCase";
 import { SearchParams } from "../entities/SearchParams";
 import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
 import { LaBonneBoiteAPI } from "../ports/LaBonneBoiteAPI";
 import { SearchesMadeRepository } from "../ports/SearchesMadeRepository";
+
+const logger = createLogger(__filename);
+
+const counterSearchImmersionLBBRequestsTotal = new promClient.Counter({
+  name: "search_immersion_lbb_requests_total",
+  help: "The total count of LBB request made in the search immersions use case",
+});
+
+const counterSearchImmersionLBBRequestsError = new promClient.Counter({
+  name: "search_immersion_lbb_requests_error",
+  help: "The total count of failed LBB request made in the search immersions use case",
+});
+
+const counterSearchImmersionLBBRequestsSkipped = new promClient.Counter({
+  name: "search_immersion_lbb_requests_skipped",
+  help: "The total count of skipped LBB request made in the search immersions use case",
+});
+
+const histogramSearchImmersionStoredCount = new promClient.Histogram({
+  name: "search_immersion_stored_result_count",
+  help: "Histogram of the number of result returned from storage",
+  buckets: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+});
 
 const THRESHOLD_TO_FETCH_LBB = 15;
 
@@ -45,15 +70,21 @@ export class SearchImmersion extends UseCase<
         /* withContactDetails= */ apiConsumerName !== undefined,
       );
 
+    histogramSearchImmersionStoredCount.observe(resultsFromStorage.length);
+
     if (!this.featureFlags.enableLBBFetchOnSearch) return resultsFromStorage;
 
-    if (resultsFromStorage.length >= THRESHOLD_TO_FETCH_LBB)
+    if (resultsFromStorage.length >= THRESHOLD_TO_FETCH_LBB) {
+      counterSearchImmersionLBBRequestsSkipped.inc();
       return resultsFromStorage;
+    }
 
     try {
+      counterSearchImmersionLBBRequestsTotal.inc();
       await this.updateStorageByCallingLaBonneBoite(params);
     } catch (e: any) {
-      e;
+      logger.warn(e, "LBB fetch error");
+      counterSearchImmersionLBBRequestsError.inc();
     }
 
     return this.immersionOfferRepository.getFromSearch(
