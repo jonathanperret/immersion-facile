@@ -1,0 +1,74 @@
+version: "3"
+services:
+  back:
+    image: immersion-facile_back
+    networks: 
+      - mynw
+    build:
+      context: "./back"
+      dockerfile: Dockerfile.back
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+
+  front:
+    image: immersion-facile_front
+    networks: 
+      - mynw
+    build:
+      context: "."
+      dockerfile: Dockerfile.front
+    env_file:
+      - .env
+    deploy:
+      replicas: 1
+
+  nginx:
+    restart: unless-stopped
+    networks: 
+      - mynw
+    image: immersion-facile_nginx
+    depends_on:
+      - front
+      - back
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+      args:
+        - ENV_TYPE=${ENV_TYPE:-develop}
+        - DOMAIN=${DOMAIN:-domain.tld}
+        - LETSENCRYPT_MAIL=${LETSENCRYPT_MAIL:-not_provided@mail.com}
+        - ADMIN_ALLOWED_IP=${ADMIN_ALLOWED_IP:-}
+    ports:
+      - "${EXPOSED_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    deploy:
+      replicas: 1
+    volumes:
+      - ./nginx/etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/etc/nginx/conf.d/:/etc/nginx/conf.d/
+
+  postgres:
+    image: postgis/postgis:13-master
+    networks: 
+      - mynw
+    environment:
+      POSTGRES_DB: immersion-db
+      POSTGRES_USER: immersion
+      POSTGRES_PASSWORD: pg-password
+    volumes:
+      - ./docker-data/postgresql:/var/lib/postgresql/data
+    extra_hosts:
+      - host.docker.internal:postgres-gw
+
+  adminer:
+    image: adminer
+    networks: 
+      - mynw
+
+networks: 
+  mynw:
