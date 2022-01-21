@@ -18,11 +18,19 @@ const tryToConnect = async (
   connectionString: string,
   tryNumber = 0,
 ): Promise<{ client: PoolClient; pool: Pool }> => {
-  if (tryNumber >= 10)
+  //TODO JF: CHANGE BACK TO 10 or an env variable
+  if (tryNumber >= 1000)
     throw new Error(`Tried to connect ${tryNumber} times without success`);
   try {
     logger.info(`Trying to connect to DB : ${connectionString} try number : ${tryNumber}`);
-    const pool = new Pool({ connectionString });
+    //const pool = new Pool({ connectionString });
+    const pool = new Pool({
+      user: 'immersion',
+      host: 'postgres',
+      database: 'immersion-db',
+      password: 'pg-password',
+      port: 5432,
+  })
     const client = await pool.connect();
     logger.info("Successfully connected");
     return { client, pool };

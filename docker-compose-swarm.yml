@@ -2,8 +2,6 @@ version: "3"
 services:
   back:
     image: immersion-facile_back
-    networks: 
-      - mynw
     build:
       context: "./back"
       dockerfile: Dockerfile.back
@@ -17,8 +15,6 @@ services:
 
   front:
     image: immersion-facile_front
-    networks: 
-      - mynw
     build:
       context: "."
       dockerfile: Dockerfile.front
@@ -29,8 +25,6 @@ services:
 
   nginx:
     restart: unless-stopped
-    networks: 
-      - mynw
     image: immersion-facile_nginx
     depends_on:
       - front
@@ -54,21 +48,12 @@ services:
 
   postgres:
     image: postgis/postgis:13-master
-    networks: 
-      - mynw
     environment:
       POSTGRES_DB: immersion-db
       POSTGRES_USER: immersion
       POSTGRES_PASSWORD: pg-password
     volumes:
       - ./docker-data/postgresql:/var/lib/postgresql/data
-    extra_hosts:
-      - host.docker.internal:postgres-gw
 
   adminer:
     image: adminer
-    networks: 
-      - mynw
-
-networks: 
-  mynw:

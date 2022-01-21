@@ -149,9 +149,18 @@ export const createGetPgPoolFn = (config: AppConfig): GetPgPoolFn => {
          ROME_GATEWAY=${config.romeGateway}`,
       );
     if (!pgPool) {
-      const { host, pathname } = new URL(config.pgImmersionDbUrl);
-      logger.info({ host, pathname }, "creating postgresql connection pool");
-      pgPool = new Pool({ connectionString: config.pgImmersionDbUrl });
+      //logger.info(config.pgImmersionDbUrl, "pgImmersionDbUrl");
+      //const { host, pathname } = new URL(config.pgImmersionDbUrl);
+      //logger.info({ host, pathname }, "creating postgresql connection pool");
+      //pgPool = new Pool({ connectionString: config.pgImmersionDbUrl });
+      pgPool =     new Pool({
+        user: 'immersion',
+        host: 'postgres',
+        database: 'immersion-db',
+        password: 'pg-password',
+        port: 5432,
+    })
+  
     }
     return pgPool;
   };
