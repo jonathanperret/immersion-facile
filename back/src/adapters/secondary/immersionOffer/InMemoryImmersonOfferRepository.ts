@@ -117,6 +117,36 @@ export class InMemoryImmersionOfferRepository
       );
   }
 
+  public async getActiveEstablishmentSiretsNotUpdatedSince(
+    since: Date,
+  ): Promise<string[]> {
+    return this._establishmentAggregates
+      .filter(
+        (aggregate) =>
+          aggregate.establishment.isActive &&
+          aggregate.establishment.updatedAt <= since,
+      )
+      .map((aggregate) => aggregate.establishment.siret);
+  }
+
+  public async updateEstablishment(
+    siret: string,
+    update: Partial<EstablishmentEntityV2> & { updatedAt: Date },
+  ): Promise<void> {
+    this._establishmentAggregates = this._establishmentAggregates.map(
+      (aggregate) =>
+        aggregate.establishment.siret === siret
+          ? {
+              ...aggregate,
+              establishment: {
+                ...aggregate.establishment,
+                ...update,
+              },
+            }
+          : aggregate,
+    );
+  }
+
   // for test purposes only :
   get establishmentAggregates() {
     return this._establishmentAggregates;

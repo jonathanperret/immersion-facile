@@ -341,3 +341,91 @@ describe("Postgres implementation of immersion offer repository", () => {
       .query("SELECT * FROM establishments WHERE siret=$1", [siret])
       .then((res) => res.rows);
 });
+
+const _truncateTables = async (client: PoolClient) => {
+  await client.query("TRUNCATE immersion_contacts CASCADE");
+  await client.query("TRUNCATE establishments CASCADE");
+  await client.query("TRUNCATE immersion_offers CASCADE");
+};
+const prepareClientAndPgImmersionOfferRepository = async () => {
+  const pool = getTestPgPool();
+  const client = await pool.connect();
+  await _truncateTables(client);
+  const repo = new PgImmersionOfferRepository(client);
+  return { pool, client, repo };
+};
+
+const cleanupConnectionPool = async ({
+  client,
+  pool,
+}: {
+  client: PoolClient;
+  pool: Pool;
+}) => {
+  client.release();
+  await pool.end();
+};
+
+describe("Pg implementation of method getActiveEstablishmentSiretsNotUpdatedSince", () => {
+  it("Returns a siret list of establishments having field `update_date` < parameter `since` ", async () => {
+    // Prepare
+    const { repo, pool, client } =
+      await prepareClientAndPgImmersionOfferRepository();
+    const since = new Date("2020-05-05T12:00:00.000");
+    const siretOfClosedEstablishmentNotUpdatedSince = "78000403200021";
+    const siretOfActiveEstablishmentNotUpdatedSince = "78000403200022";
+    const siretOfActiveEstablishmentUpdatedSince = "78000403200023";
+
+    const beforeSince = new Date("2020-04-14T12:00:00.000");
+    const afterSince = new Date("2020-05-15T12:00:00.000");
+
+    await insertEstablishment({
+      client,
+      siret: siretOfClosedEstablishmentNotUpdatedSince,
+      updatedAt: beforeSince,
+      isActive: false,
+    });
+    await insertEstablishment({
+      client,
+      siret: siretOfActiveEstablishmentNotUpdatedSince,
+      updatedAt: beforeSince,
+      isActive: true,
+    });
+    await insertEstablishment({
+      client,
+      siret: siretOfActiveEstablishmentUpdatedSince,
+      updatedAt: afterSince,
+      isActive: true,
+    });
+
+    // Act
+    const actualResult = await repo.getActiveEstablishmentSiretsNotUpdatedSince(
+      since,
+    );
+
+    // Assert
+    const expectedResult: string[] = [
+      siretOfActiveEstablishmentNotUpdatedSince,
+    ];
+    expect(actualResult).toEqual(expectedResult);
+
+    // Cleanup
+    await cleanupConnectionPool({ pool, client });
+  });
+});
+
+const insertEstablishment = async (props: {
+  client: PoolClient;
+  siret: string;
+  updatedAt: Date;
+  isActive: boolean;
+}) => {
+  const insertQuery = `INSERT INTO establishments (
+    siret, name, address, number_employees, naf, contact_mode, data_source, gps, update_date, is_active
+  ) VALUES ('${
+    props.siret
+  }', '', null, null, '8520A', null, 'api_labonneboite', null, '${props.updatedAt.toISOString()}', ${
+    props.isActive
+  } )`;
+  await props.client.query(insertQuery);
+};
