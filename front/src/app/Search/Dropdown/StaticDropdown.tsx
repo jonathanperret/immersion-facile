@@ -2,34 +2,32 @@ import { Autocomplete } from "@mui/material";
 import React, { CSSProperties } from "react";
 import "./searchdropdown.css";
 
-type Value = number;
-
-type ValueAndLabel = {
-  value: Value;
+type ValueAndLabel<V> = {
+  value: V;
   label: string;
 };
 
-type StaticDropdownProps = {
+type StaticDropdownProps<V> = {
   title: string;
-  onSelect: (str: Value | null) => void;
+  onSelect: (str: V | null) => void;
+  options: ValueAndLabel<V>[];
+  defaultValue?: ValueAndLabel<V>;
   className?: string;
-  options: ValueAndLabel[];
   inputStyle?: CSSProperties;
-  defaultValue?: ValueAndLabel;
 };
 
-export const StaticDropdown = ({
+export const StaticDropdown = <V extends unknown>({
   title,
   className,
   options,
   onSelect,
   inputStyle,
   defaultValue,
-}: StaticDropdownProps) => {
+}: StaticDropdownProps<V>) => {
   return (
     <Autocomplete
       defaultValue={defaultValue}
-      onChange={(_, selectedOption: ValueAndLabel | null) => {
+      onChange={(_, selectedOption: ValueAndLabel<V> | null) => {
         onSelect(selectedOption?.value ?? null);
       }}
       renderInput={(params) => (
