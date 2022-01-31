@@ -13,12 +13,14 @@ import { AddressAutocomplete } from "src/components/AddressAutocomplete";
 import { Layout } from "src/components/Layout";
 import { SearchButton } from "src/components/SearchButton";
 import { SuccessFeedback } from "src/components/SuccessFeedback";
+import { AddressWithCoordinates } from "src/core-logic/ports/ApiAdresseGateway";
 import { ContactMethod } from "src/shared/FormEstablishmentDto";
+import { ProfessionDto } from "src/shared/rome";
 import {
   SearchImmersionRequestDto,
   SearchImmersionResultDto,
 } from "src/shared/SearchImmersionDto";
-import { StaticDropdown } from "./Dropdown/StaticDropdown";
+import { StaticDropdownOld, StaticDropdown } from "./Dropdown/StaticDropdown";
 import { EnterpriseSearchResult } from "./EnterpriseSearchResult";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -31,7 +33,11 @@ interface Values {
 }
 
 const radiusOptions = [1, 2, 5, 10, 20, 50, 100];
-const initialySelectedIndex = 3; // to get 10 km radius by default
+const radiusOptionsWithLabels = radiusOptions.map((v) => ({
+  value: v,
+  label: `${v} km`,
+}));
+const initiallySelectedIndex = 3; // to get 10 km radius by default
 
 const getFeedBackMessage = (contactMethod?: ContactMethod) => {
   switch (contactMethod) {
@@ -92,61 +98,24 @@ export const Search = () => {
                 });
             }}
           >
-            {({ setFieldValue }) => (
+            {({ setFieldValue, values }) => (
               <Form>
-                <div className="gap-5 flex flex-col">
-                  <div>
-                    <ProfessionAutocomplete
-                      title="Métier recherché"
-                      setFormValue={(newValue) =>
-                        setFieldValue("rome", newValue.romeCodeMetier)
-                      }
-                      className="searchdropdown-header inputLabel"
-                    />
-                  </div>
-
-                  <div>
-                    <AddressAutocomplete
-                      label="Lieu"
-                      headerClassName="searchdropdown-header inputLabel"
-                      inputStyle={{
-                        paddingLeft: "48px",
-                        background: `white url(${locationSearchIcon}) no-repeat scroll 11px 8px`,
-                      }}
-                      setFormValue={({ coordinates }) => {
-                        setFieldValue("lat", coordinates.lat);
-                        setFieldValue("lon", coordinates.lon);
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <StaticDropdown
-                      inputStyle={{
-                        paddingLeft: "48px",
-                        background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
-                      }}
-                      title="Rayon"
-                      onSelection={(
-                        newValue: string,
-                        selectedIndex: number,
-                      ) => {
-                        setFieldValue("radiusKm", radiusOptions[selectedIndex]);
-                      }}
-                      defaultSelectedIndex={initialySelectedIndex}
-                      options={radiusOptions.map((n) => `${n} km`)}
-                    />
-                  </div>
-                  <SearchButton
-                    className="mt-12"
-                    dark
-                    disabled={isSearching}
-                    type="submit"
-                  >
-                    <SearchIcon />
-                    <div>Rechercher</div>
-                  </SearchButton>
-                </div>
+                <SearchFields
+                  setRome={(newValue) =>
+                    setFieldValue("rome", newValue.romeCodeMetier)
+                  }
+                  setAddressWithCoordinate={({ coordinates }) => {
+                    setFieldValue("lat", coordinates.lat);
+                    setFieldValue("lon", coordinates.lon);
+                  }}
+                  onRadiusSelectionOld={(selectedIndex) => {
+                    setFieldValue("radiusKm", radiusOptions[selectedIndex]);
+                  }}
+                  onRadiusSelection={(value) => {
+                    setFieldValue("radiusKm", value);
+                  }}
+                  isSearching={isSearching}
+                />
               </Form>
             )}
           </Formik>
@@ -156,6 +125,74 @@ export const Search = () => {
         </div>
       </div>
     </Layout>
+  );
+};
+
+type SearchFieldsProps = {
+  setRome: (professionDto: ProfessionDto) => void;
+  setAddressWithCoordinate: (p: AddressWithCoordinates) => void;
+  onRadiusSelection: (value: number | null) => void;
+  onRadiusSelectionOld: (value: number) => void;
+  isSearching: boolean;
+};
+
+const SearchFields = ({
+  setRome,
+  setAddressWithCoordinate,
+  isSearching,
+  onRadiusSelection,
+  onRadiusSelectionOld,
+}: SearchFieldsProps) => {
+  return (
+    <div className="gap-5 flex flex-col">
+      <div>
+        <ProfessionAutocomplete
+          title="Métier recherché"
+          setFormValue={setRome}
+          className="searchdropdown-header inputLabel"
+        />
+      </div>
+
+      <div>
+        <AddressAutocomplete
+          label="Lieu"
+          headerClassName="searchdropdown-header inputLabel"
+          inputStyle={{
+            paddingLeft: "48px",
+            background: `white url(${locationSearchIcon}) no-repeat scroll 11px 8px`,
+          }}
+          setFormValue={setAddressWithCoordinate}
+        />
+      </div>
+
+      <div>
+        <StaticDropdown
+          defaultValue={radiusOptionsWithLabels[initiallySelectedIndex]}
+          title="Rayon"
+          options={radiusOptionsWithLabels}
+          onSelect={onRadiusSelection}
+          className="searchdropdown-header inputLabel"
+          inputStyle={{
+            paddingLeft: "48px",
+            background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
+          }}
+        />
+        <StaticDropdownOld
+          inputStyle={{
+            paddingLeft: "48px",
+            background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
+          }}
+          title="Rayon"
+          onSelection={onRadiusSelectionOld}
+          defaultSelectedIndex={initiallySelectedIndex}
+          options={radiusOptions.map((n) => `${n} km`)}
+        />
+      </div>
+      <SearchButton className="mt-12" dark disabled={isSearching} type="submit">
+        <SearchIcon />
+        <div>Rechercher</div>
+      </SearchButton>
+    </div>
   );
 };
 
