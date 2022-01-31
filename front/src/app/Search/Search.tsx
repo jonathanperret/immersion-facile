@@ -1,3 +1,4 @@
+import SearchIcon from "@mui/icons-material/Search";
 import { CircularProgress } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import React, { ReactNode, useState } from "react";
@@ -20,9 +21,8 @@ import {
   SearchImmersionRequestDto,
   SearchImmersionResultDto,
 } from "src/shared/SearchImmersionDto";
-import { StaticDropdownOld, StaticDropdown } from "./Dropdown/StaticDropdown";
+import { StaticDropdown } from "./Dropdown/StaticDropdown";
 import { EnterpriseSearchResult } from "./EnterpriseSearchResult";
-import SearchIcon from "@mui/icons-material/Search";
 
 interface Values {
   rome?: string;
@@ -33,11 +33,11 @@ interface Values {
 }
 
 const radiusOptions = [1, 2, 5, 10, 20, 50, 100];
+const initiallySelectedIndex = 3; // to get 10 km radius by default
 const radiusOptionsWithLabels = radiusOptions.map((v) => ({
   value: v,
   label: `${v} km`,
 }));
-const initiallySelectedIndex = 3; // to get 10 km radius by default
 
 const getFeedBackMessage = (contactMethod?: ContactMethod) => {
   switch (contactMethod) {
@@ -108,9 +108,6 @@ export const Search = () => {
                     setFieldValue("lat", coordinates.lat);
                     setFieldValue("lon", coordinates.lon);
                   }}
-                  onRadiusSelectionOld={(selectedIndex) => {
-                    setFieldValue("radiusKm", radiusOptions[selectedIndex]);
-                  }}
                   onRadiusSelection={(value) => {
                     setFieldValue("radiusKm", value);
                   }}
@@ -132,7 +129,6 @@ type SearchFieldsProps = {
   setRome: (professionDto: ProfessionDto) => void;
   setAddressWithCoordinate: (p: AddressWithCoordinates) => void;
   onRadiusSelection: (value: number | null) => void;
-  onRadiusSelectionOld: (value: number) => void;
   isSearching: boolean;
 };
 
@@ -141,60 +137,47 @@ const SearchFields = ({
   setAddressWithCoordinate,
   isSearching,
   onRadiusSelection,
-  onRadiusSelectionOld,
-}: SearchFieldsProps) => {
-  return (
-    <div className="gap-5 flex flex-col">
-      <div>
-        <ProfessionAutocomplete
-          title="Métier recherché"
-          setFormValue={setRome}
-          className="searchdropdown-header inputLabel"
-        />
-      </div>
-
-      <div>
-        <AddressAutocomplete
-          label="Lieu"
-          headerClassName="searchdropdown-header inputLabel"
-          inputStyle={{
-            paddingLeft: "48px",
-            background: `white url(${locationSearchIcon}) no-repeat scroll 11px 8px`,
-          }}
-          setFormValue={setAddressWithCoordinate}
-        />
-      </div>
-
-      <div>
-        <StaticDropdown
-          defaultValue={radiusOptionsWithLabels[initiallySelectedIndex]}
-          title="Rayon"
-          options={radiusOptionsWithLabels}
-          onSelect={onRadiusSelection}
-          className="searchdropdown-header inputLabel"
-          inputStyle={{
-            paddingLeft: "48px",
-            background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
-          }}
-        />
-        <StaticDropdownOld
-          inputStyle={{
-            paddingLeft: "48px",
-            background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
-          }}
-          title="Rayon"
-          onSelection={onRadiusSelectionOld}
-          defaultSelectedIndex={initiallySelectedIndex}
-          options={radiusOptions.map((n) => `${n} km`)}
-        />
-      </div>
-      <SearchButton className="mt-12" dark disabled={isSearching} type="submit">
-        <SearchIcon />
-        <div>Rechercher</div>
-      </SearchButton>
+}: SearchFieldsProps) => (
+  <div className="gap-5 flex flex-col">
+    <div>
+      <ProfessionAutocomplete
+        title="Métier recherché"
+        setFormValue={setRome}
+        className="searchdropdown-header inputLabel"
+      />
     </div>
-  );
-};
+
+    <div>
+      <AddressAutocomplete
+        label="Lieu"
+        headerClassName="searchdropdown-header inputLabel"
+        inputStyle={{
+          paddingLeft: "48px",
+          background: `white url(${locationSearchIcon}) no-repeat scroll 11px 8px`,
+        }}
+        setFormValue={setAddressWithCoordinate}
+      />
+    </div>
+
+    <div>
+      <StaticDropdown
+        defaultValue={radiusOptionsWithLabels[initiallySelectedIndex]}
+        title="Rayon"
+        options={radiusOptionsWithLabels}
+        onSelect={onRadiusSelection}
+        className="searchdropdown-header inputLabel"
+        inputStyle={{
+          paddingLeft: "48px",
+          background: `white url(${distanceSearchIcon}) no-repeat scroll 11px 8px`,
+        }}
+      />
+    </div>
+    <SearchButton className="mt-12" dark disabled={isSearching} type="submit">
+      <SearchIcon />
+      <div>Rechercher</div>
+    </SearchButton>
+  </div>
+);
 
 type SearchResultsProps = {
   searchResults: SearchImmersionResultDto[] | null;
