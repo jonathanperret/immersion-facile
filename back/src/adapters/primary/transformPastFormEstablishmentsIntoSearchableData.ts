@@ -16,7 +16,9 @@ import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
 import { HttpAdresseAPI } from "../secondary/immersionOffer/HttpAdresseAPI";
 import { PgImmersionOfferRepository } from "../secondary/pg/PgImmersionOfferRepository";
 import { PgRomeGateway } from "../secondary/pg/PgRomeGateway";
+import { PgUowPerformer } from "../secondary/pg/PgUowPerformer";
 import { AppConfig } from "./appConfig";
+import { createPgUow } from "./config";
 
 const maxQpsApiAdresse = 5;
 const maxQpsSireneApi = 5;
@@ -36,7 +38,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
     "starting to convert form establishement to searchable data",
   );
 
-  //We create the use case transformFormEstablishementIntoSearchData
+  // We create the use case transformFormEstablishementIntoSearchData
   const poolOrigin = new Pool({ connectionString: originPgConnectionString });
   const clientOrigin = await poolOrigin.connect();
 
@@ -72,6 +74,8 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
   );
   const poleEmploiGateway = new PgRomeGateway(clientOrigin);
 
+  const uow = new PgUowPerformer(getPgPoolFn(), createPgUow);
+
   const transformFormEstablishmentIntoSearchData =
     new TransformFormEstablishmentIntoSearchData(
       immersionOfferRepository,
@@ -81,6 +85,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
       sequenceRunner,
       new UuidV4Generator(),
       new RealClock(),
+      uow,
     );
   const allIdsResult = await clientOrigin.query(
     "WITH siretInFormEstablishment AS ( \
@@ -102,7 +107,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
       businessContacts: row.business_contacts,
       preferredContactMethods: row.preferred_contact_methods,
     };
-    await transformFormEstablishmentIntoSearchData._execute(
+    await transformFormEstablishmentIntoSearchData.execute(
       formEstablishmentDto,
     );
   }
@@ -116,3 +121,6 @@ transformPastFormEstablishmentsIntoSearchableData(
   config.pgImmersionDbUrl,
   config.pgImmersionDbUrl,
 );
+function getPgPoolFn(): Pool {
+  throw new Error("Function not implemented.");
+}
