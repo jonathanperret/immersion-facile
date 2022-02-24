@@ -3,7 +3,7 @@ import { CustomClock } from "../../../adapters/secondary/core/ClockImplementatio
 import { InMemoryOutboxRepository } from "../../../adapters/secondary/core/InMemoryOutboxRepository";
 import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
 import { InMemoryAdresseAPI } from "../../../adapters/secondary/immersionOffer/InMemoryAdresseAPI";
-import { InMemoryImmersionOfferRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersonOfferRepository";
+import { InMemoryImmersionOfferRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersionOfferRepository";
 import { InMemoryRomeGateway } from "../../../adapters/secondary/InMemoryRomeGateway";
 import { InMemorySireneRepository } from "../../../adapters/secondary/InMemorySireneRepository";
 import { InMemoryUowPerformer } from "../../../adapters/secondary/InMemoryUowPerformer";
