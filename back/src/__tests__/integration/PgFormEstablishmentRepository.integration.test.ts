@@ -29,7 +29,7 @@ describe("PgFormEstablishmentRepository", () => {
       .withSiret("88888888888888")
       .build();
 
-    await formEstablishmentRepository.save(formEstablishment);
+    await formEstablishmentRepository.create(formEstablishment);
 
     const result = await client.query("SELECT * FROM form_establishments");
 
@@ -50,8 +50,8 @@ describe("PgFormEstablishmentRepository", () => {
       .withSiret(siretB)
       .build();
 
-    await formEstablishmentRepository.save(formEstablishmentA);
-    await formEstablishmentRepository.save(formEstablishmentB);
+    await formEstablishmentRepository.create(formEstablishmentA);
+    await formEstablishmentRepository.create(formEstablishmentB);
 
     const resultA = await formEstablishmentRepository.getBySiret(siretA);
     expect(resultA).toEqual(formEstablishmentA);

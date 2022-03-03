@@ -44,6 +44,7 @@ export type DomainEvent =
 
   // FORM ESTABLISHMENT RELATED
   | GenericEvent<"FormEstablishmentAdded", FormEstablishmentDto>
+  | GenericEvent<"FormEstablishmentEdited", FormEstablishmentDto>
   // prettier-ignore
   | GenericEvent<"ContactRequestedByBeneficiary", ContactEstablishmentRequestDto>
   // prettier-ignore
