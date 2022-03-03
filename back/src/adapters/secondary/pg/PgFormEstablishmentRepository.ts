@@ -4,7 +4,10 @@ import {
   FormEstablishmentDto,
   FormEstablishmentId,
 } from "../../../shared/FormEstablishmentDto";
+import { createLogger } from "../../../utils/logger";
+import { ConflictError } from "../../primary/helpers/httpErrors";
 
+const logger = createLogger(__filename);
 export class PgFormEstablishmentRepository
   implements FormEstablishmentRepository
 {
@@ -34,9 +37,9 @@ export class PgFormEstablishmentRepository
     return this.pgToEntity(formEstablishment);
   }
 
-  public async save(
+  public async create(
     formEstablishmentDto: FormEstablishmentDto,
-  ): Promise<FormEstablishmentId | undefined> {
+  ): Promise<void> {
     // prettier-ignore
     const { id, siret, businessName, businessNameCustomized, businessAddress, isEngagedEnterprise, naf, professions, businessContacts, preferredContactMethods } =
       formEstablishmentDto
@@ -46,8 +49,15 @@ export class PgFormEstablishmentRepository
       ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
 
     // prettier-ignore
-    await this.client.query(query, [id, siret, businessName, businessNameCustomized, businessAddress, isEngagedEnterprise ,naf, JSON.stringify(professions), JSON.stringify(businessContacts), JSON.stringify(preferredContactMethods)]);
-    return formEstablishmentDto.id;
+    try {
+      await this.client.query(query, [id, siret, businessName, businessNameCustomized, businessAddress, isEngagedEnterprise ,naf, JSON.stringify(professions), JSON.stringify(businessContacts), JSON.stringify(preferredContactMethods)]);
+    } catch (error) {
+      logger.error({error}, "Cannot save form establishment ")
+      throw new ConflictError(`Cannot create form establishment with id ${formEstablishmentDto.id}`)
+    }
+  }
+  public async edit(formEstablishmentDto: FormEstablishmentDto): Promise<void> {
+    throw "not implemented ";
   }
 
   pgToEntity(params: Record<any, any>): FormEstablishmentDto {

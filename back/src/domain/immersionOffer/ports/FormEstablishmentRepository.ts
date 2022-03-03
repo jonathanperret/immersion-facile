@@ -4,9 +4,8 @@ import {
 } from "../../../shared/FormEstablishmentDto";
 
 export interface FormEstablishmentRepository {
-  save: (
-    formEstablishmentDto: FormEstablishmentDto,
-  ) => Promise<FormEstablishmentId | undefined>;
+  create: (formEstablishmentDto: FormEstablishmentDto) => Promise<void>;
+  edit: (formEstablishmentDto: FormEstablishmentDto) => Promise<void>;
 
   getById: (
     id: FormEstablishmentId,

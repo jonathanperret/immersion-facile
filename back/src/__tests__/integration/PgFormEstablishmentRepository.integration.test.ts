@@ -29,7 +29,7 @@ describe("PgFormEstablishmentRepository", () => {
       .withId("aaaaac99-9c0b-bbbb-bb6d-6bb9bd38aaaa")
       .build();
 
-    await formEstablishmentRepository.save(formEstablishment);
+    await formEstablishmentRepository.create(formEstablishment);
 
     const result = await client.query("SELECT * FROM form_establishments");
 
@@ -49,8 +49,8 @@ describe("PgFormEstablishmentRepository", () => {
       .withId(idB)
       .build();
 
-    await formEstablishmentRepository.save(formEstablishmentA);
-    await formEstablishmentRepository.save(formEstablishmentB);
+    await formEstablishmentRepository.create(formEstablishmentA);
+    await formEstablishmentRepository.create(formEstablishmentB);
 
     const resultA = await formEstablishmentRepository.getById(idA);
     expect(resultA).toEqual(formEstablishmentA);

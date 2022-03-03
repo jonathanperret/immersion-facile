@@ -1,4 +1,3 @@
-import { ConflictError } from "../../../adapters/primary/helpers/httpErrors";
 import {
   FormEstablishmentDto,
   FormEstablishmentId,
@@ -37,8 +36,7 @@ export class AddFormEstablishment extends TransactionalUseCase<
       await rejectsSiretIfNotAnOpenCompany(this.getSiret, dto.siret);
     }
 
-    const id = await uow.formEstablishmentRepo.save(dto);
-    if (!id) throw new ConflictError("empty");
+    await uow.formEstablishmentRepo.create(dto);
 
     const event = this.createNewEvent({
       topic: "FormEstablishmentAdded",
@@ -47,6 +45,6 @@ export class AddFormEstablishment extends TransactionalUseCase<
     });
 
     await uow.outboxRepo.save(event);
-    return id;
+    return dto.id;
   }
 }

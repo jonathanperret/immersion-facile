@@ -65,7 +65,7 @@ describe("PgUowPerformer", () => {
       .withId(someUuid)
       .build();
 
-    const uuid = await uow.formEstablishmentRepo.save(formEstablishment)!;
+    const uuid = await uow.formEstablishmentRepo.create(formEstablishment)!;
 
     const event = createNewEvent({
       topic: "FormEstablishmentAdded",
