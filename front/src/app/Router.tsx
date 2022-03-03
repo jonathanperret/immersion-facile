@@ -9,7 +9,10 @@ import { Home } from "src/app/Home";
 import { useRoute } from "src/app/routes";
 import { ENV } from "src/environmentVariables";
 import { AdminVerification } from "./admin/AdminVerification";
-import { EstablishmentForm } from "./FormEstablishment/EstablishmentForm";
+import {
+  EstablishmentCreationForm,
+  EstablishmentEditionForm,
+} from "./FormEstablishment/EstablishmentForm";
 import { PopulateDB } from "./Debug/PopulateDB";
 import { SearchDebug } from "./Debug/SearchDebug";
 import { RenewExpiredLink } from "../helpers/RenewExpiredLink";
@@ -29,10 +32,13 @@ export const Router = () => {
       {route.name === "home" && <Home showDebugInfo={dev} />}
       {route.name === "landingEstablishment" && <LandingEstablishment />}
       {route.name === "formEstablishment" && (
-        <EstablishmentForm route={route} />
+        <EstablishmentCreationForm route={route} />
       )}
       {route.name === "formEstablishmentForIframes" && (
-        <EstablishmentForm route={route} />
+        <EstablishmentCreationForm route={route} />
+      )}
+      {route.name === "editFormEstablishment" && (
+        <EstablishmentEditionForm route={route} />
       )}
       {route.name === "immersionApplicationsToValidate" && (
         <VerificationPage route={route} />

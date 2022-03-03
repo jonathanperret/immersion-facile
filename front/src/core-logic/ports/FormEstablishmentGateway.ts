@@ -12,4 +12,8 @@ export interface FormEstablishmentGateway {
   searchProfession: (searchText: string) => Promise<RomeSearchMatchDto[]>;
   getSiretAlreadyExists(siret: SiretDto): Promise<boolean>;
   requestEmailToEditForm(siret: SiretDto): Promise<void>;
+  getFormEstablishmentFromJwt: (jwt: string) => Promise<FormEstablishmentDto>;
+  updateFormEstablishment: (
+    establishment: FormEstablishmentDto,
+  ) => Promise<void>;
 }

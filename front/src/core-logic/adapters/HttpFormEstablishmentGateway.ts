@@ -45,4 +45,18 @@ export class HttpFormEstablishmentGateway implements FormEstablishmentGateway {
   public async requestEmailToEditForm(siret: string): Promise<void> {
     await axios.get(`/${prefix}/${requestEmailToUpdateFormRoute}/${siret}`);
   }
+  public async getFormEstablishmentFromJwt(
+    jwt: string,
+  ): Promise<FormEstablishmentDto> {
+    throw "not implemented";
+  }
+  public async updateFormEstablishment(
+    establishment: FormEstablishmentDto,
+  ): Promise<void> {
+    // const httpResponse = await axios.post(
+    //   `/${prefix}/${immersionOffersRoute}`,
+    //   establishment,
+    // );
+    throw "not implemented";
+  }
 }
