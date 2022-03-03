@@ -44,7 +44,7 @@ import { GetImmersionOfferById } from "../../domain/immersionOffer/useCases/GetI
 import { NotifyConfirmationEstablishmentCreated } from "../../domain/immersionOffer/useCases/notifications/NotifyConfirmationEstablishmentCreated";
 import { NotifyContactRequest } from "../../domain/immersionOffer/useCases/notifications/NotifyContactRequest";
 import { SearchImmersion } from "../../domain/immersionOffer/useCases/SearchImmersion";
-import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { UpsertEstablishmentAggregateFromForm } from "../../domain/immersionOffer/useCases/UpsertEstablishmentAggregateFromFormEstablishement";
 import { RomeGateway } from "../../domain/rome/ports/RomeGateway";
 import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
@@ -110,6 +110,7 @@ import { PgImmersionApplicationExportQueries } from "../secondary/pg/PgImmersion
 import { CallLaBonneBoiteAndUpdateRepositories } from "../../domain/immersionOffer/useCases/CallLaBonneBoiteAndUpdateRepositories";
 import { RequestEditFormEstablishment } from "../../domain/immersionOffer/useCases/RequestEditFormEstablishment";
 import { ShareApplicationLinkByEmail } from "../../domain/immersionApplication/useCases/ShareApplicationLinkByEmail";
+import { EditFormEstablishment } from "../../domain/immersionOffer/useCases/EditFormEstablishment";
 
 const logger = createLogger(__filename);
 
@@ -466,8 +467,13 @@ const createUseCases = (
       getSiret,
     ),
 
-    transformFormEstablishmentToSearchData:
-      new TransformFormEstablishmentIntoSearchData(
+    editFormEstablishment: new EditFormEstablishment(
+      uowPerformer,
+      createNewEvent,
+    ),
+
+    upsertEstablishmentAggregateFromForm:
+      new UpsertEstablishmentAggregateFromForm(
         adresseAPI,
         repositories.sirene,
         repositories.rome,

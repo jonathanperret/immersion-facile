@@ -8,7 +8,8 @@ import { InMemoryRomeGateway } from "../../../adapters/secondary/InMemoryRomeGat
 import { InMemorySireneRepository } from "../../../adapters/secondary/InMemorySireneRepository";
 import { InMemoryUowPerformer } from "../../../adapters/secondary/InMemoryUowPerformer";
 import { SequenceRunner } from "../../../domain/core/ports/SequenceRunner";
-import { TransformFormEstablishmentIntoSearchData } from "../../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { EstablishmentEntityV2 } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
+import { UpsertEstablishmentAggregateFromForm } from "../../../domain/immersionOffer/useCases/UpsertEstablishmentAggregateFromFormEstablishement";
 import { SireneEstablishmentVO } from "../../../domain/sirene/ports/SireneRepository";
 import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";
 import { ProfessionDto } from "../../../shared/rome";
@@ -50,11 +51,11 @@ const getEstablishmentFromSireneApi = (
     },
   });
 
-describe("Transform FormEstablishment into search data", () => {
+describe("Upsert Establishment aggregate from form data", () => {
   let inMemorySireneRepository: InMemorySireneRepository;
   let immersionOfferRepo: InMemoryImmersionOfferRepository;
   let inMemoryAdresseAPI: InMemoryAdresseAPI;
-  let useCase: TransformFormEstablishmentIntoSearchData;
+  let useCase: UpsertEstablishmentAggregateFromForm;
   let uuidGenerator: TestUuidGenerator;
 
   beforeEach(() => {
@@ -64,14 +65,14 @@ describe("Transform FormEstablishment into search data", () => {
     uuidGenerator = new TestUuidGenerator();
     const inMemoryRomeGateway = new InMemoryRomeGateway();
     const sequencerRunner = new TestSequenceRunner();
-    const outboxRepository = new InMemoryOutboxRepository();
+    const outboxRepo = new InMemoryOutboxRepository();
     const uowPerformer = new InMemoryUowPerformer({
       ...createInMemoryUow(),
-      outboxRepo: outboxRepository,
-      immersionOfferRepo: immersionOfferRepo,
+      outboxRepo,
+      immersionOfferRepo,
     });
 
-    useCase = new TransformFormEstablishmentIntoSearchData(
+    useCase = new UpsertEstablishmentAggregateFromForm(
       inMemoryAdresseAPI,
       inMemorySireneRepository,
       inMemoryRomeGateway,
@@ -174,50 +175,76 @@ describe("Transform FormEstablishment into search data", () => {
       0,
     );
   });
-  it("Removes (and replaces) establishment and offers with same siret from La Bonne Boite if exists", async () => {
+  it("Removes (and replaces) establishment and offers with same siret if exists", async () => {
     const siret = "12345678911234";
     // Prepare : insert an establishment aggregate from LBB with siret
-    immersionOfferRepo.establishmentAggregates = [
-      new EstablishmentAggregateBuilder()
-        .withEstablishment(
-          new EstablishmentEntityV2Builder()
-            .withSiret(siret)
-            .withDataSource("api_labonneboite")
-            .build(),
-        )
-        .withImmersionOffers([new ImmersionOfferEntityV2Builder().build()])
-        .build(),
-    ];
-    // Act : execute use-case with same siret
+    const previousContact = new ContactEntityV2Builder()
+      .withEmail("previous.contact@gmail.com")
+      .build();
+    const previousEstablishment = new EstablishmentEntityV2Builder()
+      .withSiret(siret)
+      .withDataSource("api_labonneboite")
+      .build();
+
+    const previousAggregate = new EstablishmentAggregateBuilder()
+      .withEstablishment(previousEstablishment)
+      .withImmersionOffers([
+        new ImmersionOfferEntityV2Builder().build(),
+        new ImmersionOfferEntityV2Builder().build(),
+      ])
+      .withContact(previousContact)
+      .build();
+    immersionOfferRepo.establishmentAggregates = [previousAggregate];
+
+    const newRomeCode = "A1101";
     const formEstablishment = FormEstablishmentDtoBuilder.valid()
       .withSiret(siret)
+      .withProfessions([
+        {
+          description: "Boulanger",
+          romeCodeMetier: newRomeCode,
+          romeCodeAppellation: "22222",
+        },
+      ])
+      .withBusinessContacts([
+        new ContactEntityV2Builder().withEmail("new.contact@gmail.com").build(),
+      ])
       .build();
+
+    const establishmentFromApi =
+      getEstablishmentFromSireneApi(formEstablishment);
+    inMemorySireneRepository.setEstablishment(establishmentFromApi);
+
+    // Act : execute use-case with same siret
     await useCase.execute(formEstablishment);
 
     // Assert
-    expect(immersionOfferRepo.establishmentAggregates).toHaveLength(0);
-  });
-  it("Raises an error if an establishment from form with same siret already exists - Should not happen.", async () => {
-    const siret = "12345678911234";
-    // Prepare : insert an establishment aggregate from LBB with siret
-    immersionOfferRepo.establishmentAggregates = [
-      new EstablishmentAggregateBuilder()
-        .withEstablishment(
-          new EstablishmentEntityV2Builder()
-            .withSiret(siret)
-            .withDataSource("form")
-            .build(),
-        )
-        .withImmersionOffers([new ImmersionOfferEntityV2Builder().build()])
-        .build(),
-    ];
-    // Act and assert : execute use-case with same siret from form should raise
-    const formEstablishment = FormEstablishmentDtoBuilder.valid()
-      .withSiret(siret)
-      .build();
+    // One aggregate only
+    expect(immersionOfferRepo.establishmentAggregates).toHaveLength(1);
 
-    await expect(useCase.execute(formEstablishment)).rejects.toThrow(
-      "Cannot insert establishment from form with siret 12345678911234 since it already exists.",
-    );
+    // Establishment matches update from form
+    const partialExpectedEstablishment: Partial<EstablishmentEntityV2> = {
+      siret,
+      address: formEstablishment.businessAddress,
+      dataSource: "form",
+      isActive: true,
+      name: formEstablishment.businessName,
+    };
+    expect(
+      immersionOfferRepo.establishmentAggregates[0].establishment,
+    ).toMatchObject(partialExpectedEstablishment);
+
+    // Offers match update from form
+    expect(
+      immersionOfferRepo.establishmentAggregates[0].immersionOffers,
+    ).toHaveLength(1);
+    expect(
+      immersionOfferRepo.establishmentAggregates[0].immersionOffers[0].rome,
+    ).toEqual(newRomeCode);
+
+    // Contact match update from form
+    expect(
+      immersionOfferRepo.establishmentAggregates[0].contact?.email,
+    ).toEqual("new.contact@gmail.com");
   });
 });

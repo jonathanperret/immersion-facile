@@ -21,14 +21,12 @@ import {
 } from "../entities/EstablishmentEntity";
 import { ImmersionOfferEntityV2 } from "../entities/ImmersionOfferEntity";
 import { AdresseAPI } from "../ports/AdresseAPI";
-import { ImmersionOfferRepository } from "../ports/ImmersionOfferRepository";
 
 const logger = createLogger(__filename);
 
 const offerFromFormScore = 10; // 10/10 if voluntaryToImmersion=true (consider removing this field)
 
-// TODO Rename : InsertNewEstablishmentFromFormToRepositories
-export class TransformFormEstablishmentIntoSearchData extends TransactionalUseCase<
+export class UpsertEstablishmentAggregateFromForm extends TransactionalUseCase<
   FormEstablishmentDto,
   void
 > {
@@ -51,20 +49,9 @@ export class TransformFormEstablishmentIntoSearchData extends TransactionalUseCa
     uow: UnitOfWork,
   ): Promise<void> {
     const establishmentSiret = formEstablishment.siret;
-
-    const establishmentDataSource =
-      await uow.immersionOfferRepo.getEstablishmentDataSourceFromSiret(
-        establishmentSiret,
-      );
-    if (establishmentDataSource === "form") {
-      throw new Error(
-        `Cannot insert establishment from form with siret ${establishmentSiret} since it already exists.`,
-      );
-    } else if (establishmentDataSource === "api_labonneboite") {
-      await uow.immersionOfferRepo.removeEstablishmentAndOffersWithSiret(
-        establishmentSiret,
-      );
-    }
+    await uow.immersionOfferRepo.removeEstablishmentAndOffersAndContactWithSiret(
+      establishmentSiret,
+    );
 
     const position = await this.adresseAPI.getPositionFromAddress(
       formEstablishment.businessAddress,

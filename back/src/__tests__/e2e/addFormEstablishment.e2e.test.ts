@@ -1,7 +1,7 @@
 import { buildTestApp } from "../../_testBuilders/buildTestApp";
 import { FormEstablishmentDtoBuilder } from "../../_testBuilders/FormEstablishmentDtoBuilder";
 import { TEST_ESTABLISHMENT1_SIRET } from "../../adapters/secondary/InMemorySireneRepository";
-import { immersionOffersRoute } from "../../shared/routes";
+import { addEstablishmentFormRoute } from "../../shared/routes";
 
 describe("Route to post FormEstablishments", () => {
   it("support posting valid establisment", async () => {
@@ -11,7 +11,7 @@ describe("Route to post FormEstablishments", () => {
       .build();
 
     const response = await request
-      .post(`/${immersionOffersRoute}`)
+      .post(`/${addEstablishmentFormRoute}`)
       .send(formEstablishment);
 
     expect(response.status).toBe(200);

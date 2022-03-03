@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from "pg";
+import { string } from "pg-format";
 import { UuidV4Generator } from "../../adapters/secondary/core/UuidGeneratorImplementations";
 import {
   PgContactMethod,
@@ -910,30 +911,6 @@ describe("Postgres implementation of immersion offer repository", () => {
       ).toBe(true);
     });
   });
-  describe("Pg implementation of method getEstablishmentDataSourceFromSiret", () => {
-    const siret = "12345678901234";
-    it("Returns undefined when there is no establishment in db with this siret", async () => {
-      const establishmentDataSource =
-        await pgImmersionOfferRepository.getEstablishmentDataSourceFromSiret(
-          siret,
-        );
-      expect(establishmentDataSource).toBeUndefined();
-    });
-    it("Returns undefined when there is no establishment in db with this siret", async () => {
-      // Prepare
-      await insertEstablishment({
-        siret,
-        dataSource: "form",
-      });
-      // Act
-      const establishmentDataSource =
-        await pgImmersionOfferRepository.getEstablishmentDataSourceFromSiret(
-          siret,
-        );
-      // Assert
-      expect(establishmentDataSource).toEqual("form");
-    });
-  });
   describe("Pg implementation of method getSiretOfEstablishmentsFromFormSource", () => {
     it("Returns a list of sirets of establishments with `form` data source", async () => {
       // Prepare
@@ -963,7 +940,7 @@ describe("Postgres implementation of immersion offer repository", () => {
       ]);
     });
   });
-  describe("Pg implementation of method removeEstablishmentAndOffersWithSiret", () => {
+  describe("Pg implementation of method removeEstablishmentAndOffersAndContactWithSiret", () => {
     it("Removes only establishment with given siret and its offers", async () => {
       // Prepare
       const siretToRemove = "11111111111111";
@@ -990,8 +967,15 @@ describe("Postgres implementation of immersion offer repository", () => {
         rome: "A1405",
         siret: siretToKeep,
       });
+
+      await insertImmersionContact({
+        uuid: testUid4,
+        siret_establishment: siretToKeep,
+        email: "tim@yahoo.fr",
+        lastName: "Ricaud",
+      });
       // Act
-      await pgImmersionOfferRepository.removeEstablishmentAndOffersWithSiret(
+      await pgImmersionOfferRepository.removeEstablishmentAndOffersAndContactWithSiret(
         siretToRemove,
       );
       // Assert
@@ -1002,6 +986,9 @@ describe("Postgres implementation of immersion offer repository", () => {
       const immersionOfferRows = await getAllImmersionOfferRows();
       expect(immersionOfferRows).toHaveLength(1);
       expect(immersionOfferRows[0].siret).toEqual(siretToKeep);
+      //   Relation contact / establishment has been removed
+      const establishmentContactRows = await getAllImmersionContactsRows();
+      expect(establishmentContactRows).toHaveLength(0);
     });
   });
 

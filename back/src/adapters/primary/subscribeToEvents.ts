@@ -49,10 +49,10 @@ const getUseCasesByTopics = (
 
   // Establishment form and search related.
   FormEstablishmentAdded: [
-    useCases.transformFormEstablishmentToSearchData,
+    useCases.upsertEstablishmentAggregateFromForm,
     useCases.notifyConfirmationEstablishmentCreated,
   ],
-  FormEstablishmentEdited: [],
+  FormEstablishmentEdited: [useCases.upsertEstablishmentAggregateFromForm],
   ContactRequestedByBeneficiary: [useCases.notifyContactRequest],
 
   // Magic link renewal.

@@ -23,12 +23,14 @@ import { SuccessMessage } from "src/components/form/SuccessMessage";
 import { TextInput } from "src/components/form/TextInput";
 import { toFormikValidationSchema } from "src/components/form/zodValidate";
 import { Layout } from "src/components/Layout";
+import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
 import { ENV } from "src/environmentVariables";
 import {
   ContactMethod,
   FormEstablishmentDto,
   formEstablishmentSchema,
 } from "src/shared/FormEstablishmentDto";
+import { EditFormEstablishmentPayload } from "src/shared/tokens/MagicLinkPayload";
 import { Route } from "type-route";
 import { v4 as uuidV4 } from "uuid";
 
@@ -384,17 +386,20 @@ export const EstablishmentEditionForm = ({
     FormEstablishmentDto | undefined
   >();
 
-  if (!route.params.jwt) {
-    return <p>Lien non valide</p>;
-  }
   useEffect(() => {
+    if (!route.params.jwt) return;
+    const editFormEstablishmentPayload =
+      decodeJwt<EditFormEstablishmentPayload>(route.params.jwt);
     formEstablishmentGateway
       .getFormEstablishmentFromJwt(route.params.jwt)
       .then((retrievedForm) => {
-        console.log("retrievedForm ", retrievedForm);
         return setInitialValues(retrievedForm);
       });
   }, [route.params.jwt]);
+
+  if (!route.params.jwt) {
+    return <p>Lien non valide</p>;
+  }
 
   if (!initialValues) return <p>...</p>;
   return (

@@ -381,16 +381,8 @@ export class PgImmersionOfferRepository implements ImmersionOfferRepository {
     const pgResult = await this.client.query(query, [since.toISOString()]);
     return pgResult.rows.map((row) => row.siret);
   }
-  public async getEstablishmentDataSourceFromSiret(
-    siret: string,
-  ): Promise<DataSource | undefined> {
-    const query = `
-      SELECT data_source FROM establishments
-      WHERE siret = $1`;
-    const pgResult = await this.client.query(query, [siret]);
-    return pgResult.rows[0]?.data_source;
-  }
-  public async removeEstablishmentAndOffersWithSiret(
+
+  public async removeEstablishmentAndOffersAndContactWithSiret(
     siret: string,
   ): Promise<void> {
     const query = `

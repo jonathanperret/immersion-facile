@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
+import { UpsertEstablishmentAggregateFromForm } from "../../domain/immersionOffer/useCases/UpsertEstablishmentAggregateFromFormEstablishement";
 
 import { random, sleep } from "../../shared/utils";
 import { createLogger } from "../../utils/logger";
@@ -77,8 +77,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
   const uow = new PgUowPerformer(getPgPoolFn(), createPgUow);
 
   const transformFormEstablishmentIntoSearchData =
-    new TransformFormEstablishmentIntoSearchData(
-      immersionOfferRepository,
+    new UpsertEstablishmentAggregateFromForm(
       adresseAPI,
       sireneRepository,
       poleEmploiGateway,

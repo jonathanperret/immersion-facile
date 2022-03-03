@@ -130,13 +130,7 @@ export class InMemoryImmersionOfferRepository
       )
       .map((aggregate) => aggregate.establishment.siret);
   }
-  public async getEstablishmentDataSourceFromSiret(
-    siret: string,
-  ): Promise<DataSource | undefined> {
-    return this._establishmentAggregates.find(
-      (aggregate) => aggregate.establishment.siret === siret,
-    )?.establishment?.dataSource;
-  }
+
   public async getSiretOfEstablishmentsFromFormSource(): Promise<string[]> {
     return this._establishmentAggregates
       .filter((aggregate) => aggregate.establishment.dataSource === "form")
@@ -196,7 +190,7 @@ export class InMemoryImmersionOfferRepository
     );
   }
 
-  public async removeEstablishmentAndOffersWithSiret(
+  public async removeEstablishmentAndOffersAndContactWithSiret(
     siret: string,
   ): Promise<void> {
     this.establishmentAggregates = this._establishmentAggregates.filter(

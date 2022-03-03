@@ -7,11 +7,13 @@ import {
 } from "src/shared/FormEstablishmentDto";
 import { RomeSearchMatchDto, romeSearchResponseSchema } from "src/shared/rome";
 import {
+  addEstablishmentFormRoute,
+  editEstablishmentFormRoute,
   formAlreadyExistsRoute,
-  immersionOffersRoute,
   requestEmailToUpdateFormRoute,
   romeRoute,
 } from "src/shared/routes";
+import { EditFormEstablishmentPayload as EditFormEstablishmentPayload } from "src/shared/tokens/MagicLinkPayload";
 
 const prefix = "api";
 
@@ -20,7 +22,7 @@ export class HttpFormEstablishmentGateway implements FormEstablishmentGateway {
     establishment: FormEstablishmentDto,
   ): Promise<FormEstablishmentId> {
     const httpResponse = await axios.post(
-      `/${prefix}/${immersionOffersRoute}`,
+      `/${prefix}/${addEstablishmentFormRoute}`,
       establishment,
     );
 
@@ -46,17 +48,13 @@ export class HttpFormEstablishmentGateway implements FormEstablishmentGateway {
     await axios.get(`/${prefix}/${requestEmailToUpdateFormRoute}/${siret}`);
   }
   public async getFormEstablishmentFromJwt(
-    jwt: string,
+    siret: string,
   ): Promise<FormEstablishmentDto> {
     throw "not implemented";
   }
   public async updateFormEstablishment(
     establishment: FormEstablishmentDto,
   ): Promise<void> {
-    // const httpResponse = await axios.post(
-    //   `/${prefix}/${immersionOffersRoute}`,
-    //   establishment,
-    // );
-    throw "not implemented";
+    await axios.post(`/${prefix}/${editEstablishmentFormRoute}`, establishment);
   }
 }
