@@ -4,7 +4,7 @@ import { InMemoryOutboxRepository } from "../../../adapters/secondary/core/InMem
 import { TestUuidGenerator } from "../../../adapters/secondary/core/UuidGeneratorImplementations";
 import { InMemoryAdresseAPI } from "../../../adapters/secondary/immersionOffer/InMemoryAdresseAPI";
 import { InMemoryImmersionOfferRepository } from "../../../adapters/secondary/immersionOffer/InMemoryImmersionOfferRepository";
-import { InMemoryRomeGateway } from "../../../adapters/secondary/InMemoryRomeGateway";
+import { InMemoryRomeRepository } from "../../../adapters/secondary/InMemoryRomeRepository";
 import {
   InMemorySireneRepository,
   TEST_ESTABLISHMENT1_SIRET,
@@ -74,7 +74,7 @@ describe("Transform FormEstablishment into search data", () => {
     immersionOfferRepo = new InMemoryImmersionOfferRepository();
     inMemoryAdresseAPI = new InMemoryAdresseAPI(fakePosition);
     uuidGenerator = new TestUuidGenerator();
-    const inMemoryRomeGateway = new InMemoryRomeGateway();
+    const inMemoryRomeRepository = new InMemoryRomeRepository();
     const sequencerRunner = new TestSequenceRunner();
     const outboxRepository = new InMemoryOutboxRepository();
     const uowPerformer = new InMemoryUowPerformer({
@@ -86,7 +86,7 @@ describe("Transform FormEstablishment into search data", () => {
     useCase = new TransformFormEstablishmentIntoSearchData(
       inMemoryAdresseAPI,
       inMemorySireneRepository,
-      inMemoryRomeGateway,
+      inMemoryRomeRepository,
       sequencerRunner,
       uuidGenerator,
       new CustomClock(),

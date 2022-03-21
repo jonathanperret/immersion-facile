@@ -16,7 +16,7 @@ import { ThrottledSequenceRunner } from "../secondary/core/ThrottledSequenceRunn
 import { UuidV4Generator } from "../secondary/core/UuidGeneratorImplementations";
 import { HttpsSireneRepository } from "../secondary/HttpsSireneRepository";
 import { HttpAdresseAPI } from "../secondary/immersionOffer/HttpAdresseAPI";
-import { PgRomeGateway } from "../secondary/pg/PgRomeGateway";
+import { PgRomeRepository } from "../secondary/pg/PgRomeRepository";
 import { PgUowPerformer } from "../secondary/pg/PgUowPerformer";
 import { AppConfig } from "./appConfig";
 import { createPgUow } from "./config";
@@ -70,7 +70,7 @@ const transformPastFormEstablishmentsIntoSearchableData = async (
       random,
     ),
   );
-  const poleEmploiGateway = new PgRomeGateway(clientOrigin);
+  const poleEmploiGateway = new PgRomeRepository(clientOrigin);
 
   const uow = new PgUowPerformer(getPgPoolFn(), createPgUow);
 
