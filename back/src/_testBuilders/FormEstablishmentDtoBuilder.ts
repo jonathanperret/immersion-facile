@@ -3,7 +3,7 @@ import {
   FormEstablishmentDto,
   FormEstablishmentSource,
 } from "../shared/FormEstablishmentDto";
-import { ProfessionDto } from "../shared/rome";
+import { ProfessionDto } from "../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 import { SiretDto } from "../shared/siret";
 import { Builder } from "./Builder";
 

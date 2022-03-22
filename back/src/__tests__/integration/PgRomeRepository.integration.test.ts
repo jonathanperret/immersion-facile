@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from "pg";
+import { expectTypeToMatchAndEqual } from "../../_testBuilders/test.helpers";
 import { PgRomeRepository } from "../../adapters/secondary/pg/PgRomeRepository";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
 
@@ -30,22 +31,24 @@ describe("Postgres implementation of Rome Gateway", () => {
 
   describe("searchMetier", () => {
     test("Search of metier works", async () => {
-      expect(await pgRomeRepository.searchMetier("boulangère")).toEqual([
-        { codeMetier: "D1102", libelle: "Boulangerie - viennoiserie" },
+      const result = await pgRomeRepository.searchMetier("boulangère");
+      expectTypeToMatchAndEqual(result, [
+        { codeRome: "D1102", libelleRome: "Boulangerie - viennoiserie" },
       ]);
     });
 
     test("Correctly handles search queries with multiple words", async () => {
-      expect(
-        await pgRomeRepository.searchMetier("recherche en sciences"),
-      ).toEqual([
+      const result = await pgRomeRepository.searchMetier(
+        "recherche en sciences",
+      );
+      expectTypeToMatchAndEqual(result, [
         {
-          codeMetier: "K2401",
-          libelle: "Recherche en sciences de l'homme et de la société",
+          codeRome: "K2401",
+          libelleRome: "Recherche en sciences de l'homme et de la société",
         },
         {
-          codeMetier: "K2402",
-          libelle:
+          codeRome: "K2402",
+          libelleRome:
             "Recherche en sciences de l'univers, de la matière et du vivant",
         },
       ]);
@@ -58,32 +61,33 @@ describe("Postgres implementation of Rome Gateway", () => {
         13,
       );
 
-      expect(
-        await pgRomeRepository.searchAppellation("Aide-boulanger"),
-      ).toEqual([
+      const result = await pgRomeRepository.searchAppellation("Aide-boulanger");
+      expectTypeToMatchAndEqual(result, [
         {
-          codeAppellation: 10868,
-          libelle: "Aide-boulanger / Aide-boulangère",
-          codeMetier: "D1102",
+          codeAppellation: "10868",
+          libelleAppellation: "Aide-boulanger / Aide-boulangère",
+          codeRome: "D1102",
+          libelleRome: "Bob",
         },
       ]);
     });
 
     test("Correctly handles search queries with multiple words", async () => {
-      expect(await pgRomeRepository.searchAppellation("Chef de boule")).toEqual(
-        [
-          {
-            codeAppellation: 12071,
-            libelle: "Chef de boule",
-            codeMetier: "G1206",
-          },
-          {
-            codeAppellation: 12197,
-            libelle: "Chef de partie de boule",
-            codeMetier: "G1206",
-          },
-        ],
-      );
+      const result = await pgRomeRepository.searchAppellation("Chef de boule");
+      expectTypeToMatchAndEqual(result, [
+        {
+          codeAppellation: "12071",
+          libelleAppellation: "Chef de boule",
+          codeRome: "G1206",
+          libelleRome: "to add",
+        },
+        {
+          codeAppellation: "12197",
+          libelleAppellation: "Chef de partie de boule",
+          codeRome: "G1206",
+          libelleRome: "to add",
+        },
+      ]);
     });
   });
 });

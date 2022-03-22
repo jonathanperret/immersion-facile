@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FormEstablishmentGateway } from "src/core-logic/ports/FormEstablishmentGateway";
 import { FormEstablishmentDto } from "src/shared/FormEstablishmentDto";
-import { RomeSearchMatchDto, romeSearchResponseSchema } from "src/shared/rome";
+import { AppellationMatch } from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 import {
   formAlreadyExistsRoute,
   immersionOffersFromFrontRoute,
@@ -25,21 +25,23 @@ export class HttpFormEstablishmentGateway implements FormEstablishmentGateway {
     return zString.parse(httpResponse.data);
   }
 
-  public async searchProfession(
+  public async searchAppellation(
     searchText: string,
-  ): Promise<RomeSearchMatchDto[]> {
+  ): Promise<AppellationMatch[]> {
     const httpResponse = await axios.get(`/${prefix}/${romeRoute}`, {
       params: { searchText },
     });
 
     return httpResponse.data;
   }
+
   public async getSiretAlreadyExists(siret: SiretDto): Promise<boolean> {
     const httpResponse = await axios.get(
       `/${prefix}/${formAlreadyExistsRoute}/${siret}`,
     );
     return httpResponse.data;
   }
+
   public async requestEmailToEditForm(siret: SiretDto): Promise<void> {
     await axios.get(`/${prefix}/${requestEmailToUpdateFormRoute}/${siret}`);
   }

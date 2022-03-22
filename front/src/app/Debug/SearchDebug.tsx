@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { immersionSearchGateway } from "src/app/dependencies";
 import { ProfessionAutocomplete } from "src/app/Profession/ProfessionAutocomplete";
 import { AddressAutocomplete } from "src/components/AddressAutocomplete";
-import { ProfessionDto } from "src/shared/rome";
+import { ProfessionDto } from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 import { SearchImmersionResultDto } from "src/shared/SearchImmersionDto";
 
 interface Values {

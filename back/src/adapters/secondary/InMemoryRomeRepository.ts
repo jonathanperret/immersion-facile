@@ -1,99 +1,105 @@
+import { RomeRepository } from "../../domain/rome/ports/RomeRepository";
 import {
-  RomeAppellation,
-  RomeRepository,
-  RomeMetier,
-} from "../../domain/rome/ports/RomeRepository";
-import { RomeCodeAppellationDto, RomeCodeMetierDto } from "../../shared/rome";
+  AppellationDto,
+  CodeAppellation,
+  CodeRome,
+  RomeDto,
+} from "../../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 import { createLogger } from "../../utils/logger";
 import { normalize } from "../../utils/textSearch";
 
 const logger = createLogger(__filename);
 
-const metiers: RomeMetier[] = [
+const romeDtos: RomeDto[] = [
   {
-    codeMetier: "A1203",
-    libelle: "Aménagement et entretien des espaces verts",
+    codeRome: "A1203",
+    libelleRome: "Aménagement et entretien des espaces verts",
   },
-  { codeMetier: "A1409", libelle: "Élevage de lapins et volailles" },
-  { codeMetier: "D1102", libelle: "Boulangerie - viennoiserie" },
-  { codeMetier: "D1103", libelle: "Charcuterie - traiteur" },
-  { codeMetier: "D1106", libelle: "Vente en alimentation" },
+  { codeRome: "A1409", libelleRome: "Élevage de lapins et volailles" },
+  { codeRome: "D1102", libelleRome: "Boulangerie - viennoiserie" },
+  { codeRome: "D1103", libelleRome: "Charcuterie - traiteur" },
+  { codeRome: "D1106", libelleRome: "Vente en alimentation" },
   {
-    codeMetier: "D1201",
-    libelle: "Achat vente d'objets d'art, anciens ou d'occasion",
+    codeRome: "D1201",
+    libelleRome: "Achat vente d'objets d'art, anciens ou d'occasion",
   },
-  { codeMetier: "D1202", libelle: "Coiffure" },
-  { codeMetier: "D1505", libelle: "Personnel de caisse" },
-  { codeMetier: "D1507", libelle: "Mise en rayon libre-service" },
-  { codeMetier: "N4301", libelle: "Conduite sur rails" },
+  { codeRome: "D1202", libelleRome: "Coiffure" },
+  { codeRome: "D1505", libelleRome: "Personnel de caisse" },
+  { codeRome: "D1507", libelleRome: "Mise en rayon libre-service" },
+  { codeRome: "N4301", libelleRome: "Conduite sur rails" },
 ];
 
-const appellations: RomeAppellation[] = [
+const appellations: AppellationDto[] = [
   {
     codeAppellation: "12694",
-    libelle: "Coiffeur / Coiffeuse mixte",
-    codeMetier: "D1202",
+    libelleAppellation: "Coiffeur / Coiffeuse mixte",
+    codeRome: "D1202",
+    libelleRome: "Coiffure",
   },
   {
     codeAppellation: "14704",
-    libelle: "Éleveur / Éleveuse de lapins angoras",
-    codeMetier: "A1409",
+    libelleAppellation: "Éleveur / Éleveuse de lapins angoras",
+    codeRome: "A1409",
+    libelleRome: "Élevage de lapins et volailles",
   },
   {
     codeAppellation: "16067",
-    libelle: "Jardinier / Jardinière",
-    codeMetier: "A1203",
+    libelleAppellation: "Jardinier / Jardinière",
+    codeRome: "A1203",
+    libelleRome: "Aménagement et entretien des espaces verts",
   },
   {
     codeAppellation: "20560",
-    libelle: "Vendeur / Vendeuse en boulangerie-pâtisserie",
-    codeMetier: "D1106",
+    libelleAppellation: "Vendeur / Vendeuse en boulangerie-pâtisserie",
+    codeRome: "D1106",
+    libelleRome: "Vente en alimentation",
   },
   {
     codeAppellation: "20567",
-    libelle: "Vendeur / Vendeuse en chocolaterie",
-    codeMetier: "D1106",
+    libelleAppellation: "Vendeur / Vendeuse en chocolaterie",
+    codeRome: "D1106",
+    libelleRome: "Vente en alimentation",
   },
-  { codeAppellation: "20714", libelle: "Vitrailliste", codeMetier: "B1602" },
+  {
+    codeAppellation: "20714",
+    libelleAppellation: "Vitrailliste",
+    codeRome: "B1602",
+    libelleRome: "The code rome I don't remember",
+  },
 ];
 
-const appellationsToRome: Array<{
-  codeAppellation: RomeCodeAppellationDto;
-  rome: RomeCodeMetierDto;
-}> = [
-  { codeAppellation: "11987", rome: "A1101" },
-  { codeAppellation: "12120", rome: "B2200" },
-  { codeAppellation: "12694", rome: "D1202" },
-  { codeAppellation: "14704", rome: "A1409" },
-  { codeAppellation: "16067", rome: "A1203" },
-  { codeAppellation: "20560", rome: "D1106" },
-  { codeAppellation: "20567", rome: "D1106" },
-  { codeAppellation: "20714", rome: "B1602" },
-];
+const romeByAppellation: Record<string, CodeRome> = {
+  "11987": "A1101",
+  "12120": "B2200",
+  "12694": "D1202",
+  "14704": "A1409",
+  "16067": "A1203",
+  "20560": "D1106",
+  "20567": "D1106",
+  "20714": "B1602",
+};
 
 export class InMemoryRomeRepository implements RomeRepository {
   public async appellationToCodeMetier(
-    romeCodeAppellation: RomeCodeAppellationDto,
-  ): Promise<RomeCodeMetierDto | undefined> {
-    return appellationsToRome.find(
-      (x) => x.codeAppellation == romeCodeAppellation,
-    )?.rome;
+    romeCodeAppellation: CodeAppellation,
+  ): Promise<CodeRome | undefined> {
+    return romeByAppellation[romeCodeAppellation];
   }
 
-  public async searchMetier(query: string): Promise<RomeMetier[]> {
+  public async searchMetier(query: string): Promise<RomeDto[]> {
     logger.info({ query }, "searchMetier");
     const normalizedQuery = normalize(query);
-    return metiers.filter(
-      (metier) => normalize(metier.libelle).indexOf(normalizedQuery) >= 0,
+    return romeDtos.filter(
+      (metier) => normalize(metier.libelleRome).indexOf(normalizedQuery) >= 0,
     );
   }
 
-  public async searchAppellation(query: string): Promise<RomeAppellation[]> {
+  public async searchAppellation(query: string): Promise<AppellationDto[]> {
     logger.info({ query }, "searchAppellation");
     const normalizedQuery = normalize(query);
     return appellations.filter(
       (appellation) =>
-        normalize(appellation.libelle).indexOf(normalizedQuery) >= 0,
+        normalize(appellation.libelleAppellation).indexOf(normalizedQuery) >= 0,
     );
   }
 }

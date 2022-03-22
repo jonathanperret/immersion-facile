@@ -6,12 +6,15 @@ import {
   StringWithHighlights,
 } from "src/app/FormEstablishment/StringWithHighlights";
 import { useDebounce } from "src/app/useDebounce";
-import { ProfessionDto, RomeSearchMatchDto } from "src/shared/rome";
+import {
+  ProfessionDto,
+  AppellationMatch,
+} from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 
 const romeSearchMatchToProposal = ({
   matchRanges,
   profession,
-}: RomeSearchMatchDto): Option => ({
+}: AppellationMatch): Option => ({
   value: profession,
   description: profession.description,
   matchRanges,
@@ -56,7 +59,7 @@ export const ProfessionAutocomplete = ({
       if (!sanitizedTerm) return [];
       try {
         setIsSearching(true);
-        const romeOptions = await formEstablishmentGateway.searchProfession(
+        const romeOptions = await formEstablishmentGateway.searchAppellation(
           sanitizedTerm,
         );
         setOptions(romeOptions.map(romeSearchMatchToProposal));

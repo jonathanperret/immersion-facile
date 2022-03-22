@@ -2,7 +2,7 @@ import { useField } from "formik";
 import React from "react";
 import { FormEstablishmentProfession } from "src/app/FormEstablishment/FormEstablishmentProfession";
 import { ButtonAdd } from "src/components/ButtonAdd";
-import { ProfessionDto } from "src/shared/rome";
+import { ProfessionDto } from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 import { removeAtIndex } from "src/shared/utils";
 
 type ProfessionListProps = {

@@ -15,7 +15,7 @@ import { TransformFormEstablishmentIntoSearchData } from "../../../domain/immers
 import { SireneEstablishmentVO } from "../../../domain/sirene/ports/SireneRepository";
 import { FormEstablishmentDto } from "../../../shared/FormEstablishmentDto";
 import { NafDto } from "../../../shared/naf";
-import { ProfessionDto } from "../../../shared/rome";
+import { ProfessionDto } from "../../../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 import { LatLonDto } from "../../../shared/SearchImmersionDto";
 import { ContactEntityV2Builder } from "../../../_testBuilders/ContactEntityV2Builder";
 import { EstablishmentAggregateBuilder } from "../../../_testBuilders/EstablishmentAggregateBuilder";

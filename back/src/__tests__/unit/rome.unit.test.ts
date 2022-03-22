@@ -1,4 +1,4 @@
-import { professionSchema } from "../../shared/rome";
+import { professionSchema } from "../../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 
 describe("professionSchema", () => {
   test("must include rome code and can inculde appellation", () => {

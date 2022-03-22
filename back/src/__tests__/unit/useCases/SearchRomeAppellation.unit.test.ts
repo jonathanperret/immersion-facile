@@ -1,8 +1,9 @@
+import { expectTypeToMatchAndEqual } from "../../../_testBuilders/test.helpers";
 import { RomeRepository } from "../../../domain/rome/ports/RomeRepository";
 import { InMemoryRomeRepository } from "../../../adapters/secondary/InMemoryRomeRepository";
-import { RomeSearch } from "../../../domain/rome/useCases/RomeSearch";
+import { SearchRomeAppellation } from "../../../domain/rome/useCases/SearchRomeAppellation";
 
-describe("RomeSearch", () => {
+describe("SearchRomeAppellation", () => {
   let gateway: RomeRepository;
 
   beforeEach(() => {
@@ -10,26 +11,20 @@ describe("RomeSearch", () => {
   });
 
   const createUseCase = () => {
-    return new RomeSearch(gateway);
+    return new SearchRomeAppellation(gateway);
   };
 
   test("returns the list of found matches with ranges", async () => {
     const response = await createUseCase().execute("lapins");
-    expect(response).toEqual([
+    expectTypeToMatchAndEqual(response, [
       {
-        profession: {
-          romeCodeAppellation: "14704",
-          description: "Éleveur / Éleveuse de lapins angoras",
-          romeCodeMetier: "A1409",
+        appellation: {
+          codeAppellation: "14704",
+          libelleAppellation: "Éleveur / Éleveuse de lapins angoras",
+          codeRome: "A1409",
+          libelleRome: "Élevage de lapins et volailles",
         },
         matchRanges: [{ startIndexInclusive: 22, endIndexExclusive: 28 }],
-      },
-      {
-        profession: {
-          romeCodeMetier: "A1409",
-          description: "Élevage de lapins et volailles",
-        },
-        matchRanges: [{ startIndexInclusive: 11, endIndexExclusive: 17 }],
       },
     ]);
   });

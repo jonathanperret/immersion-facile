@@ -1,5 +1,5 @@
 import { ImmersionOfferEntityV2 } from "../domain/immersionOffer/entities/ImmersionOfferEntity";
-import { RomeCodeMetierDto } from "../shared/rome";
+import { CodeRome } from "../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 import { ImmersionOfferId } from "../shared/SearchImmersionDto";
 import { Builder } from "./Builder";
 
@@ -20,7 +20,7 @@ export class ImmersionOfferEntityV2Builder
     return new ImmersionOfferEntityV2Builder({ ...this.entity, id });
   }
 
-  withRome(rome: RomeCodeMetierDto) {
+  withRome(rome: CodeRome) {
     return new ImmersionOfferEntityV2Builder({
       ...this.entity,
       romeCode: rome,

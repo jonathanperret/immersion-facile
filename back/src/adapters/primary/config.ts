@@ -47,7 +47,7 @@ import { NotifyContactRequest } from "../../domain/immersionOffer/useCases/notif
 import { SearchImmersion } from "../../domain/immersionOffer/useCases/SearchImmersion";
 import { TransformFormEstablishmentIntoSearchData } from "../../domain/immersionOffer/useCases/TransformFormEstablishmentIntoSearchData";
 import { RomeRepository } from "../../domain/rome/ports/RomeRepository";
-import { RomeSearch } from "../../domain/rome/useCases/RomeSearch";
+import { SearchRomeAppellation } from "../../domain/rome/useCases/SearchRomeAppellation";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
 import { ImmersionApplicationId } from "../../shared/ImmersionApplicationDto";
 import { frontRoutes } from "../../shared/routes";
@@ -540,7 +540,7 @@ const createUseCases = (
     getSiret,
 
     // rome
-    romeSearch: new RomeSearch(repositories.rome),
+    romeSearch: new SearchRomeAppellation(repositories.rome),
 
     // agencies
     listAgencies: new ListAgencies(repositories.agency),

@@ -1,4 +1,4 @@
-import { MatchRangeDto } from "../shared/rome";
+import { MatchRangeDto } from "../shared/romeAndAppelationDtos/romeAndAppellation.dto";
 import { createLogger } from "./logger";
 
 const logger = createLogger(__filename);

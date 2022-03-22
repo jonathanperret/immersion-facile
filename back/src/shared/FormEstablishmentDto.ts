@@ -1,11 +1,12 @@
 import { z } from "../../node_modules/zod";
 import { NafDto, nafSchema } from "./naf";
-import { ProfessionDto, professionSchema } from "./rome";
+import { addressWithPostalCodeSchema } from "./postalCode";
+import { AppellationDto } from "./romeAndAppelationDtos/romeAndAppellation.dto";
+import { appellationDtoSchema } from "./romeAndAppelationDtos/romeAndAppellation.schema";
 import { SiretDto, siretSchema } from "./siret";
 import { Flavor } from "./typeFlavors";
 import { NotEmptyArray, phoneRegExp } from "./utils";
 import { zBoolean, zEmail, zString, zTrimmedString } from "./zodUtils";
-import { addressWithPostalCodeSchema } from "./postalCode";
 
 // prettier-ignore
 export type ImmersionContactInEstablishmentId = Flavor<string, "ImmersionContactInEstablishmentId">;
@@ -71,7 +72,7 @@ export type FormEstablishmentDto = {
   businessAddress: string; // must include post code
   isEngagedEnterprise?: boolean;
   naf?: NafDto; // { code: string, nomenclature: string }
-  professions: ProfessionDto[]; // at least one
+  professions: AppellationDto[]; // at least one
   businessContacts: BusinessContactDto[]; // array of exactly one element (a bit strange but it from long ago)
   preferredContactMethods: ContactMethod[]; // array of exactly one element (a bit strange but it from long ago)
 };
@@ -86,7 +87,7 @@ export const formEstablishmentSchema: z.Schema<FormEstablishmentDto> = z.object(
     isEngagedEnterprise: zBoolean.optional(),
     naf: nafSchema.optional(),
     professions: z
-      .array(professionSchema)
+      .array(appellationDtoSchema)
       .min(1, "Spécifiez au moins 1 métier"),
     businessContacts: z
       .array(businessContactSchema, { required_error: "Obligatoire" })

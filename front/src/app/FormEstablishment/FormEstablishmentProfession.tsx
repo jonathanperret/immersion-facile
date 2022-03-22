@@ -2,7 +2,7 @@ import { useField } from "formik";
 import React from "react";
 import { ProfessionAutocomplete } from "src/app/Profession/ProfessionAutocomplete";
 import { DeleteButton } from "src/components/DeleteButton";
-import { ProfessionDto } from "src/shared/rome";
+import { ProfessionDto } from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 
 type ProfessionProps = {
   name: string;

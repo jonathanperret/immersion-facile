@@ -4,8 +4,8 @@ import {
   preferredContactMethodSchema,
 } from "./FormEstablishmentDto";
 import { nafDivisionSchema } from "./naf";
+import { codeRomeSchema } from "./romeAndAppelationDtos/romeAndAppellation.schema";
 import { siretSchema } from "./siret";
-import { romeCodeMetierSchema } from "./rome";
 import { Flavor } from "./typeFlavors";
 import { zTrimmedString } from "./zodUtils";
 
@@ -33,7 +33,7 @@ export type SearchImmersionRequestDto = z.infer<
   typeof searchImmersionRequestSchema
 >;
 export const searchImmersionRequestSchema = z.object({
-  rome: romeCodeMetierSchema.optional(),
+  rome: codeRomeSchema.optional(),
   nafDivision: nafDivisionSchema.optional(),
   siret: siretSchema.optional(),
   location: latLonSchema,

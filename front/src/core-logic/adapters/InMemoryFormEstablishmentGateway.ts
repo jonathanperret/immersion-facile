@@ -1,6 +1,6 @@
 import { FormEstablishmentGateway } from "src/core-logic/ports/FormEstablishmentGateway";
 import { FormEstablishmentDto } from "src/shared/FormEstablishmentDto";
-import { RomeSearchMatchDto } from "src/shared/rome";
+import { AppellationMatch } from "src/../../../../back/src/shared/romeAndAppelationDtos/rome";
 import { SiretDto } from "src/shared/siret";
 import { sleep } from "src/shared/utils";
 
@@ -24,9 +24,9 @@ export class InMemoryFormEstablishmentGateway
     return immersionOffer.siret;
   }
 
-  public async searchProfession(
+  public async searchAppellation(
     searchText: string,
-  ): Promise<RomeSearchMatchDto[]> {
+  ): Promise<AppellationMatch[]> {
     await sleep(700);
     if (searchText === "givemeanemptylistplease") return [];
     if (searchText === "givemeanerrorplease")
