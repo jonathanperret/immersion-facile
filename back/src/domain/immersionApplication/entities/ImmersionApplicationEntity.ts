@@ -1,11 +1,9 @@
 import { ImmersionApplicationDto } from "../../../shared/ImmersionApplication/ImmersionApplication.dto";
-import { immersionApplicationSchema } from "../../../shared/ImmersionApplication/immersionApplication.schema";
 
 export class ImmersionApplicationEntity {
   private constructor(public readonly properties: ImmersionApplicationDto) {}
 
   public static create(dto: ImmersionApplicationDto) {
-    immersionApplicationSchema.parse(dto);
     return new ImmersionApplicationEntity(dto);
   }
 

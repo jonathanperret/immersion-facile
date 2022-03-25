@@ -6,7 +6,6 @@ import {
   DATE_END,
   ImmersionApplicationDtoBuilder,
 } from "../../_testBuilders/ImmersionApplicationDtoBuilder";
-import { ImmersionApplicationDto } from "../../shared/ImmersionApplication/ImmersionApplication.dto";
 
 describe("ImmersionApplicationIdEntity", () => {
   describe("ImmersionApplicationIdEntity.create()", () => {
@@ -16,16 +15,6 @@ describe("ImmersionApplicationIdEntity", () => {
       expect(dto.email).toEqual(VALID_EMAILS[0]);
       expect(dto.dateStart).toEqual(DATE_START);
       expect(dto.dateEnd).toEqual(DATE_END);
-    });
-
-    it("rejects invalid parameters", () => {
-      const invalidImmersionApplication = new ImmersionApplicationDtoBuilder()
-        .withEmail("not_a_valid_email")
-        .build();
-
-      expectImmersionApplicationEntityToBeInvalidWithParams(
-        invalidImmersionApplication,
-      );
     });
   });
 
@@ -37,10 +26,3 @@ describe("ImmersionApplicationIdEntity", () => {
     });
   });
 });
-
-const expectImmersionApplicationEntityToBeInvalidWithParams = (
-  immersionApplicationDto: ImmersionApplicationDto,
-) =>
-  expect(() =>
-    ImmersionApplicationEntity.create(immersionApplicationDto),
-  ).toThrow();
