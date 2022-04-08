@@ -26,7 +26,11 @@ export class InMemoryImmersionSearchGateway implements ImmersionSearchGateway {
   ): Promise<SearchImmersionResultDto[]> {
     await sleep(this._simulatedLatency);
     if (this._error) throw this._error;
-    return this._results;
+    if (searchParams.voluntary_to_immersion === undefined) return this._results;
+    return this._results.filter(
+      (result) =>
+        result.voluntaryToImmersion === searchParams.voluntary_to_immersion,
+    );
   }
 
   public async contactEstablishment(

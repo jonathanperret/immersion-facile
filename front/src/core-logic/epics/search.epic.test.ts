@@ -4,7 +4,7 @@ import { createSearchEpic } from "src/core-logic/epics/search.epic";
 import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
 import DoneCallback = jest.DoneCallback;
 
-// those test should be fast, we don't want to wait 5s if they fail (
+// those test should be fast, we don't want to wait 5s if they fail
 jest.setTimeout(300);
 
 describe("Search immersions", () => {
@@ -16,31 +16,58 @@ describe("Search immersions", () => {
       defaultResults: [],
       simulatedLatency: 0,
     });
-    searchEpic = createSearchEpic({ immersionSearchGateway });
+    searchEpic = createSearchEpic({
+      immersionSearchGateway,
+      minResultToPreventRefetch: 2,
+    });
   });
 
-  it("triggers the search and recovers some results", (done) => {
-    const returnedFromApi: SearchImmersionResultDto[] = [
-      {
-        rome: "A0000",
-        naf: "someName",
-        siret: "12345678901234",
-        name: "Hyper Corp",
-        voluntaryToImmersion: false,
-        location: { lat: 48.8666, lon: 2.3333 },
-        address: "55 rue du Faubourg Saint-Honoré",
-        contactMode: "IN_PERSON",
-        romeLabel: "Hyper métier",
-        appellationLabels: ["Facteur", "Développeuse"],
-        nafLabel: "",
-        city: "xxxx",
-      },
+  it("triggers the search and recovers some results from form than extras from lbb", (done) => {
+    // prettier-ignore
+    const voluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "form-1", voluntaryToImmersion: true } as SearchImmersionResultDto,
     ];
-    immersionSearchGateway.setNextSearchResult(returnedFromApi);
+    // prettier-ignore
+    const notVoluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "lbb-1", voluntaryToImmersion: false } as SearchImmersionResultDto,
+    ];
+    immersionSearchGateway.setNextSearchResult([
+      ...voluntaryResults,
+      ...notVoluntaryResults,
+    ]);
 
     expectObservableNextValuesToBe(
       searchEpic.views.searchResults$,
-      [[], returnedFromApi],
+      [[], voluntaryResults],
+      done,
+    );
+
+    searchEpic.actions.search({
+      siret: "11112222333344",
+      location: { lat: 0, lon: 0 },
+      distance_km: 1,
+    });
+  });
+
+  it("triggers the search and recovers only results from form if there are enough", (done) => {
+    // prettier-ignore
+    const voluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "form-1", voluntaryToImmersion: true } as SearchImmersionResultDto,
+      { siret: "form-2", voluntaryToImmersion: true } as SearchImmersionResultDto,
+    ];
+    // prettier-ignore
+    const notVoluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "lbb-1", voluntaryToImmersion: false } as SearchImmersionResultDto,
+    ];
+
+    immersionSearchGateway.setNextSearchResult([
+      ...voluntaryResults,
+      ...notVoluntaryResults,
+    ]);
+
+    expectObservableNextValuesToBe(
+      searchEpic.views.searchResults$,
+      [[], voluntaryResults],
       done,
     );
 

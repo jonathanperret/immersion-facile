@@ -57,4 +57,7 @@ export const romeAutocompleteGateway: RomeAutocompleteGateway =
     ? new InMemoryRomeAutocompleteGateway()
     : new HttpRomeAutocompleteGateway();
 
-export const searchEpic = createSearchEpic({ immersionSearchGateway });
+export const searchEpic = createSearchEpic({
+  immersionSearchGateway,
+  minResultToPreventRefetch: 10,
+});
