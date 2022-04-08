@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable, timeout, TimeoutError } from "rxjs";
 import { InMemoryImmersionSearchGateway } from "src/core-logic/adapters/InMemoryImmersionSearchGateway";
 import { createSearchEpic } from "src/core-logic/epics/search.epic";
 import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
@@ -38,7 +38,7 @@ describe("Search immersions", () => {
 
     expectObservableNextValuesToBe(
       searchEpic.views.searchResults$,
-      [[], voluntaryResults],
+      [[], voluntaryResults, [...voluntaryResults, ...notVoluntaryResults]],
       done,
     );
 
@@ -92,6 +92,38 @@ describe("Search immersions", () => {
     });
   });
 
+  it("shows a fetching-more state while fetching extra data", (done) => {
+    // prettier-ignore
+    const voluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "form-1", voluntaryToImmersion: true } as SearchImmersionResultDto,
+    ];
+    // prettier-ignore
+    const notVoluntaryResults: SearchImmersionResultDto[] = [
+      { siret: "lbb-1", voluntaryToImmersion: false } as SearchImmersionResultDto,
+    ];
+    immersionSearchGateway.setNextSearchResult([
+      ...voluntaryResults,
+      ...notVoluntaryResults,
+    ]);
+
+    expectObservableNextValuesToBe(
+      searchEpic.views.searchInfo$,
+      [
+        "Veuillez sélectionner vos critères",
+        null,
+        "Nous cherchons à compléter votre recherche...",
+        null,
+      ],
+      done,
+    );
+
+    searchEpic.actions.search({
+      siret: "11112222333344",
+      location: { lat: 0, lon: 0 },
+      distance_km: 1,
+    });
+  });
+
   it("when an error occurs, no result is return, and the error is logged", (done) => {
     immersionSearchGateway.setError(new Error("Oups, something went wrong !"));
     expectObservableNextValuesToBe(
@@ -120,6 +152,9 @@ describe("Search immersions", () => {
       searchEpic.views.searchInfo$,
       [
         "Veuillez sélectionner vos critères",
+        null,
+        "Pas de résultat. Essayez avec un plus grand rayon de recherche...",
+        "Nous cherchons à compléter votre recherche...",
         "Pas de résultat. Essayez avec un plus grand rayon de recherche...",
       ],
       done,
@@ -138,15 +173,23 @@ const expectObservableNextValuesToBe = <T>(
   values: T[],
   done: DoneCallback,
 ) => {
-  obs$.subscribe({
+  obs$.pipe(timeout({ each: 1 })).subscribe({
     next: (v) => {
+      if (values.length === 0) {
+        return done("Observable emitted extra value : " + v);
+      }
       const expectedValue = values.shift();
       expect(v).toEqual(expectedValue);
-      if (values.length === 0) done();
     },
     error: (err) => {
-      console.error(err);
-      done.fail(err);
+      if (err instanceof TimeoutError) {
+        if (values.length === 0) return done(); // this is when every thing is finished as expected
+        return done(
+          "Still expecting values " + JSON.stringify(values, null, 2),
+        );
+      }
+
+      return done("Unexpected error " + JSON.stringify(err, null, 2));
     },
   });
 };
