@@ -19,28 +19,36 @@ describe("Search immersions", () => {
     searchEpic = createSearchEpic({ immersionSearchGateway });
   });
 
-  it("triggers the search and recovers some results", (done) => {
-    const returnedFromApi: SearchImmersionResultDto[] = [
+  it("triggers the search and recovers first offers from voluntary establishments and then all offers", (done) => {
+    const voluntaryToImmersionResultDtos = [
       {
-        rome: "A0000",
-        naf: "someName",
-        siret: "12345678901234",
-        name: "Hyper Corp",
-        voluntaryToImmersion: false,
-        location: { lat: 48.8666, lon: 2.3333 },
-        address: "55 rue du Faubourg Saint-Honoré",
-        contactMode: "IN_PERSON",
-        romeLabel: "Hyper métier",
-        appellationLabels: ["Facteur", "Développeuse"],
-        nafLabel: "",
-        city: "xxxx",
-      },
+        siret: "form1",
+        voluntaryToImmersion: true,
+      } as SearchImmersionResultDto,
+      {
+        siret: "form2",
+        voluntaryToImmersion: true,
+      } as SearchImmersionResultDto,
     ];
-    immersionSearchGateway.setNextSearchResult(returnedFromApi);
+    const lbbResultDtos = [
+      {
+        siret: "lbb1",
+        voluntaryToImmersion: false,
+      } as SearchImmersionResultDto,
+    ];
+
+    immersionSearchGateway.setNextSearchResult([
+      ...voluntaryToImmersionResultDtos,
+      ...lbbResultDtos,
+    ]);
 
     expectObservableNextValuesToBe(
       searchEpic.views.searchResults$,
-      [[], returnedFromApi],
+      [
+        [],
+        voluntaryToImmersionResultDtos,
+        [...voluntaryToImmersionResultDtos, ...lbbResultDtos],
+      ],
       done,
     );
 

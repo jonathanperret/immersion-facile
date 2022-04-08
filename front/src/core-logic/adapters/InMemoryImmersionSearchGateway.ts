@@ -4,6 +4,7 @@ import { sleep } from "src/shared/utils";
 import { ContactEstablishmentRequestDto } from "src/shared/contactEstablishment";
 
 import { ImmersionSearchGateway } from "../ports/ImmersionSearchGateway";
+import { prop, propEq } from "ramda";
 
 const DEFAULT_SIMULATED_LATENCY_MS = 500;
 
@@ -26,7 +27,10 @@ export class InMemoryImmersionSearchGateway implements ImmersionSearchGateway {
   ): Promise<SearchImmersionResultDto[]> {
     await sleep(this._simulatedLatency);
     if (this._error) throw this._error;
-    return this._results;
+    if (searchParams.voluntary_to_immersion === undefined) return this._results;
+    return this._results.filter(
+      propEq("voluntaryToImmersion", searchParams.voluntary_to_immersion),
+    );
   }
 
   public async contactEstablishment(

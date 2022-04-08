@@ -2,12 +2,17 @@ import {
   BehaviorSubject,
   catchError,
   concat,
+  concatMap,
   filter,
   from,
   map,
+  mergeMap,
   Observable,
   of,
+  concatWith,
+  concatAll,
   switchMap,
+  tap,
 } from "rxjs";
 import type { ImmersionSearchGateway } from "src/core-logic/ports/ImmersionSearchGateway";
 import { SearchImmersionRequestDto } from "src/shared/searchImmersion/SearchImmersionRequest.dto";
@@ -51,8 +56,34 @@ export const createSearchEpic = ({
       search: (params: SearchImmersionRequestDto) => {
         searchStatus$.next("loading");
 
-        from(immersionSearchGateway.search(params))
+        from(
+          immersionSearchGateway.search({
+            ...params,
+            voluntary_to_immersion: true,
+          }),
+        )
           .pipe(
+            // filter(voluntaryOffers => voluntaryOffers.length >= 10)
+            // if (results.length > 10) return from([]);
+            concatAll(
+              from(
+                immersionSearchGateway.search({
+                  ...params,
+                  voluntary_to_immersion: false,
+                }),
+              ).pipe(map((r) => [...r])),
+            ),
+            // concatMap((results) => {
+            //   console.log("concatMap", results);
+
+            //   return from(
+            //     immersionSearchGateway.search({
+            //       ...params,
+            //       voluntary_to_immersion: false,
+            //     }),
+            //   ).pipe(map((results2) => [...results, ...results2]));
+            // }),
+            tap((results) => console.log("tap", results)),
             catchError((err) => {
               console.error(err);
               searchStatus$.next("error");
@@ -60,7 +91,7 @@ export const createSearchEpic = ({
             }),
           )
           .subscribe((searchResults) => {
-            searchResults$.next(searchResults);
+            // searchResults$.next(searchResults);
             searchStatus$.next("ok");
           });
       },
