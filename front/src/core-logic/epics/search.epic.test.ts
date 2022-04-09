@@ -80,8 +80,8 @@ describe("Search immersions", () => {
 
   it("shows a loading state while fetching the data", (done) => {
     expectObservableNextValuesToBe(
-      searchEpic.views.isSearching$,
-      [false, true, false],
+      searchEpic.views.searchingStatus$,
+      ["notSearching", "initialFetch", "extraFetch", "notSearching"],
       done,
     );
 
@@ -153,7 +153,6 @@ describe("Search immersions", () => {
       [
         "Veuillez sélectionner vos critères",
         null,
-        "Pas de résultat. Essayez avec un plus grand rayon de recherche...",
         "Nous cherchons à compléter votre recherche...",
         "Pas de résultat. Essayez avec un plus grand rayon de recherche...",
       ],

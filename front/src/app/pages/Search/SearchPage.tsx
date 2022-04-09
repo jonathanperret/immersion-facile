@@ -26,7 +26,10 @@ const radiusOptions = [1, 2, 5, 10, 20, 50, 100];
 const initiallySelectedIndex = 3; // to get 10 km radius by default
 
 export const SearchPage = () => {
-  const isSearching = useObservable(searchEpic.views.isSearching$, false);
+  const isSearching = useObservable(
+    searchEpic.views.searchingStatus$,
+    "notSearching",
+  );
 
   return (
     <HeaderFooterLayout>
@@ -103,7 +106,7 @@ export const SearchPage = () => {
                   <SearchButton
                     className="mt-12"
                     dark
-                    disabled={isSearching}
+                    disabled={isSearching !== "notSearching"}
                     type="submit"
                   >
                     <SearchIcon />

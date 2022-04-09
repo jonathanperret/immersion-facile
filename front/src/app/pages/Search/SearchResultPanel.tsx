@@ -24,7 +24,10 @@ const getFeedBackMessage = (contactMethod?: ContactMethod) => {
 
 export const SearchResultPanel = () => {
   const searchResults = useObservable(searchEpic.views.searchResults$, []);
-  const isSearching = useObservable(searchEpic.views.isSearching$, false);
+  const searchStatus = useObservable(
+    searchEpic.views.searchingStatus$,
+    "notSearching",
+  );
   const searchInfo = useObservable(
     searchEpic.views.searchInfo$,
     "Veuillez sélectionner vos critères",
@@ -35,14 +38,15 @@ export const SearchResultPanel = () => {
   const [successFullyValidated, setSuccessfullyValidated] = useState(false);
   const { modalState, dispatch } = useContactEstablishmentModal();
 
-  if (isSearching)
+  if (searchStatus === "initialFetch" && searchResults.length === 0)
     return (
       <SearchInfos>
         <CircularProgress color="inherit" size="75px" />
       </SearchInfos>
     );
 
-  if (searchInfo) return <SearchInfos>{searchInfo}</SearchInfos>;
+  if (searchInfo && searchResults.length === 0)
+    return <SearchInfos>{searchInfo}</SearchInfos>;
 
   return (
     <>
@@ -65,6 +69,16 @@ export const SearchResultPanel = () => {
           disableButton={modalState.isValidating}
         />
       ))}
+      {searchStatus === "extraFetch" && (
+        <SearchInfos>
+          <div className="flex flex-col items-center">
+            {searchInfo}
+            <br />
+            <br />
+            <CircularProgress color="inherit" size="40px" />
+          </div>
+        </SearchInfos>
+      )}
       <ContactEstablishmentModal
         modalState={modalState}
         dispatch={dispatch}

@@ -5,7 +5,7 @@ import { ContactEstablishmentRequestDto } from "src/shared/contactEstablishment"
 
 import { ImmersionSearchGateway } from "../ports/ImmersionSearchGateway";
 
-const DEFAULT_SIMULATED_LATENCY_MS = 500;
+const DEFAULT_SIMULATED_LATENCY_MS = 3000;
 
 export class InMemoryImmersionSearchGateway implements ImmersionSearchGateway {
   private _results: SearchImmersionResultDto[];
@@ -88,7 +88,7 @@ const seedResults: SearchImmersionResultDto[] = [
     naf: defaultNaf,
     siret: "12345678901234",
     name: "Hyper Corp",
-    voluntaryToImmersion: false,
+    voluntaryToImmersion: true,
     location: { lat: 48.8666, lon: 2.3333 },
     address: "55 rue du Faubourg Saint-Honoré",
     contactMode: "IN_PERSON",

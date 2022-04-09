@@ -59,18 +59,31 @@ export const createSearchEpic = ({
     distinctUntilChanged(),
   );
 
+  searchStatus$.subscribe((v) => console.log("searchStatus$ : ", v));
+
   return {
     views: {
       searchResults$,
-      isSearching$: searchStatus$.pipe(
-        map((status) => status === "initialFetch"),
+      searchingStatus$: searchStatus$.pipe(
+        map((status) => {
+          switch (status) {
+            case "initialFetch":
+              return "initialFetch";
+            case "extraFetch":
+              return "extraFetch";
+            default:
+              return "notSearching";
+          }
+        }),
         distinctUntilChanged(),
+        tap((v) => console.log("searchingStatus$ :", v)),
       ),
       searchInfo$,
     },
     actions: {
       search: (params: SearchImmersionRequestDto) => {
         searchStatus$.next("initialFetch");
+        searchResults$.next([]);
 
         from(
           immersionSearchGateway.search({
@@ -83,13 +96,13 @@ export const createSearchEpic = ({
               iif(
                 () => r1.length < minResultToPreventRefetch,
                 concat(
-                  of(r1),
+                  of(r1).pipe(tap(() => searchStatus$.next("extraFetch"))),
                   from(
                     immersionSearchGateway.search({
                       ...params,
                       voluntary_to_immersion: false,
                     }),
-                  ).pipe(tap(() => searchStatus$.next("extraFetch"))),
+                  ).pipe(tap(() => searchStatus$.next("ok"))),
                 ),
                 of(r1),
               ),
@@ -107,8 +120,8 @@ export const createSearchEpic = ({
             }),
           )
           .subscribe((searchResults) => {
+            console.log("emitted : ", searchResults);
             searchResults$.next(searchResults);
-            searchStatus$.next("ok");
           });
       },
     },
