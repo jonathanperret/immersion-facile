@@ -7,7 +7,7 @@ import {
   BusinessContactDto,
   ContactMethod,
   FormEstablishmentDto,
-} from "src/shared/formEstablishment/FormEstablishment.dto";
+} from "shared/src/formEstablishment/FormEstablishment.dto";
 
 const preferredContactMethodOptions: Array<{
   label?: string;

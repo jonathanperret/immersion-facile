@@ -5,14 +5,14 @@ import { EstablishmentEntityV2 } from "../domain/immersionOffer/entities/Establi
 import {
   ContactEstablishmentByMailDto,
   ContactEstablishmentInPersonDto,
-} from "../shared/contactEstablishment";
-import { frontRoutes } from "../shared/routes";
+} from "shared/src/contactEstablishment";
+import { frontRoutes } from "shared/src/routes";
 import { AnnotatedImmersionOfferEntityV2 } from "../domain/immersionOffer/entities/ImmersionOfferEntity";
-import { ContactEstablishmentByPhoneDto } from "../shared/contactEstablishment";
+import { ContactEstablishmentByPhoneDto } from "shared/src/contactEstablishment";
 import { fakeGenerateMagicLinkUrlFn } from "./test.helpers";
 import { ContactEntityV2 } from "../domain/immersionOffer/entities/ContactEntity";
-import { ImmersionApplicationDto } from "../shared/ImmersionApplication/ImmersionApplication.dto";
-import { FormEstablishmentDto } from "../shared/formEstablishment/FormEstablishment.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
 
 export const expectEmailAdminNotificationMatchingImmersionApplication = (
   templatedEmail: TemplatedEmail,

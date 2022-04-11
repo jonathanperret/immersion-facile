@@ -1,5 +1,5 @@
 import { SequenceRunner } from "../../../domain/core/ports/SequenceRunner";
-import { sleep } from "../../../shared/utils";
+import { sleep } from "shared/src/utils";
 import { createLogger } from "../../../utils/logger";
 
 const logger = createLogger(__filename);

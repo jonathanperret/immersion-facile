@@ -9,7 +9,7 @@ import { useDebounce } from "src/app/utils/useDebounce";
 import {
   AppellationDto,
   AppellationMatchDto,
-} from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
+} from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 
 const romeSearchMatchToProposal = ({
   matchRanges,

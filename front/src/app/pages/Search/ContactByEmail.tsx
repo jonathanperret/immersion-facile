@@ -7,8 +7,8 @@ import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
 import {
   ContactEstablishmentByMailDto,
   contactEstablishmentByMailSchema,
-} from "src/shared/contactEstablishment";
-import { SiretDto } from "src/shared/siret";
+} from "shared/src/contactEstablishment";
+import { SiretDto } from "shared/src/siret";
 
 type ContactByEmailProps = {
   siret: SiretDto;

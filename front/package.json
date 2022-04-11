@@ -1,22 +1,20 @@
 {
   "version": "0.0.0",
   "scripts": {
-    "test": "npm run symlink-or-copy-shared && jest --passWithNoTests",
-    "dev": "npm run symlink-shared && VITE_GATEWAY=IN_MEMORY VITE_ENV_TYPE=DEV vite",
-    "dev-http": "npm run symlink-shared && VITE_ENV_TYPE=DEV vite",
-    "build": "npm run symlink-or-copy-shared && vite build",
+    "test": "jest --passWithNoTests",
+    "dev": "VITE_GATEWAY=IN_MEMORY VITE_ENV_TYPE=DEV vite",
+    "dev-http": "VITE_ENV_TYPE=DEV vite",
+    "build": "vite build",
     "build-with-shared-as-is": "vite build",
     "serve": "vite preview",
     "typecheck": "tsc --noEmit",
     "includecheck": "./check_includes.sh",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
-    "fullcheck": "npm run includecheck && npm run format && npm run test && npm run typecheck",
-    "symlink-or-copy-shared": "if [ ! -z $CI ]; then npm run copy-shared; else npm run symlink-shared; fi;",
-    "copy-shared": "rm -rf ./src/shared; cp -Rf ../back/src/shared ./src",
-    "symlink-shared": "rm -rf ./src/shared; ln -fs ../../back/src/shared ./src/;"
+    "fullcheck": "npm run includecheck && npm run format && npm run test && npm run typecheck"
   },
   "dependencies": {
+    "shared": "workspace:*",
     "@dataesr/react-dsfr": "^1.0.5",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",

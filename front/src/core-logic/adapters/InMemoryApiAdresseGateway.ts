@@ -1,6 +1,6 @@
-import { LatLonDto } from "src/shared/latLon";
+import { LatLonDto } from "shared/src/latLon";
 
-import { sleep } from "src/shared/utils";
+import { sleep } from "shared/src/utils";
 import {
   AddressWithCoordinates,
   ApiAdresseGateway,

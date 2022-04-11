@@ -6,10 +6,10 @@ import { SubTitle, Title } from "src/uiComponents/Title";
 import {
   ContactMethod,
   ImmersionContactInEstablishmentId,
-} from "src/shared/formEstablishment/FormEstablishment.dto";
-import { ImmersionOfferId } from "src/shared/ImmersionOfferId";
-import { RomeCode } from "src/shared/rome";
-import { SiretDto } from "src/shared/siret";
+} from "shared/src/formEstablishment/FormEstablishment.dto";
+import { ImmersionOfferId } from "shared/src/ImmersionOfferId";
+import { RomeCode } from "shared/src/rome";
+import { SiretDto } from "shared/src/siret";
 import { ContactInPerson } from "./ContactInPerson";
 
 type ModalState = {

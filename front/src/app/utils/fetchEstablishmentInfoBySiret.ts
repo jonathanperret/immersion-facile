@@ -6,8 +6,8 @@ import {
   formEstablishmentGateway,
 } from "src/app/config/dependencies";
 import { useFeatureFlagsContext } from "./FeatureFlagContext";
-import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
-import { siretSchema } from "src/shared/siret";
+import { GetSiretResponseDto, SiretDto } from "shared/src/siret";
+import { siretSchema } from "shared/src/siret";
 
 export const useSiretRelatedField = <K extends keyof GetSiretResponseDto>(
   fieldFromInfo: K,

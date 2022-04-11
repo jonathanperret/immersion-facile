@@ -1,4 +1,4 @@
-import { z } from "../../node_modules/zod";
+import { z } from "zod";
 import { NotEmptyArray } from "./utils";
 import { zTrimmedString } from "./zodUtils";
 
@@ -43,7 +43,7 @@ export const reasonableSchedule: ScheduleDto = {
   isSimple: true,
   selectedIndex: 0,
   complexSchedule: Array.from({ length: 5 }, () => [...reasonableHours]).concat(
-    [[], []],
+    [[], []]
   ),
   simpleSchedule: {
     dayPeriods: [[0, 4]],

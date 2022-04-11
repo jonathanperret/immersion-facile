@@ -1,7 +1,7 @@
 import { FormEstablishmentGateway } from "src/core-logic/ports/FormEstablishmentGateway";
-import { FormEstablishmentDto } from "src/shared/formEstablishment/FormEstablishment.dto";
-import { SiretDto } from "src/shared/siret";
-import { sleep } from "src/shared/utils";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
+import { SiretDto } from "shared/src/siret";
+import { sleep } from "shared/src/utils";
 
 export class InMemoryFormEstablishmentGateway
   implements FormEstablishmentGateway

@@ -4,10 +4,10 @@ import {
   AgencyId,
   AgencyInListDto,
   CreateAgencyConfig,
-} from "src/shared/agency/agency.dto";
-import { listAgenciesResponseSchema } from "src/shared/agency/agency.schema";
-import { LatLonDto } from "src/shared/latLon";
-import { agenciesRoute, agencyImmersionFacileIdRoute } from "src/shared/routes";
+} from "shared/src/agency/agency.dto";
+import { listAgenciesResponseSchema } from "shared/src/agency/agency.schema";
+import { LatLonDto } from "shared/src/latLon";
+import { agenciesRoute, agencyImmersionFacileIdRoute } from "shared/src/routes";
 
 const prefix = "api";
 

@@ -4,7 +4,7 @@ import {
   eventsToDebugInfo,
 } from "../../../domain/core/eventBus/events";
 import { OutboxRepository } from "../../../domain/core/ports/OutboxRepository";
-import { EstablishmentJwtPayload } from "../../../shared/tokens/MagicLinkPayload";
+import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
 import { createLogger } from "../../../utils/logger";
 
 const logger = createLogger(__filename);

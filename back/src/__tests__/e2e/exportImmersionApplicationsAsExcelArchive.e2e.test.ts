@@ -1,5 +1,5 @@
 import { buildTestApp } from "../../_testBuilders/buildTestApp";
-import { exportImmersionApplicationsExcelRoute } from "../../shared/routes";
+import { exportImmersionApplicationsExcelRoute } from "shared/src/routes";
 import { ImmersionApplicationEntityBuilder } from "../../_testBuilders/ImmersionApplicationEntityBuilder";
 import { AgencyConfig } from "../../domain/immersionApplication/ports/AgencyRepository";
 import * as fse from "fs-extra";

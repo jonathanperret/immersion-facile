@@ -1,11 +1,11 @@
 import { addDays, format } from "date-fns";
 import { frenchFirstNames } from "src/helpers/namesList";
-import { AgencyInListDto } from "src/shared/agency/agency.dto";
+import { AgencyInListDto } from "shared/src/agency/agency.dto";
 import {
   ImmersionApplicationDto,
   validApplicationStatus,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
-import { IMMERSION_APPLICATION_TEMPLATE } from "../shared/ImmersionApplication/immersionApplication";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { IMMERSION_APPLICATION_TEMPLATE } from "shared/src/ImmersionApplication/immersionApplication";
 
 export const generateApplication = (
   i: number,

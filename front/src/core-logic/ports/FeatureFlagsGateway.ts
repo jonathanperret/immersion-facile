@@ -1,4 +1,4 @@
-import { FeatureFlags } from "src/shared/featureFlags";
+import { FeatureFlags } from "shared/src/featureFlags";
 
 export interface FeatureFlagsGateway {
   getAll: () => Promise<FeatureFlags>;

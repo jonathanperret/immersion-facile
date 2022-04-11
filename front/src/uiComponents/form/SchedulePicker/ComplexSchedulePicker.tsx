@@ -2,7 +2,7 @@ import React from "react";
 import { useField, FieldHookConfig } from "formik";
 import { HourPicker } from "./HourPicker";
 import { DayPicker } from "./DayPicker";
-import { ScheduleDto } from "src/shared/ScheduleSchema";
+import { ScheduleDto } from "shared/src/ScheduleSchema";
 
 type ComplexSchedulePickerProps = {
   selectedIndex: number;

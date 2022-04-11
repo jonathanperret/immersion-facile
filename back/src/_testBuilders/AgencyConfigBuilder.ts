@@ -2,7 +2,7 @@ import {
   AgencyConfig,
   AgencyStatus,
 } from "../domain/immersionApplication/ports/AgencyRepository";
-import { AgencyId, AgencyKind } from "../shared/agency/agency.dto";
+import { AgencyId, AgencyKind } from "shared/src/agency/agency.dto";
 import { Builder } from "./Builder";
 
 const emptyAgency: AgencyConfig = {

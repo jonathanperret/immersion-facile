@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { agenciesRoute } from "../../../shared/routes";
+import { agenciesRoute } from "shared/src/routes";
 import { AppDependencies } from "../config";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 

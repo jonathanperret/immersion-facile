@@ -1,8 +1,8 @@
 import { Pool } from "pg";
 import { UpsertEstablishmentAggregateFromForm } from "../../domain/immersionOffer/useCases/UpsertEstablishmentAggregateFromFormEstablishement";
-import { FormEstablishmentDto } from "../../shared/formEstablishment/FormEstablishment.dto";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
 
-import { random, sleep } from "../../shared/utils";
+import { random, sleep } from "shared/src/utils";
 import { createLogger } from "../../utils/logger";
 import { notifyDiscord } from "../../utils/notifyDiscord";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";

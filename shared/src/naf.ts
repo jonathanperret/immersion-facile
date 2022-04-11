@@ -1,4 +1,4 @@
-import { z } from "../../node_modules/zod";
+import { z } from "zod";
 import { keys } from "./utils";
 
 export type NafSectorCode = keyof typeof nafSectorLabels;
@@ -28,7 +28,7 @@ export const nafSectorLabels = {
 };
 
 export const validNafSectorCodes = keys(nafSectorLabels).filter(
-  (val) => val !== "0",
+  (val) => val !== "0"
 );
 
 export type NafDto = {

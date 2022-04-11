@@ -1,4 +1,4 @@
-import { z } from "../../node_modules/zod";
+import { z } from "zod";
 
 export const zString = z
   .string({
@@ -9,7 +9,7 @@ export const zString = z
 
 export const zTrimmedString = zString.refine(
   (s) => s.trim() === s,
-  "Obligatoire",
+  "Obligatoire"
 );
 
 export const zEmail = zString

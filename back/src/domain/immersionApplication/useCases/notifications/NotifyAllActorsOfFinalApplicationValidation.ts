@@ -3,7 +3,7 @@ import {
   calculateTotalImmersionHoursBetweenDate,
   prettyPrintLegacySchedule,
   prettyPrintSchedule,
-} from "../../../../shared/ScheduleUtils";
+} from "shared/src/ScheduleUtils";
 import { createLogger } from "../../../../utils/logger";
 import { UseCase } from "../../../core/UseCase";
 import { AgencyConfig, AgencyRepository } from "../../ports/AgencyRepository";
@@ -12,8 +12,8 @@ import {
   ValidatedApplicationFinalConfirmationParams,
 } from "../../ports/EmailGateway";
 import { EmailFilter } from "../../../core/ports/EmailFilter";
-import { ImmersionApplicationDto } from "../../../../shared/ImmersionApplication/ImmersionApplication.dto";
-import { immersionApplicationSchema } from "../../../../shared/ImmersionApplication/immersionApplication.schema";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { immersionApplicationSchema } from "shared/src/ImmersionApplication/immersionApplication.schema";
 
 const logger = createLogger(__filename);
 export class NotifyAllActorsOfFinalApplicationValidation extends UseCase<ImmersionApplicationDto> {

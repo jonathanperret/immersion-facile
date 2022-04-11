@@ -7,7 +7,7 @@ export const sleep = (ms: number): Promise<number> => {
   if (ms <= 0) {
     return Promise.resolve(0);
   }
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((r) => setTimeout(r as any, ms));
 };
 
 export type RandomFn = typeof random;

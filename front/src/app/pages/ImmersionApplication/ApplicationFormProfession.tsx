@@ -2,8 +2,8 @@ import { useField } from "formik";
 import React, { useEffect, useState } from "react";
 import { AppellationAutocomplete } from "src/app/components/AppellationAutocomplete";
 import { TextInput } from "src/uiComponents/form/TextInput";
-import { ImmersionApplicationDto } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
-import { AppellationDto } from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 
 type ApplicationFormProfessionProps = {
   label: string;

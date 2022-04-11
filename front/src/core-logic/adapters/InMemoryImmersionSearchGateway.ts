@@ -1,9 +1,9 @@
 import { filter as ramdaFilter } from "ramda";
 import { BehaviorSubject, delay, map, Observable, Subject } from "rxjs";
-import { ContactEstablishmentRequestDto } from "src/shared/contactEstablishment";
-import { SearchImmersionRequestDto } from "src/shared/searchImmersion/SearchImmersionRequest.dto";
-import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
-import { sleep } from "src/shared/utils";
+import { ContactEstablishmentRequestDto } from "shared/src/contactEstablishment";
+import { SearchImmersionRequestDto } from "shared/src/searchImmersion/SearchImmersionRequest.dto";
+import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
+import { sleep } from "shared/src/utils";
 import { ImmersionSearchGateway } from "../ports/ImmersionSearchGateway";
 
 export class InMemoryImmersionSearchGateway implements ImmersionSearchGateway {

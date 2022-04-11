@@ -1,7 +1,7 @@
 import {
   AppellationMatchDto,
   RomeDto,
-} from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
+} from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 
 export interface RomeAutocompleteGateway {
   getRomeDtoMatching: (searchText: string) => Promise<RomeDto[]>;

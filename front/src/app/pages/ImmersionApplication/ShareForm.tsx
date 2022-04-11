@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { TextInput } from "src/uiComponents/form/TextInput";
 import { immersionApplicationGateway } from "src/app/config/dependencies";
 import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
-import { shareLinkByEmailSchema } from "src/shared/ShareLinkByEmailDTO";
+import { shareLinkByEmailSchema } from "shared/src/ShareLinkByEmailDTO";
 
 type ShareFormProps = {
   onSuccess: () => void;

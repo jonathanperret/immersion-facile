@@ -4,8 +4,8 @@ import { firstValueFrom } from "rxjs";
 import { immersionSearchGateway } from "src/app/config/dependencies";
 import { AppellationAutocomplete } from "./AppellationAutocomplete";
 import { AddressAutocomplete } from "src/uiComponents/AddressAutocomplete";
-import { AppellationDto } from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
 
 interface Values {
   rome: string;

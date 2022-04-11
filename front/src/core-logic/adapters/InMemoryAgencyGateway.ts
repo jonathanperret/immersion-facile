@@ -3,9 +3,9 @@ import { AgencyGateway } from "src/core-logic/ports/AgencyGateway";
 import {
   AgencyInListDto,
   CreateAgencyConfig,
-} from "src/shared/agency/agency.dto";
-import { AgencyId } from "src/shared/agency/agency.dto";
-import { LatLonDto } from "src/shared/latLon";
+} from "shared/src/agency/agency.dto";
+import { AgencyId } from "shared/src/agency/agency.dto";
+import { LatLonDto } from "shared/src/latLon";
 
 const TEST_AGENCIES: Record<string, CreateAgencyConfig> = {
   "test-agency-1-front": {

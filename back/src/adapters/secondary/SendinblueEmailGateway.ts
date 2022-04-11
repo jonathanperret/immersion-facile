@@ -21,7 +21,7 @@ import {
   EmailGateway,
   ShareDraftApplicationByLinkParams,
 } from "../../domain/immersionApplication/ports/EmailGateway";
-import { FormEstablishmentDto } from "../../shared/formEstablishment/FormEstablishment.dto";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
 import { createLogger } from "../../utils/logger";
 
 const logger = createLogger(__filename);

@@ -6,7 +6,7 @@ import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/Immersio
 import { routes } from "src/app/routing/routes";
 import { HeaderFooterLayout } from "src/app/layouts/HeaderFooterLayout";
 import { Route } from "type-route";
-import { ImmersionApplicationDto } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 
 export type ImmersionApplicationPageRoute = Route<
   typeof routes.immersionApplication

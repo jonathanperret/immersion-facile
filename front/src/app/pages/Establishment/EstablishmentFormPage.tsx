@@ -7,8 +7,8 @@ import { BoolCheckboxGroup } from "src/uiComponents/form/CheckboxGroup";
 import { ErrorMessage } from "src/uiComponents/form/ErrorMessage";
 import { SuccessMessage } from "src/uiComponents/form/SuccessMessage";
 import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
-import { FormEstablishmentDto } from "src/shared/formEstablishment/FormEstablishment.dto";
-import { formEstablishmentSchema } from "src/shared/formEstablishment/FormEstablishment.schema";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
+import { formEstablishmentSchema } from "shared/src/formEstablishment/FormEstablishment.schema";
 
 type EstablishmentFormProps = {
   initialValues: FormEstablishmentDto;

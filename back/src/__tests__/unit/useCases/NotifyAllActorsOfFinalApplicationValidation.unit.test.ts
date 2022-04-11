@@ -10,11 +10,11 @@ import {
 import {
   LegacyScheduleDto,
   reasonableSchedule,
-} from "../../../shared/ScheduleSchema";
+} from "shared/src/ScheduleSchema";
 import {
   prettyPrintLegacySchedule,
   prettyPrintSchedule,
-} from "../../../shared/ScheduleUtils";
+} from "shared/src/ScheduleUtils";
 import { AgencyConfigBuilder } from "../../../_testBuilders/AgencyConfigBuilder";
 import { expectEmailFinalValidationConfirmationMatchingImmersionApplication } from "../../../_testBuilders/emailAssertions";
 import { ImmersionApplicationDtoBuilder } from "../../../_testBuilders/ImmersionApplicationDtoBuilder";
@@ -24,7 +24,7 @@ import {
   AlwaysAllowEmailFilter,
 } from "../../../adapters/secondary/core/EmailFilterImplementations";
 import { AgencyConfig } from "../../../domain/immersionApplication/ports/AgencyRepository";
-import { ImmersionApplicationDto } from "../../../shared/ImmersionApplication/ImmersionApplication.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 
 const validImmersionApplication: ImmersionApplicationDto =
   new ImmersionApplicationEntityBuilder().build().toDto();

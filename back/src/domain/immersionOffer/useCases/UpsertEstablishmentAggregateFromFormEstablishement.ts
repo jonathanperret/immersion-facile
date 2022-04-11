@@ -1,6 +1,6 @@
-import { FormEstablishmentDto } from "../../../shared/formEstablishment/FormEstablishment.dto";
-import { formEstablishmentSchema } from "../../../shared/formEstablishment/FormEstablishment.schema";
-import { NafDto } from "../../../shared/naf";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
+import { formEstablishmentSchema } from "shared/src/formEstablishment/FormEstablishment.schema";
+import { NafDto } from "shared/src/naf";
 import { notifyAndThrowErrorDiscord } from "../../../utils/notifyDiscord";
 import { Clock } from "../../core/ports/Clock";
 import { SequenceRunner } from "../../core/ports/SequenceRunner";

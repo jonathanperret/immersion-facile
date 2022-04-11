@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { featureFlagGateway } from "src/app/config/dependencies";
-import { FeatureFlags } from "src/shared/featureFlags";
+import { FeatureFlags } from "shared/src/featureFlags";
 
 const defaultFeatureFlags: FeatureFlags = {
   enableAdminUi: false,

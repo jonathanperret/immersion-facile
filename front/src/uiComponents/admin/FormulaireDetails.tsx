@@ -2,7 +2,7 @@ import React from "react";
 import { Accordion } from "./Accordion";
 import { TextCell } from "./TextCell";
 import { FormAccordionProps as FormAccordeonProps } from "./FormAccordion";
-import { ImmersionApplicationDto } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 
 type FieldForFormDetails = {
   title: string;

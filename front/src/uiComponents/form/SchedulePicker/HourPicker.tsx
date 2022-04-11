@@ -1,7 +1,7 @@
 import React from "react";
 import { ErrorMessage } from "formik";
 import { ButtonAdd } from "src/uiComponents/ButtonAdd";
-import { TimePeriodDto } from "src/shared/ScheduleSchema";
+import { TimePeriodDto } from "shared/src/ScheduleSchema";
 import { DeleteButton } from "src/uiComponents/DeleteButton";
 
 type HourPickerProps = {

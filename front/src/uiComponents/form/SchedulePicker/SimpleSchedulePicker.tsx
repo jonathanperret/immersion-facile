@@ -2,7 +2,7 @@ import React from "react";
 import { FieldHookConfig, useField } from "formik";
 import { HourPicker } from "./HourPicker";
 import { WeekdayPicker } from "./WeekdayPicker";
-import { ScheduleDto } from "src/shared/ScheduleSchema";
+import { ScheduleDto } from "shared/src/ScheduleSchema";
 
 export type SimpleSchedulePickerProps = {
   setFieldValue: (updatedSchedule: ScheduleDto) => void;

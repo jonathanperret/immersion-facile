@@ -20,10 +20,10 @@ import {
   AgencyKind,
   agencyKindList,
   CreateAgencyConfig,
-} from "src/shared/agency/agency.dto";
-import { zEmail } from "src/shared/zodUtils";
+} from "shared/src/agency/agency.dto";
+import { zEmail } from "shared/src/zodUtils";
 import { v4 as uuidV4 } from "uuid";
-import { agencyConfigSchema } from "src/shared/agency/agency.schema";
+import { agencyConfigSchema } from "shared/src/agency/agency.schema";
 
 const initialValues: CreateAgencyConfig = {
   id: uuidV4(),

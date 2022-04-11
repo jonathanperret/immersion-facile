@@ -6,7 +6,7 @@ import {
   TestDependencies,
 } from "src/core-logic/storeConfig/createTestStore";
 import { RootState } from "src/core-logic/storeConfig/store";
-import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
+import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
 
 // prettier-ignore
 const formSearchResult1 = { siret: "form1", rome: "A", voluntaryToImmersion: true} as SearchImmersionResultDto

@@ -2,8 +2,8 @@ import { useField } from "formik";
 import React from "react";
 import { FormEstablishmentAppellation } from "./FormEstablishmentAppellation";
 import { ButtonAdd } from "src/uiComponents/ButtonAdd";
-import { AppellationDto } from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { removeAtIndex } from "src/shared/utils";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { removeAtIndex } from "shared/src/utils";
 
 type AppellationListProps = {
   name: string;

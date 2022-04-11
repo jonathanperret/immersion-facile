@@ -6,7 +6,7 @@ import {
   ImmersionApplicationId,
   WithImmersionApplicationId,
   UpdateImmersionApplicationStatusRequestDto,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import {
   generateMagicLinkRoute,
   immersionApplicationShareRoute,
@@ -16,15 +16,15 @@ import {
   siretRoute,
   updateApplicationStatusRoute,
   validateImmersionApplicationRoute,
-} from "src/shared/routes";
-import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
-import { Role } from "src/shared/tokens/MagicLinkPayload";
-import { AgencyId } from "src/shared/agency/agency.dto";
-import { ShareLinkByEmailDTO } from "src/shared/ShareLinkByEmailDTO";
+} from "shared/src/routes";
+import { GetSiretResponseDto, SiretDto } from "shared/src/siret";
+import { Role } from "shared/src/tokens/MagicLinkPayload";
+import { AgencyId } from "shared/src/agency/agency.dto";
+import { ShareLinkByEmailDTO } from "shared/src/ShareLinkByEmailDTO";
 import {
   immersionApplicationSchema,
   withImmersionApplicationIdSchema,
-} from "src/shared/ImmersionApplication/immersionApplication.schema";
+} from "shared/src/ImmersionApplication/immersionApplication.schema";
 
 const prefix = "api";
 

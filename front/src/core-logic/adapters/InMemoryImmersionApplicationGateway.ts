@@ -1,18 +1,18 @@
 import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
 import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
-import { AgencyId, AgencyInListDto } from "src/shared/agency/agency.dto";
+import { AgencyId, AgencyInListDto } from "shared/src/agency/agency.dto";
 import {
   ApplicationStatus,
   ImmersionApplicationDto,
   ImmersionApplicationId,
   UpdateImmersionApplicationStatusRequestDto,
   WithImmersionApplicationId,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
-import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
-import { MagicLinkPayload, Role } from "src/shared/tokens/MagicLinkPayload";
-import { sleep } from "src/shared/utils";
-import { ShareLinkByEmailDTO } from "src/shared/ShareLinkByEmailDTO";
-import { signApplicationDtoWithRole } from "src/shared/ImmersionApplication/immersionApplication";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { GetSiretResponseDto, SiretDto } from "shared/src/siret";
+import { MagicLinkPayload, Role } from "shared/src/tokens/MagicLinkPayload";
+import { sleep } from "shared/src/utils";
+import { ShareLinkByEmailDTO } from "shared/src/ShareLinkByEmailDTO";
+import { signApplicationDtoWithRole } from "shared/src/ImmersionApplication/immersionApplication";
 
 const TEST_ESTABLISHMENTS: GetSiretResponseDto[] = [
   {

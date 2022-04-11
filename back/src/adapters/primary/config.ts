@@ -50,12 +50,12 @@ import { UpsertEstablishmentAggregateFromForm } from "../../domain/immersionOffe
 import { RomeRepository } from "../../domain/rome/ports/RomeRepository";
 import { AppellationSearch } from "../../domain/rome/useCases/AppellationSearch";
 import { GetSiret } from "../../domain/sirene/useCases/GetSiret";
-import { frontRoutes } from "../../shared/routes";
+import { frontRoutes } from "shared/src/routes";
 import {
   createMagicLinkPayload,
   EstablishmentJwtPayload,
   Role,
-} from "../../shared/tokens/MagicLinkPayload";
+} from "shared/src/tokens/MagicLinkPayload";
 import { createLogger } from "../../utils/logger";
 import { CachingAccessTokenGateway } from "../secondary/core/CachingAccessTokenGateway";
 import { RealClock } from "../secondary/core/ClockImplementations";
@@ -111,7 +111,7 @@ import { PgImmersionApplicationExportQueries } from "../secondary/pg/PgImmersion
 import { CallLaBonneBoiteAndUpdateRepositories } from "../../domain/immersionOffer/useCases/CallLaBonneBoiteAndUpdateRepositories";
 import { RequestEditFormEstablishment } from "../../domain/immersionOffer/useCases/RequestEditFormEstablishment";
 import { ShareApplicationLinkByEmail } from "../../domain/immersionApplication/useCases/ShareApplicationLinkByEmail";
-import { ImmersionApplicationId } from "../../shared/ImmersionApplication/ImmersionApplication.dto";
+import { ImmersionApplicationId } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import { StubEstablishmentExportQueries } from "../secondary/StubEstablishmentExportQueries";
 import { PgEstablishmentExportQueries } from "../secondary/pg/PgEstablishmentExportQueries";
 import { ImmersionApplicationExportQueries } from "../../domain/immersionApplication/ports/ImmersionApplicationExportQueries";

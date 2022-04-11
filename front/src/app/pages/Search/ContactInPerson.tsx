@@ -7,8 +7,8 @@ import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
 import {
   ContactEstablishmentInPersonDto,
   contactEstablishmentInPersonSchema,
-} from "src/shared/contactEstablishment";
-import { SiretDto } from "src/shared/siret";
+} from "shared/src/contactEstablishment";
+import { SiretDto } from "shared/src/siret";
 
 type ContactInPersonProps = {
   siret: SiretDto;

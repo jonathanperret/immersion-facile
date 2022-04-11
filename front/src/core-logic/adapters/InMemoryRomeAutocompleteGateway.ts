@@ -2,8 +2,8 @@ import { RomeAutocompleteGateway } from "src/core-logic/ports/RomeAutocompleteGa
 import {
   AppellationMatchDto,
   RomeDto,
-} from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { sleep } from "src/shared/utils";
+} from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { sleep } from "shared/src/utils";
 
 export class InMemoryRomeAutocompleteGateway
   implements RomeAutocompleteGateway

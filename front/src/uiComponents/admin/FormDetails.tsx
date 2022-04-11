@@ -1,15 +1,15 @@
 import React, { Component, ReactNode } from "react";
-import { AppellationDto } from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { keys } from "src/shared/utils";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { keys } from "shared/src/utils";
 import { Accordion } from "./Accordion";
 import { TextCell } from "./TextCell";
 import { FormAccordionProps } from "./FormAccordion";
-import { ImmersionApplicationDto } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import {
   calculateTotalImmersionHoursBetweenDate,
   calculateWeeklyHoursFromSchedule,
   prettyPrintSchedule,
-} from "src/shared/ScheduleUtils";
+} from "shared/src/ScheduleUtils";
 
 type ImmersionField = keyof ImmersionApplicationDto;
 type FieldsToLabel = Partial<Record<ImmersionField, string>>;

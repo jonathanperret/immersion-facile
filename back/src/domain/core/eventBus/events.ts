@@ -1,14 +1,14 @@
-import { ContactEstablishmentRequestDto } from "../../../shared/contactEstablishment";
-import { EstablishmentJwtPayload } from "../../../shared/tokens/MagicLinkPayload";
-import { Flavor } from "../../../shared/typeFlavors";
+import { ContactEstablishmentRequestDto } from "shared/src/contactEstablishment";
+import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
+import { Flavor } from "shared/src/typeFlavors";
 import { AgencyConfig } from "../../immersionApplication/ports/AgencyRepository";
 import {
   ImmersionApplicationRequiresModificationPayload,
   RenewMagicLinkPayload,
 } from "../../immersionApplication/useCases/notifications/NotifyBeneficiaryAndEnterpriseThatApplicationNeedsModification";
 import type { DateStr } from "../ports/Clock";
-import { ImmersionApplicationDto } from "../../../shared/ImmersionApplication/ImmersionApplication.dto";
-import { FormEstablishmentDto } from "../../../shared/formEstablishment/FormEstablishment.dto";
+import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
 
 export type SubscriptionId = Flavor<string, "SubscriptionId">;
 

@@ -1,9 +1,6 @@
-import {
-  AgencyId,
-  CreateAgencyConfig,
-} from "../../../shared/agency/agency.dto";
-import { LatLonDto } from "../../../shared/latLon";
-import { RequireField } from "../../../shared/utils";
+import { AgencyId, CreateAgencyConfig } from "shared/src/agency/agency.dto";
+import { LatLonDto } from "shared/src/latLon";
+import { RequireField } from "shared/src/utils";
 
 export type AgencyStatus = "active" | "closed" | "needsReview";
 

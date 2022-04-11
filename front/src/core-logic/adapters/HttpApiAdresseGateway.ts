@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LatLonDto } from "src/shared/latLon";
+import { LatLonDto } from "shared/src/latLon";
 
 import {
   AddressWithCoordinates,

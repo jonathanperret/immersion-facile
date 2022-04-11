@@ -1,5 +1,5 @@
-import { AppellationDto } from "../../../shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { SearchImmersionResultDto } from "../../../shared/searchImmersion/SearchImmersionResult.dto";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
 import { ContactEntityV2 } from "../entities/ContactEntity";
 import {
   AnnotatedEstablishmentEntityV2,

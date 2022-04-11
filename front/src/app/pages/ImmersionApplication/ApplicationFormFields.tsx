@@ -22,7 +22,7 @@ import { FormSectionTitle } from "src/uiComponents/FormSectionTitle";
 import type {
   ApplicationStatus,
   ImmersionApplicationDto,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import { routes, useRoute } from "src/app/routing/routes";
 import { CopyLink } from "./CopyLink";
 import { ShareLinkByEmail } from "./ShareLinkByEmail";

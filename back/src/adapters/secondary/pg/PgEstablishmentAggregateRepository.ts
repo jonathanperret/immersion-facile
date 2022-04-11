@@ -14,12 +14,12 @@ import {
 } from "../../../domain/immersionOffer/entities/EstablishmentEntity";
 import { SearchMade } from "../../../domain/immersionOffer/entities/SearchMadeEntity";
 import { EstablishmentAggregateRepository } from "../../../domain/immersionOffer/ports/EstablishmentAggregateRepository";
-import { LatLonDto } from "../../../shared/latLon";
-import { AppellationDto } from "../../../shared/romeAndAppellationDtos/romeAndAppellation.dto";
+import { LatLonDto } from "shared/src/latLon";
+import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 import {
   SearchContactDto,
   SearchImmersionResultDto,
-} from "../../../shared/searchImmersion/SearchImmersionResult.dto";
+} from "shared/src/searchImmersion/SearchImmersionResult.dto";
 
 import { extractCityFromAddress } from "../../../utils/extractCityFromAddress";
 import { createLogger } from "../../../utils/logger";

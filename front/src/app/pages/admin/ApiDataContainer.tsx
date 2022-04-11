@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RenewExpiredLinkContent } from "../../../helpers/RenewExpiredLinkPage";
-import { random } from "src/shared/utils";
+import { random } from "shared/src/utils";
 
 // Inspired by https://itnext.io/centralizing-api-error-handling-in-react-apps-810b2be1d39d
 interface UseApiCallProps<T> {

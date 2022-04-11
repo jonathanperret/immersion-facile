@@ -1,13 +1,13 @@
 import axios from "axios";
 import { map, Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
-import { SearchImmersionRequestDto } from "src/shared/searchImmersion/SearchImmersionRequest.dto";
-import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
-import { ContactEstablishmentRequestDto } from "src/shared/contactEstablishment";
+import { SearchImmersionRequestDto } from "shared/src/searchImmersion/SearchImmersionRequest.dto";
+import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
+import { ContactEstablishmentRequestDto } from "shared/src/contactEstablishment";
 import {
   contactEstablishmentRoute,
   searchImmersionRoute,
-} from "src/shared/routes";
+} from "shared/src/routes";
 import { ImmersionSearchGateway } from "../ports/ImmersionSearchGateway";
 
 const prefix = "api";

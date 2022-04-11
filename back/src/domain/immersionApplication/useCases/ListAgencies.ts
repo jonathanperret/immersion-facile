@@ -1,9 +1,9 @@
 import {
   AgencyInListDto,
   ListAgenciesRequestDto,
-} from "../../../shared/agency/agency.dto";
-import { listAgenciesRequestSchema } from "../../../shared/agency/agency.schema";
-import { LatLonDto } from "../../../shared/latLon";
+} from "shared/src/agency/agency.dto";
+import { listAgenciesRequestSchema } from "shared/src/agency/agency.schema";
+import { LatLonDto } from "shared/src/latLon";
 import { UseCase } from "../../core/UseCase";
 import { AgencyConfig, AgencyRepository } from "../ports/AgencyRepository";
 

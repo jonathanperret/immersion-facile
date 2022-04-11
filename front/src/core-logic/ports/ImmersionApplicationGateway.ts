@@ -1,14 +1,14 @@
-import { AgencyId } from "src/shared/agency/agency.dto";
+import { AgencyId } from "shared/src/agency/agency.dto";
 import {
   ApplicationStatus,
   ImmersionApplicationDto,
   ImmersionApplicationId,
   UpdateImmersionApplicationStatusRequestDto,
   WithImmersionApplicationId,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
-import { GetSiretResponseDto, SiretDto } from "src/shared/siret";
-import { Role } from "src/shared/tokens/MagicLinkPayload";
-import { ShareLinkByEmailDTO } from "src/shared/ShareLinkByEmailDTO";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
+import { GetSiretResponseDto, SiretDto } from "shared/src/siret";
+import { Role } from "shared/src/tokens/MagicLinkPayload";
+import { ShareLinkByEmailDTO } from "shared/src/ShareLinkByEmailDTO";
 
 export interface ImmersionApplicationGateway {
   add(immersionApplicationDto: ImmersionApplicationDto): Promise<string>;

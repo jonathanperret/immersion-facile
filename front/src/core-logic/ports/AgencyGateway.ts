@@ -2,8 +2,8 @@ import {
   AgencyId,
   AgencyInListDto,
   CreateAgencyConfig,
-} from "src/shared/agency/agency.dto";
-import { LatLonDto } from "src/shared/latLon";
+} from "shared/src/agency/agency.dto";
+import { LatLonDto } from "shared/src/latLon";
 
 export interface AgencyGateway {
   addAgency: (params: CreateAgencyConfig) => Promise<void>;

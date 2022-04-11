@@ -3,8 +3,8 @@ import { RomeAutocompleteGateway } from "src/core-logic/ports/RomeAutocompleteGa
 import {
   AppellationMatchDto,
   RomeDto,
-} from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
-import { appellationRoute, romeRoute } from "src/shared/routes";
+} from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { appellationRoute, romeRoute } from "shared/src/routes";
 
 const prefix = "api";
 

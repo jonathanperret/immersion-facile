@@ -6,21 +6,21 @@ import { ArrayDropdown } from "src/uiComponents/admin/ArrayDropdown";
 import { FormAccordion } from "src/uiComponents/admin/FormAccordion";
 import { FormMagicLinks } from "src/uiComponents/admin/FormMagicLinks";
 import { ImmersionMarianneHeader } from "src/app/components/ImmersionMarianneHeader";
-import { AgencyId } from "src/shared/agency/agency.dto";
+import { AgencyId } from "shared/src/agency/agency.dto";
 import {
   ApplicationStatus,
   ImmersionApplicationDto,
   validApplicationStatus,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+} from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import { Route } from "type-route";
 import "./Admin.css";
 import { ApiDataContainer } from "./ApiDataContainer";
 import {
   exportEstablismentsExcelRoute,
   exportImmersionApplicationsExcelRoute,
-} from "src/shared/routes";
-import { EstablishmentExportConfigDto } from "src/shared/establishmentExport/establishmentExport.dto";
-import { queryParamsAsString } from "src/shared/utils/queryParams";
+} from "shared/src/routes";
+import { EstablishmentExportConfigDto } from "shared/src/establishmentExport/establishmentExport.dto";
+import { queryParamsAsString } from "shared/src/utils/queryParams";
 
 interface AdminProps {
   route: Route<typeof routes.admin> | Route<typeof routes.agencyAdmin>;

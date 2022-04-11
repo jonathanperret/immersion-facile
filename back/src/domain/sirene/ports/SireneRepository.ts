@@ -1,7 +1,7 @@
 import { UnavailableApiError } from "../../../adapters/primary/helpers/httpErrors";
-import { NafDto } from "../../../shared/naf";
-import { propEq } from "../../../shared/ramdaExtensions/propEq";
-import { SiretDto } from "../../../shared/siret";
+import { NafDto } from "shared/src/naf";
+import { propEq } from "shared/src/ramdaExtensions/propEq";
+import { SiretDto } from "shared/src/siret";
 import { createLogger } from "../../../utils/logger";
 import { TefenCode } from "../../immersionOffer/entities/EstablishmentEntity";
 

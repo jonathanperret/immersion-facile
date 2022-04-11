@@ -1,5 +1,5 @@
 import React from "react";
-import { ComplexScheduleDto, ScheduleDto } from "src/shared/ScheduleSchema";
+import { ComplexScheduleDto, ScheduleDto } from "shared/src/ScheduleSchema";
 
 type DayPickerProps = {
   complexSchedule: ComplexScheduleDto;

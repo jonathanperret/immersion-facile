@@ -17,11 +17,11 @@ import { InfoMessage } from "src/uiComponents/form/InfoMessage";
 import { SuccessMessage } from "src/uiComponents/form/SuccessMessage";
 import { TextInput } from "src/uiComponents/form/TextInput";
 import { ENV } from "src/environmentVariables";
-import { OmitFromExistingKeys } from "src/shared/utils";
+import { OmitFromExistingKeys } from "shared/src/utils";
 import {
   FormEstablishmentDto,
   FormEstablishmentSource,
-} from "src/shared/formEstablishment/FormEstablishment.dto";
+} from "shared/src/formEstablishment/FormEstablishment.dto";
 
 type EstablishmentCreationFormProps = {
   source: FormEstablishmentSource;

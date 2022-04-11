@@ -1,6 +1,6 @@
 import React from "react";
 import { useFeatureFlagsContext } from "src/app/utils/FeatureFlagContext";
-import { loginPeConnect } from "src/shared/routes";
+import { loginPeConnect } from "shared/src/routes";
 
 export const PeConnect = () => {
   const featureFlags = useFeatureFlagsContext();

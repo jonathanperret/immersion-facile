@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { romeAutocompleteGateway } from "src/app/config/dependencies";
 import { Proposal } from "src/app/pages/Establishment/StringWithHighlights";
 import { useDebounce } from "src/app/utils/useDebounce";
-import { RomeDto } from "src/shared/romeAndAppellationDtos/romeAndAppellation.dto";
+import { RomeDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 
 type RomeAutocompleteProps = {
   title: string;

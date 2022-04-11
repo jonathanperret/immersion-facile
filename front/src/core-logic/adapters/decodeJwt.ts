@@ -1,7 +1,7 @@
 import type {
   MagicLinkPayload,
   EstablishmentJwtPayload,
-} from "src/shared/tokens/MagicLinkPayload";
+} from "shared/src/tokens/MagicLinkPayload";
 
 // jwt decode logic comming from : https://github.com/gustavo0197/react-jwt/blob/master/src/jwt/index.ts
 

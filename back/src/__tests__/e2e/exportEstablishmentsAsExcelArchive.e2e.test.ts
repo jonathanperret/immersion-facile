@@ -1,5 +1,5 @@
 import { buildTestApp } from "../../_testBuilders/buildTestApp";
-import { exportEstablismentsExcelRoute } from "../../shared/routes";
+import { exportEstablismentsExcelRoute } from "shared/src/routes";
 import * as fse from "fs-extra";
 import { temporaryStoragePath } from "../../utils/filesystemUtils";
 

@@ -3,15 +3,15 @@ import promClient from "prom-client";
 import {
   addEstablishmentFormRouteWithApiKey,
   searchImmersionRoute,
-} from "../../../shared/routes";
+} from "shared/src/routes";
 import { AppDependencies } from "../config";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 import {
   ForbiddenError,
   validateAndParseZodSchema,
 } from "../helpers/httpErrors";
-import { pipeWithValue } from "../../../shared/pipeWithValue";
-import { formEstablishmentSchema } from "../../../shared/formEstablishment/FormEstablishment.schema";
+import { pipeWithValue } from "shared/src/pipeWithValue";
+import { formEstablishmentSchema } from "shared/src/formEstablishment/FormEstablishment.schema";
 
 const counterFormEstablishmentCaller = new promClient.Counter({
   name: "form_establishment_v1_callers_counter",

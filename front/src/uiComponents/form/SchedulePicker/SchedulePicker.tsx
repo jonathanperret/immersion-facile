@@ -1,11 +1,11 @@
 import { FieldHookConfig, useField } from "formik";
 import React from "react";
-import { ScheduleDto } from "src/shared/ScheduleSchema";
+import { ScheduleDto } from "shared/src/ScheduleSchema";
 import {
   calculateWeeklyHoursFromSchedule,
   checkSchedule,
   maxPermittedHoursPerWeek,
-} from "src/shared/ScheduleUtils";
+} from "shared/src/ScheduleUtils";
 import { BoolRadioPicker } from "./BoolRadioPicker";
 import { ComplexSchedulePicker } from "./ComplexSchedulePicker";
 import "./SchedulePicker.css";

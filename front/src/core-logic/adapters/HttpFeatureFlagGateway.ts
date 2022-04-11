@@ -1,6 +1,6 @@
 import axios from "axios";
 import { FeatureFlagsGateway } from "src/core-logic/ports/FeatureFlagsGateway";
-import { getFeatureFlags } from "src/shared/routes";
+import { getFeatureFlags } from "shared/src/routes";
 
 const prefix = "/api";
 

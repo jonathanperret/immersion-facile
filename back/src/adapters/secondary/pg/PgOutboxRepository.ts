@@ -9,10 +9,10 @@ import {
 } from "../../../domain/core/eventBus/events";
 import { DateStr } from "../../../domain/core/ports/Clock";
 import { OutboxRepository } from "../../../domain/core/ports/OutboxRepository";
-import { pipeWithValue } from "../../../shared/pipeWithValue";
-import { propEq } from "../../../shared/ramdaExtensions/propEq";
-import { EstablishmentJwtPayload } from "../../../shared/tokens/MagicLinkPayload";
-import { replaceArrayElement } from "../../../shared/utils";
+import { pipeWithValue } from "shared/src/pipeWithValue";
+import { propEq } from "shared/src/ramdaExtensions/propEq";
+import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
+import { replaceArrayElement } from "shared/src/utils";
 
 const counterEventsSaved = new promClient.Counter({
   name: "pg_outbox_repository_events_saved",

@@ -11,7 +11,7 @@ import {
 import { routes } from "src/app/routing/routes";
 import { AddressAutocomplete } from "src/uiComponents/AddressAutocomplete";
 import { TextInput } from "src/uiComponents/form/TextInput";
-import { FormEstablishmentDto } from "src/shared/formEstablishment/FormEstablishment.dto";
+import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
 import { Route } from "type-route";
 
 export const EstablishmentEditionFormPage = ({

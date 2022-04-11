@@ -1,7 +1,7 @@
 import { buildTestApp } from "../../_testBuilders/buildTestApp";
 import { FormEstablishmentDtoBuilder } from "../../_testBuilders/FormEstablishmentDtoBuilder";
 import { TEST_ESTABLISHMENT1_SIRET } from "../../adapters/secondary/InMemorySireneRepository";
-import { addEstablishmentFormRouteWithoutApiKey } from "../../shared/routes";
+import { addEstablishmentFormRouteWithoutApiKey } from "shared/src/routes";
 import { FormEstablishmentDtoPublicV0 } from "../../adapters/primary/routers/DtoAndSchemas/v0/input/FormEstablishmentPublicV0.dto";
 import { FormEstablishmentDtoPublicV1 } from "../../adapters/primary/routers/DtoAndSchemas/v1/input/FormEstablishmentPublicV1.dto";
 
