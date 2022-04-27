@@ -1,10 +1,9 @@
 import React from "react";
 import { agencyGateway } from "src/app/config/dependencies";
+import { ImmersionApplicationAddFormUkraine } from "src/app/pages/ImmersionApplication/components/ImmersionApplicationAddFormUkraine";
+import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/ImmersionApplication/immersionApplication.hooks";
 import { getAgencyIdBehavior$ } from "src/app/pages/ImmersionApplication/ImmersionApplication.presenter";
-import { ImmersionApplicationFormContainerLayout } from "src/app/pages/ImmersionApplication/ImmersionApplicationFormContainerLayout";
-import { ImmersionApplicationFormUkraine } from "src/app/pages/ImmersionApplication/ImmersionApplicationFormUkraine";
-import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/ImmersionApplication/immersionApplicationHelpers";
-import { ImmersionFacileAgencyNotActive } from "src/app/pages/ImmersionApplication/ImmersionFacileAgencyNotActive";
+import { ImmersionApplicationFormContainerLayout } from "src/app/pages/ImmersionApplication/layout/ImmersionApplicationFormContainerLayout";
 import { routes } from "src/app/routing/routes";
 import { AgencyId } from "src/shared/agency/agency.dto";
 import { useObservable } from "src/useObservable";
@@ -29,7 +28,7 @@ export const ImmersionApplicationPageForUkraine = ({
   return (
     <ImmersionApplicationFormContainerLayout>
       {agencyId ? (
-        <ImmersionApplicationFormUkraine
+        <ImmersionApplicationAddFormUkraine
           properties={{
             ...immersionApplicationInitialValuesFromUrl(route),
             agencyId,
@@ -41,3 +40,15 @@ export const ImmersionApplicationPageForUkraine = ({
     </ImmersionApplicationFormContainerLayout>
   );
 };
+
+const ImmersionFacileAgencyNotActive = () => (
+  <div role="alert" className="fr-alert fr-alert--info w-5/6 m-auto mt-10">
+    <p className="fr-alert__title">
+      L'agence 'Immersion Facile' n'est pas active.
+    </p>
+    <p>
+      Veuillez contacter l'équipe immersion facile{" "}
+      <a>contact@immersion-facile@beta.gouv.fr</a> pour le support utilisateur.
+    </p>
+  </div>
+);

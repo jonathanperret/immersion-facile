@@ -10,7 +10,7 @@ import { ErrorMessage } from "src/uiComponents/form/ErrorMessage";
 import { SuccessMessage } from "src/uiComponents/form/SuccessMessage";
 import { Route } from "type-route";
 import { ApiDataContainer } from "../admin/ApiDataContainer";
-import { VerificationActionButton } from "./VerificationActionButton";
+import { VerificationActionButton } from "./components/VerificationActionButton";
 
 type VerificationPageProps = {
   route: Route<typeof routes.immersionApplicationsToValidate>;

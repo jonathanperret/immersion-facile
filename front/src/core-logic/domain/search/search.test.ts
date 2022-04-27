@@ -1,16 +1,10 @@
-import { Store } from "@reduxjs/toolkit";
-import { searchSelectors } from "src/core-logic/domain/search/search.selectors";
-import {
-  searchSlice,
-  SearchStatus,
-} from "src/core-logic/domain/search/search.slice";
-import {
-  createTestStore,
-  TestDependencies,
-} from "src/core-logic/storeConfig/createTestStore";
-import { expectToEqual } from "src/core-logic/storeConfig/redux.helpers";
-import { RootState } from "src/core-logic/storeConfig/store";
-import { SearchImmersionResultDto } from "src/shared/searchImmersion/SearchImmersionResult.dto";
+import {Store} from "@reduxjs/toolkit";
+import {searchSelectors} from "src/core-logic/domain/search/search.selectors";
+import {searchSlice, SearchStatus,} from "src/core-logic/domain/search/search.slice";
+import {createTestStore, TestDependencies,} from "src/core-logic/storeConfig/createTestStore";
+import {expectToEqual} from "src/core-logic/storeConfig/redux.helpers";
+import {RootState} from "src/core-logic/storeConfig/store";
+import {SearchImmersionResultDto} from "src/shared/searchImmersion/SearchImmersionResult.dto";
 
 // prettier-ignore
 const formSearchResult1 = { siret: "form1", rome: "A", voluntaryToImmersion: true} as SearchImmersionResultDto

@@ -1,5 +1,5 @@
-import { EstablishmentUiGateway } from "./EstablishmentUiGateway";
 import { EstablishmentGateway } from "./EstablishmentGateway";
+import { EstablishmentUiGateway } from "./EstablishmentUiGateway";
 import { EventGateway } from "./EventGateway";
 
 export interface ClientGateways {

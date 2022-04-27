@@ -1,7 +1,7 @@
 import { EstablishementCallToAction } from "../domain/establishments/EstablishementCallToAction";
 import { VerifySiretEvent } from "../events/verifySiret/VerifySiretEvent";
-import { EstablishmentUiGateway } from "../ports/EstablishmentUiGateway";
 import { EstablishmentGateway } from "../ports/EstablishmentGateway";
+import { EstablishmentUiGateway } from "../ports/EstablishmentUiGateway";
 import { UseCase } from "./UseCase";
 
 export class VerifySiretUseCase extends UseCase {

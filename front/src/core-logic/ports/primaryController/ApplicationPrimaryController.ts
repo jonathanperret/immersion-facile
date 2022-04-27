@@ -1,8 +1,8 @@
 import { ApplicationEvent, EventType } from "../../events/ApplicationEvent";
+import { ModifyEstablishmentUseCase } from "../../useCases/ModifyEstablishmentUseCase";
 import { UseCase } from "../../useCases/UseCase";
 import { VerifySiretUseCase } from "../../useCases/VerifySiretUseCase";
 import { ClientGateways } from "../ClientGateways";
-import { ModifyEstablishmentUseCase } from "../../useCases/ModifyEstablishmentUseCase";
 
 export class ApplicationPrimaryController {
   addDependencies(gateways: ClientGateways) {

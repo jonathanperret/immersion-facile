@@ -1,8 +1,8 @@
 import { SiretDto } from "src/shared/siret";
 import { EstablishementCallToAction } from "../domain/establishments/EstablishementCallToAction";
 import { ModifyEstablishmentEvent } from "../events/modifyEstablishment.ts/ModifyEstablishmentEvent";
-import { EstablishmentUiGateway } from "../ports/EstablishmentUiGateway";
 import { EstablishmentGateway } from "../ports/EstablishmentGateway";
+import { EstablishmentUiGateway } from "../ports/EstablishmentUiGateway";
 import { UseCase } from "./UseCase";
 
 export class ModifyEstablishmentUseCase extends UseCase {

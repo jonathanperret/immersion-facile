@@ -14,7 +14,7 @@ import { immersionApplicationSchema } from "src/shared/ImmersionApplication/imme
 import { MagicLinkPayload, Role } from "src/shared/tokens/MagicLinkPayload";
 import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
 import { Route } from "type-route";
-import { ApplicationFormFields } from "./ApplicationFormFields";
+import { ApplicationFormFields } from "./components/ApplicationFormFields";
 
 type SignFormRoute = Route<typeof routes.immersionApplicationsToSign>;
 

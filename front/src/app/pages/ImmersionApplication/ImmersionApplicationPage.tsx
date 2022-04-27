@@ -1,8 +1,8 @@
 import React from "react";
 import { HeaderFooterLayout } from "src/app/layouts/HeaderFooterLayout";
-import { ImmersionApplicationForm } from "src/app/pages/ImmersionApplication/ImmersionApplicationForm";
-import { ImmersionApplicationFormContainerLayout } from "src/app/pages/ImmersionApplication/ImmersionApplicationFormContainerLayout";
-import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/ImmersionApplication/immersionApplicationHelpers";
+import { ImmersionApplicationAddForm } from "src/app/pages/ImmersionApplication/components/ImmersionApplicationAddForm";
+import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/ImmersionApplication/immersionApplication.hooks";
+import { ImmersionApplicationFormContainerLayout } from "src/app/pages/ImmersionApplication/layout/ImmersionApplicationFormContainerLayout";
 
 import { routes } from "src/app/routing/routes";
 import { ImmersionApplicationDto } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
@@ -29,9 +29,8 @@ export const ImmersionApplicationPage = ({
 }: ImmersionApplicationPageProps) => (
   <HeaderFooterLayout>
     <ImmersionApplicationFormContainerLayout>
-      <ImmersionApplicationForm
+      <ImmersionApplicationAddForm
         properties={immersionApplicationInitialValuesFromUrl(route)}
-        routeParams={route.params}
       />
     </ImmersionApplicationFormContainerLayout>
   </HeaderFooterLayout>

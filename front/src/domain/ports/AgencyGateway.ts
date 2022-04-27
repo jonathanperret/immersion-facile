@@ -17,5 +17,5 @@ export interface AgencyGateway {
     agencyId: WithAgencyId,
   ): Promise<AgencyPublicDisplayDto>;
 
-  getImmersionFacileAgencyId(): Observable<AgencyId | false>;
+  getImmersionFacileAgencyId$(): Observable<AgencyId | false>;
 }

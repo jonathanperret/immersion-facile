@@ -2,10 +2,12 @@ import { useField, useFormikContext } from "formik";
 import React, { useEffect } from "react";
 import { AgencyDisplay } from "src/app/components/AgencyDisplay";
 import { AgencySelector } from "src/app/components/AgencySelector";
+import { CopyLink } from "src/app/components/CopyLink";
 import {
   BoolRadioGroup,
   RadioGroupForField,
 } from "src/app/components/RadioGroup";
+import { ShareLinkByEmail } from "src/app/components/ShareLinkByEmail";
 import { ApplicationFormKeysInUrl } from "src/app/routing/route-params";
 import { routes, useRoute } from "src/app/routing/routes";
 import {
@@ -28,8 +30,6 @@ import {
 import { TextInput } from "src/uiComponents/form/TextInput";
 import { FormSectionTitle } from "src/uiComponents/FormSectionTitle";
 import { ApplicationFormProfession } from "./ApplicationFormProfession";
-import { CopyLink } from "./CopyLink";
-import { ShareLinkByEmail } from "./ShareLinkByEmail";
 
 const FrozenMessage = () => (
   <>

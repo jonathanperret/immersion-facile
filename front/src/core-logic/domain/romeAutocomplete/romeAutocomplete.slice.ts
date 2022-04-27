@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  filter,
-  switchMap,
-  map,
-  of,
   concatWith,
   debounceTime,
   distinctUntilChanged,
+  filter,
+  map,
+  of,
+  switchMap,
 } from "rxjs";
 import {
   ActionOfSlice,

@@ -1,12 +1,12 @@
 import { HttpApiAdresseGateway } from "src/core-logic/adapters/HttpApiAdresseGateway";
-import { HttpFeatureFlagGateway } from "src/core-logic/adapters/HttpFeatureFlagGateway";
 import { HttpEstablishmentGateway } from "src/core-logic/adapters/HttpEstablishmentGateway";
+import { HttpFeatureFlagGateway } from "src/core-logic/adapters/HttpFeatureFlagGateway";
 import { HttpImmersionApplicationGateway } from "src/core-logic/adapters/HttpImmersionApplicationGateway";
 import { HttpImmersionSearchGateway } from "src/core-logic/adapters/HttpImmersionSearchGateway";
 import { HttpRomeAutocompleteGateway } from "src/core-logic/adapters/HttpRomeAutocompleteGateway";
 import { InMemoryApiAdresseGateway } from "src/core-logic/adapters/InMemoryApiAdresseGateway";
-import { InMemoryFeatureFlagGateway } from "src/core-logic/adapters/InMemoryFeatureFlagGateway";
 import { InMemoryEstablishmentGateway } from "src/core-logic/adapters/InMemoryEstablishmentGateway";
+import { InMemoryFeatureFlagGateway } from "src/core-logic/adapters/InMemoryFeatureFlagGateway";
 import { InMemoryImmersionApplicationGateway } from "src/core-logic/adapters/InMemoryImmersionApplicationGateway";
 import {
   InMemoryImmersionSearchGateway,
@@ -17,8 +17,8 @@ import {
   seedRomeDtos,
 } from "src/core-logic/adapters/InMemoryRomeAutocompleteGateway";
 import { ApiAdresseGateway } from "src/core-logic/ports/ApiAdresseGateway";
-import { FeatureFlagsGateway } from "src/core-logic/ports/FeatureFlagsGateway";
 import { EstablishmentGateway } from "src/core-logic/ports/EstablishmentGateway";
+import { FeatureFlagsGateway } from "src/core-logic/ports/FeatureFlagsGateway";
 import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
 import { ImmersionSearchGateway } from "src/core-logic/ports/ImmersionSearchGateway";
 import { RomeAutocompleteGateway } from "src/core-logic/ports/RomeAutocompleteGateway";

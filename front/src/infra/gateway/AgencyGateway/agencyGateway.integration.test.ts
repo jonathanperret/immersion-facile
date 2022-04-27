@@ -16,7 +16,7 @@ describe("Agency Gateway - integration tests", () => {
     describe(`immersionFacileAgency ${adapter.constructor.name}`, () => {
       it("retreive the id as observable from the gateway", async () => {
         const immersionId$: Observable<AgencyId | false> =
-          adapter.getImmersionFacileAgencyId();
+          adapter.getImmersionFacileAgencyId$();
 
         const immersionId = await firstValueFrom<AgencyId | false>(
           immersionId$,

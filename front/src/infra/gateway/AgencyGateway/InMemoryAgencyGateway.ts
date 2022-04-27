@@ -43,7 +43,7 @@ export class InMemoryAgencyGateway implements AgencyGateway {
     return toAgencyPublicDisplayDto(agency);
   }
 
-  getImmersionFacileAgencyId(): Observable<AgencyId> {
+  getImmersionFacileAgencyId$(): Observable<AgencyId> {
     return of("agency-id-with-immersion-facile-kind");
   }
 }

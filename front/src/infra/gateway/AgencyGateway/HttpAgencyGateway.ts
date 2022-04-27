@@ -20,7 +20,7 @@ import {
 const prefix = "api";
 
 export class HttpAgencyGateway implements AgencyGateway {
-  getImmersionFacileAgencyId(): Observable<AgencyId | false> {
+  getImmersionFacileAgencyId$(): Observable<AgencyId | false> {
     return ajax
       .get<AgencyId | { success: boolean }>(
         `/${prefix}/${agencyImmersionFacileIdRoute}`,

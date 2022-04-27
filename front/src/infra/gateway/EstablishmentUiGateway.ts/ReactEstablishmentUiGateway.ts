@@ -1,6 +1,7 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { EstablishementCallToAction } from "src/core-logic/domain/establishments/EstablishementCallToAction";
 import { EstablishmentUiGateway } from "src/core-logic/ports/EstablishmentUiGateway";
+
 const establishementCallToActionSubject$: BehaviorSubject<EstablishementCallToAction> =
   new BehaviorSubject<EstablishementCallToAction>(
     EstablishementCallToAction.NOTHING,

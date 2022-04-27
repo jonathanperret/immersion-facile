@@ -1,42 +1,16 @@
 import { addDays, startOfToday } from "date-fns";
-import { immersionApplicationGateway } from "src/app/config/dependencies";
 import {
   ImmersionApplicationPageRoute,
   ImmersionApplicationPresentation,
 } from "src/app/pages/ImmersionApplication/ImmersionApplicationPage";
 import { ImmersionApplicationUkrainePageRoute } from "src/app/pages/ImmersionApplication/ImmersionApplicationPageForUkraine";
 import { ENV } from "src/environmentVariables";
-import {
-  ApplicationStatus,
-  ImmersionApplicationDto,
-} from "src/shared/ImmersionApplication/ImmersionApplication.dto";
+import { ApplicationStatus } from "src/shared/ImmersionApplication/ImmersionApplication.dto";
 import { reasonableSchedule } from "src/shared/ScheduleSchema";
 import { toDateString } from "src/shared/utils/date";
 import { v4 as uuidV4 } from "uuid";
 
 const { envType } = ENV;
-
-export const createOrUpdateImmersionApplication = async (
-  properties: { jwt?: string; demandeId?: string },
-  immersionApplication: ImmersionApplicationDto,
-): Promise<void> => {
-  const currentJWT = properties.jwt ?? "";
-
-  currentJWT.length > 0
-    ? await immersionApplicationGateway.updateMagicLink(
-        immersionApplication,
-        currentJWT,
-      )
-    : await immersionApplicationGateway.add(immersionApplication);
-};
-
-export const isImmersionApplicationFrozen = (
-  immersionApplication: Partial<ImmersionApplicationDto>,
-): boolean =>
-  !immersionApplication.status || immersionApplication.status !== "DRAFT";
-
-export const undefinedIfEmptyString = (text?: string): string | undefined =>
-  text || undefined;
 
 export const immersionApplicationInitialValuesFromUrl = ({
   params,
@@ -132,3 +106,25 @@ const devPrefilledValues = (
   beneficiaryAccepted: false,
   enterpriseAccepted: false,
 });
+
+/*export const undefinedIfEmptyString = (text?: string): string | undefined =>
+  text || undefined;*/
+
+/*export const createOrUpdateImmersionApplication = async (
+    properties: { jwt?: string; demandeId?: string },
+    immersionApplication: ImmersionApplicationDto,
+): Promise<void> => {
+  const currentJWT = properties.jwt ?? "";
+
+  currentJWT.length > 0
+      ? await immersionApplicationGateway.updateMagicLink(
+          immersionApplication,
+          currentJWT,
+      )
+      : await immersionApplicationGateway.add(immersionApplication);
+};
+
+export const isImmersionApplicationFrozen = (
+    immersionApplication: Partial<ImmersionApplicationDto>,
+): boolean =>
+    !immersionApplication.status || immersionApplication.status !== "DRAFT";*/

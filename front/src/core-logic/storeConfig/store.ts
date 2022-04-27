@@ -15,8 +15,8 @@ import {
   romeAutocompleteEpic,
   romeAutocompleteSlice,
 } from "src/core-logic/domain/romeAutocomplete/romeAutocomplete.slice";
-import { searchSlice } from "src/core-logic/domain/search/search.slice";
 import { searchEpics } from "src/core-logic/domain/search/search.epic";
+import { searchSlice } from "src/core-logic/domain/search/search.slice";
 
 const allEpics: any[] = [
   ...searchEpics,

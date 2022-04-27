@@ -5,6 +5,7 @@ import { ApplicationPrimaryController } from "src/core-logic/ports/primaryContro
 import { ReactEstablishmentUiGateway } from "src/infra/gateway/EstablishmentUiGateway.ts/ReactEstablishmentUiGateway";
 import { InMemoryEventGateway } from "src/infra/gateway/EventGateway/InMemoryEventGateway";
 import { establishmentGateway } from "./dependencies";
+
 const primaryController = new ApplicationPrimaryController();
 const gateways: ClientGateways = {
   establishments: establishmentGateway,
