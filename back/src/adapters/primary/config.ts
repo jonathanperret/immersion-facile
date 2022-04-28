@@ -149,6 +149,7 @@ export const createAppDependencies = async (config: AppConfig) => {
   const uowPerformer = createUowPerformer(config, getPgPoolFn, repositories);
   const eventBus = new InMemoryEventBus(clock, (event) => {
     counterEventsMarkedAsPublished.inc({ topic: event.topic });
+    console.log("Saved in outbox");
     return repositories.outbox.save(event);
   });
   const generateApiJwt = makeGenerateJwt(config.apiJwtPrivateKey);

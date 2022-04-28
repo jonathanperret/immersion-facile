@@ -17,6 +17,18 @@ import { notifyObjectDiscord } from "../../../utils/notifyDiscord";
 
 const logger = createLogger(__filename);
 
+/*const logger = {
+  info: (...payload: any) => {
+    console.log(payload);
+  },
+  error: (...payload: any) => {
+    console.log(payload);
+  },
+  warn: (...payload: any) => {
+    console.log(payload);
+  },
+};*/
+
 const counterPublishedEventsTotal = new promClient.Counter({
   name: "in_memory_event_bus_published_events_total",
   help: "The total count of events published by InMemoryEventBus.",
@@ -37,6 +49,20 @@ const counterPublishedEventsError = new promClient.Counter({
 
 type SubscriptionsForTopic = Record<string, EventCallback<DomainTopic>>;
 
+function noOneIsSubscribedToEvent(
+  callbacksById: SubscriptionsForTopic | undefined,
+) {
+  return callbacksById === undefined;
+}
+
+const publishDomainEvent = (
+  event: DomainEvent,
+  publishedAt: DateStr,
+): DomainEvent => {
+  monitorAbsenceOfCallback(event);
+  return addNewPublicationWithoutFailureToEvent(event, publishedAt);
+};
+
 export class InMemoryEventBus implements EventBus {
   public subscriptions: Partial<Record<DomainTopic, SubscriptionsForTopic>>;
   constructor(
@@ -47,8 +73,10 @@ export class InMemoryEventBus implements EventBus {
   }
 
   public async publish(event: DomainEvent) {
+    console.log(`publishing ${event.topic}-${event.id}`);
     const publishedAt = this.clock.now().toISOString();
     const publishedEvent = await this._publish(event, publishedAt);
+    console.log(`afterPublish ${event.topic}-${event.id}`);
     await this.afterPublish(publishedEvent);
   }
 
@@ -63,39 +91,54 @@ export class InMemoryEventBus implements EventBus {
     const topic = event.topic;
     counterPublishedEventsTotal.inc({ topic });
 
-    const callbacksById = this.subscriptions[topic];
-    if (callbacksById === undefined) {
-      monitorAbsenceOfCallback(event);
-      return addNewPublicationWithoutFailureToEvent(event, publishedAt);
-    }
+    const callbacksByIdOrUndefined: SubscriptionsForTopic | undefined =
+      this.subscriptions[topic];
 
-    const subscriptionsIdToPublish = getSubscriptionsIdToPublish(
+    if (noOneIsSubscribedToEvent(callbacksByIdOrUndefined))
+      return publishDomainEvent(event, publishedAt);
+
+    /* const isSubscriptionsForTopic = (
+      element: SubscriptionsForTopic | undefined,
+    ): element is SubscriptionsForTopic => !!element;*/
+
+    //TODO Possible to check with typeguard ?
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const callbacksById: SubscriptionsForTopic = callbacksByIdOrUndefined!;
+
+    /* const subscriptionsIdToPublish: SubscriptionId[] = getSubscriptionsIdToPublish(
       event,
       callbacksById,
-    );
+    );*/
 
-    if (!subscriptionsIdToPublish.length) {
+    // TODO Remove ? (see comment)
+    /*if (!subscriptionsIdToPublish.length) {
       // this should not happen because the case callbacksById === undefined has been handle before
       monitorAbsenceOfSubscribers(event);
       return addNewPublicationWithoutFailureToEvent(event, publishedAt);
-    }
+    }*/
+
+    //TODO Extract and curry ?
+    const subscriptionCallbackToExecute = async (
+      subscriptionId: SubscriptionId,
+    ): Promise<void | EventFailure> => {
+      const cb = callbacksById[subscriptionId];
+      logger.info(
+        { eventId: event.id, topic: event.topic },
+        `Sending an event for ${subscriptionId}`,
+      );
+
+      try {
+        await cb(event);
+        console.log(`A callback has ben resolved ${subscriptionId}`);
+      } catch (error: any) {
+        monitorErrorInCallback(error, event);
+        return { subscriptionId, errorMessage: error.message };
+      }
+    };
 
     const failuresOrUndefined: (EventFailure | void)[] = await Promise.all(
-      subscriptionsIdToPublish.map(
-        async (subscriptionId): Promise<EventFailure | void> => {
-          const cb = callbacksById[subscriptionId];
-          logger.info(
-            { eventId: event.id, topic: event.topic },
-            `Sending an event`,
-          );
-
-          try {
-            await cb(event);
-          } catch (error: any) {
-            monitorErrorInCallback(error, event);
-            return { subscriptionId, errorMessage: error.message };
-          }
-        },
+      getSubscriptionsIdToPublish(event, callbacksById).map(
+        subscriptionCallbackToExecute,
       ),
     );
 

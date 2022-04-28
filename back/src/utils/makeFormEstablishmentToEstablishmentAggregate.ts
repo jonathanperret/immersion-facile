@@ -16,9 +16,8 @@ import {
 } from "../domain/sirene/ports/SireneRepository";
 import { FormEstablishmentDto } from "../shared/formEstablishment/FormEstablishment.dto";
 import { NafDto } from "../shared/naf";
+import { AppellationDto } from "../shared/romeAndAppellationDtos/romeAndAppellation.dto";
 import { notifyAndThrowErrorDiscord } from "./notifyDiscord";
-
-const offerFromFormScore = 10; // 10/10 if voluntaryToImmersion=true (consider removing this field)
 
 // Those will probably be shared in a utils/helpers folder
 const inferNafDtoFromSireneAnswer = (
@@ -39,18 +38,29 @@ const inferNumberEmployeesRangeFromSireneAnswer = (
   return -1;
 };
 
+const appelationToImmersionOfferEntity = (uuidGenerator: UuidGenerator) => {
+  const offerFromFormScore = 10;
+  return ({
+    romeCode,
+    appellationCode,
+  }: AppellationDto): ImmersionOfferEntityV2 => ({
+    id: uuidGenerator.new(),
+    romeCode,
+    appellationCode,
+    score: offerFromFormScore,
+  });
+};
+
 export const makeFormEstablishmentToEstablishmentAggregate = ({
   uuidGenerator,
   clock,
   adresseAPI,
   sireneRepository,
-  sequenceRunner,
 }: {
   uuidGenerator: UuidGenerator;
   clock: Clock;
   adresseAPI: AdresseAPI;
   sireneRepository: SireneRepository;
-  sequenceRunner: SequenceRunner;
 }) => {
   const formEstablishmentToEstablishmentAggregate = async (
     formEstablishment: FormEstablishmentDto,
@@ -61,6 +71,7 @@ export const makeFormEstablishmentToEstablishmentAggregate = ({
     const sireneRepoAnswer = await sireneRepository.get(
       formEstablishment.siret,
     );
+
     if (!sireneRepoAnswer) {
       await notifyAndThrowErrorDiscord(
         new Error(
@@ -69,6 +80,7 @@ export const makeFormEstablishmentToEstablishmentAggregate = ({
       );
       return;
     }
+
     const nafDto = inferNafDtoFromSireneAnswer(sireneRepoAnswer);
     const numberEmployeesRange =
       inferNumberEmployeesRangeFromSireneAnswer(sireneRepoAnswer);
@@ -87,20 +99,10 @@ export const makeFormEstablishmentToEstablishmentAggregate = ({
       ...formEstablishment.businessContact,
     };
 
-    const immersionOffers: ImmersionOfferEntityV2[] = (
-      await sequenceRunner.run(
-        formEstablishment.appellations,
-        async ({
-          romeCode,
-          appellationCode,
-        }): Promise<ImmersionOfferEntityV2 | undefined> => ({
-          id: uuidGenerator.new(),
-          romeCode,
-          appellationCode: appellationCode ? appellationCode : undefined,
-          score: offerFromFormScore,
-        }),
-      )
-    ).filter((offer): offer is ImmersionOfferEntityV2 => !!offer);
+    const immersionOffers: ImmersionOfferEntityV2[] =
+      formEstablishment.appellations.map(
+        appelationToImmersionOfferEntity(uuidGenerator),
+      );
 
     const establishment: EstablishmentEntityV2 = {
       siret: formEstablishment.siret,

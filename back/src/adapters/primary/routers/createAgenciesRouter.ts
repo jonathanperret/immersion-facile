@@ -31,12 +31,11 @@ export const createAgenciesRouter = (deps: AppDependencies) => {
   agenciesRouter
     .route(`/${agencyImmersionFacileIdRoute}`)
     .get(async (req, res) =>
-      sendHttpResponse(req, res, async () => {
-        console.log();
-        const t = await deps.repositories.agency.getImmersionFacileIdByKind();
-        console.log("PLOP", t);
-        return t;
-      }),
+      sendHttpResponse(
+        req,
+        res,
+        async () => await deps.repositories.agency.getImmersionFacileIdByKind(),
+      ),
     );
 
   agenciesRouter.route(`/${agencyPublicInfoByIdRoute}`).get(async (req, res) =>
