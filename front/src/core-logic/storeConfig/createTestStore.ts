@@ -22,10 +22,7 @@ export interface TestDependencies {
   scheduler: VirtualTimeScheduler;
 }
 
-export const createTestStore = (
-  preloadedState?: Partial<RootState>,
-  message?: string,
-) => {
+export const createTestStore = (preloadedState?: Partial<RootState>) => {
   const dependencies: TestDependencies = {
     siretGatewayThroughBack: new InMemorySiretGatewayThroughBack(),
     immersionSearchGateway: new InMemoryImmersionSearchGateway(),
@@ -39,17 +36,7 @@ export const createTestStore = (
     scheduler: new VirtualTimeScheduler(),
   };
 
-  preloadedState &&
-    it(createMessage(preloadedState, message), () => {
-      /* do nothing */
-    });
-
   return { store: createStore({ dependencies, preloadedState }), dependencies };
-};
-
-const createMessage = (obj: object, message?: string) => {
-  if (message) return message;
-  return "creates store with initial values : " + JSON.stringify(obj, null, 2);
 };
 
 export type StoreAndDeps = ReturnType<typeof createTestStore>;
