@@ -4,6 +4,7 @@ import {
   ImmersionApplicationPageRoute,
   ImmersionApplicationPresentation,
 } from "src/app/pages/ImmersionApplication/ImmersionApplicationPage";
+import { ImmersionApplicationEditPageRoute } from "src/app/pages/ImmersionApplication/ImmersionApplicationPageEdit";
 import { ImmersionApplicationUkrainePageRoute } from "src/app/pages/ImmersionApplication/ImmersionApplicationPageForUkraine";
 import { ENV } from "src/environmentVariables";
 import {
@@ -13,8 +14,6 @@ import {
 import { reasonableSchedule } from "shared/src/ScheduleSchema";
 import { toDateString } from "shared/src/utils/date";
 import { v4 as uuidV4 } from "uuid";
-
-const { frontEnvType } = ENV;
 
 export const createOrUpdateImmersionApplication = async (
   properties: { jwt?: string; demandeId?: string },
@@ -42,6 +41,7 @@ export const immersionApplicationInitialValuesFromUrl = ({
   params,
 }:
   | ImmersionApplicationPageRoute
+  | ImmersionApplicationEditPageRoute
   | ImmersionApplicationUkrainePageRoute): ImmersionApplicationPresentation => {
   const emptyForm = {
     id: uuidV4(),
@@ -87,7 +87,7 @@ export const immersionApplicationInitialValuesFromUrl = ({
     beneficiaryAccepted: false,
     enterpriseAccepted: false,
   };
-  if (frontEnvType === "DEV") return devPrefilledValues(emptyForm);
+  if (ENV.PREFILLED_FORMS) return devPrefilledValues(emptyForm);
   return emptyForm;
 };
 

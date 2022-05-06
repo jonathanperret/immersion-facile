@@ -6,6 +6,7 @@ import { AddAgencyPage } from "src/app/pages/Agency/AddAgencyPage";
 import { EstablishmentEditionFormPage } from "src/app/pages/Establishment/EstablishmentEditionFormPage";
 import { EstablishmentFormPageForExternals } from "src/app/pages/Establishment/EstablishmentFormPageForExternals";
 import { ImmersionApplicationPage } from "src/app/pages/ImmersionApplication/ImmersionApplicationPage";
+import { ImmersionApplicationPageEdit } from "src/app/pages/ImmersionApplication/ImmersionApplicationPageEdit";
 import { ImmersionApplicationPageForUkraine } from "src/app/pages/ImmersionApplication/ImmersionApplicationPageForUkraine";
 import { ImmersionApplicationSignPage } from "src/app/pages/ImmersionApplication/ImmersionApplicationSignPage";
 import { ImmersionApplicationValidatePage } from "src/app/pages/ImmersionApplication/ImmersionApplicationValidatePage";
@@ -58,6 +59,9 @@ export const Router = () => {
       {route.name === "landingEstablishment" && <LandingEstablishmentPage />}
       {route.name === "immersionApplication" && (
         <ImmersionApplicationPage route={route} />
+      )}
+      {route.name === "immersionApplicationEdit" && (
+        <ImmersionApplicationPageEdit route={route} />
       )}
       {route.name === "immersionApplicationForUkraine" && (
         <ImmersionApplicationPageForUkraine route={route} />

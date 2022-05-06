@@ -1,6 +1,7 @@
 import React from "react";
 import { HeaderFooterLayout } from "src/app/layouts/HeaderFooterLayout";
 import { ImmersionApplicationFormContainerLayout } from "src/app/pages/ImmersionApplication/ImmersionApplicationFormContainerLayout";
+import { ImmersionApplicationFormEdit } from "src/app/pages/ImmersionApplication/ImmersionApplicationFormEdit";
 import { immersionApplicationInitialValuesFromUrl } from "src/app/pages/ImmersionApplication/immersionApplicationHelpers";
 
 import { routes } from "src/app/routing/routes";
@@ -8,29 +9,30 @@ import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/Immersi
 import { Route } from "type-route";
 import { ImmersionApplicationAddForm } from "./ImmersionApplicationAddForm";
 
-export type ImmersionApplicationPageRoute = Route<
-  typeof routes.immersionApplication
+export type ImmersionApplicationEditPageRoute = Route<
+  typeof routes.immersionApplicationEdit
 >;
 
-export interface ImmersionApplicationPageProps {
-  route: ImmersionApplicationPageRoute;
+export interface ImmersionApplicationEditPageProps {
+  route: ImmersionApplicationEditPageRoute;
 }
 
 export type ImmersionApplicationPresentation = Exclude<
   Partial<ImmersionApplicationDto>,
-  "rejectionJustification" | "legacySchedule"
+  "id" | "rejectionJustification" | "legacySchedule"
 > & {
   beneficiaryAccepted: boolean;
   enterpriseAccepted: boolean;
 };
 
-export const ImmersionApplicationPage = ({
+export const ImmersionApplicationPageEdit = ({
   route,
-}: ImmersionApplicationPageProps) => (
+}: ImmersionApplicationEditPageProps) => (
   <HeaderFooterLayout>
     <ImmersionApplicationFormContainerLayout>
-      <ImmersionApplicationAddForm
+      <ImmersionApplicationFormEdit
         properties={immersionApplicationInitialValuesFromUrl(route)}
+        routeParams={route.params}
       />
     </ImmersionApplicationFormContainerLayout>
   </HeaderFooterLayout>

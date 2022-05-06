@@ -14,7 +14,6 @@ import { immersionApplicationSchema } from "shared/src/ImmersionApplication/imme
 import { MagicLinkPayload, Role } from "shared/src/tokens/MagicLinkPayload";
 import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
 import { Route } from "type-route";
-import { ApplicationFormFields } from "./ApplicationFormFields";
 
 type SignFormRoute = Route<typeof routes.immersionApplicationsToSign>;
 
@@ -180,14 +179,14 @@ const SignFormSpecific = ({ response, jwt }: SignFormSpecificProps) => {
                       onReset={props.handleReset}
                       onSubmit={props.handleSubmit}
                     >
-                      <ApplicationFormFields
+                      {/* <ApplicationFormFields
                         isFrozen={true}
                         isSignOnly={true}
                         isSignatureEnterprise={signeeRole === "establishment"}
                         signeeName={signeeName}
                         alreadySubmitted={alreadySigned}
                         onRejectForm={rejectWithMessageForm}
-                      />
+                      />*/}
 
                       <SubmitFeedback submitFeedback={submitFeedback} />
                     </form>

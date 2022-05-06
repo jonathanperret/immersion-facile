@@ -4,6 +4,7 @@ const originalEnvVariables = {
   DEV: import.meta.env.DEV,
   VITE_PREFILLED_ESTABLISHMENT_FORM: import.meta.env
     .VITE_PREFILLED_ESTABLISHMENT_FORM as undefined | string,
+  VITE_PREFILLED_FORMS: import.meta.env.VITE_PREFILLED_FORMS,
 };
 
 export const ENV = {
@@ -14,6 +15,8 @@ export const ENV = {
   PREFILLED_ESTABLISHMENT_FORM:
     originalEnvVariables.VITE_PREFILLED_ESTABLISHMENT_FORM?.toLowerCase() ===
     "true",
+  PREFILLED_FORMS:
+    import.meta.env.VITE_PREFILLED_FORMS?.toLowerCase() === "true",
 };
 
 Object.entries(ENV).forEach(([key, value]) =>

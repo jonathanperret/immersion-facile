@@ -9,7 +9,7 @@ import {
   RadioGroupForField,
 } from "src/app/components/RadioGroup";
 import { ApplicationFormKeysInUrl } from "src/app/routing/route-params";
-import { routes, useRoute } from "src/app/routing/routes";
+import { routes } from "src/app/routing/routes";
 import {
   useSiretFetcher,
   useSiretRelatedField,
@@ -116,9 +116,9 @@ export const ApplicationFormFieldsUkraine = ({
     ...watchedValuesExceptScheduleAndAppellation
   } = watchedValues;
 
-  const route = useRoute();
+  //const route = useRoute();
   useEffect(() => {
-    if (route.name !== "immersionApplication" || !!route.params.jwt) return;
+    //if (route.name !== "immersionApplication" || !!route.params.jwt) return;
     routes.immersionApplication(watchedValues).replace();
   }, [
     ...Object.values(watchedValuesExceptScheduleAndAppellation),

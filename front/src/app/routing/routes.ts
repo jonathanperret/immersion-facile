@@ -31,7 +31,11 @@ export const { RouteProvider, useRoute, routes } = createRouter({
   ),
   home: defineRoute("/"),
   immersionApplication: defineRoute(
-    { jwt: param.query.optional.string, ...immersionApplicationValuesFromUrl },
+    { ...immersionApplicationValuesFromUrl },
+    () => "/demande-immersion",
+  ),
+  immersionApplicationEdit: defineRoute(
+    { jwt: param.query.string, ...immersionApplicationValuesFromUrl },
     () => "/demande-immersion",
   ),
   immersionApplicationForUkraine: defineRoute(
