@@ -1,5 +1,5 @@
-import axios from "axios";
-import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
+import axios, { AxiosInstance } from "axios";
+import { ApiResponse, ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
 import { AgencyId } from "shared/src/agency/agency.dto";
 import {
   ApplicationStatus,
@@ -23,24 +23,40 @@ import {
 } from "shared/src/routes";
 import { ShareLinkByEmailDTO } from "shared/src/ShareLinkByEmailDTO";
 import { Role } from "shared/src/tokens/MagicLinkPayload";
+import { catchError, from, Observable, of } from "rxjs";
 
 const prefix = "api";
 
 export class HttpImmersionApplicationGateway
-  implements ImmersionApplicationGateway
-{
+    implements ImmersionApplicationGateway {
+
+  private axiosInstance: AxiosInstance;
+
+  constructor(baseURL = `/${prefix}`) {
+    this.axiosInstance = axios.create({
+      baseURL,
+    });
+  }
+
   public async add(
     immersionApplicationDto: ImmersionApplicationDto,
   ): Promise<string> {
-    immersionApplicationSchema.parse(immersionApplicationDto);
-    const httpResponse = await axios.post(
-      `/${prefix}/${immersionApplicationsRoute}`,
+    const httpResponse = await this.axiosInstance.post(
+      `/${immersionApplicationsRoute}`,
       immersionApplicationDto,
     );
-    const addImmersionApplicationResponse: WithImmersionApplicationId =
-      httpResponse.data;
-    withImmersionApplicationIdSchema.parse(addImmersionApplicationResponse);
-    return addImmersionApplicationResponse.id;
+
+    return httpResponse?.data?.id;
+  }
+
+  public addObservable(immersionApplicationDto: ImmersionApplicationDto): Observable<ApiResponse<string>> {
+    return from(this.add(immersionApplicationDto)).pipe(
+        catchError(error =>
+            of({
+              errorStatus: error?.response?.status,
+              error
+            }))
+    );
   }
 
   public async backofficeGet(id: string): Promise<ImmersionApplicationDto> {

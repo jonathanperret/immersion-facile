@@ -1,23 +1,20 @@
-import { startOfToday } from "date-fns";
 import { Formik, FormikProps } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import { immersionApplicationSchema } from "shared/src/ImmersionApplication/immersionApplication.schema";
 import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
-import { toDateString } from "shared/src/utils/date";
 import {
   SubmitFeedback,
   SuccessFeedbackKind,
 } from "src/app/components/SubmitFeedback";
-import { immersionApplicationGateway } from "src/app/config/dependencies";
 import {
   immersionApplicationHasError,
   immersionApplicationIsInAddMode,
 } from "src/app/pages/ImmersionApplication/ApplicationFormField";
-import { EnterpriseCoordinates } from "src/app/pages/ImmersionApplication/components/EntrepriseCoordinates";
 import { ImmersionApplicationStaticText } from "src/app/pages/ImmersionApplication/components/ImmersionApplicationStaticText";
 import { ImmersionCondition } from "src/app/pages/ImmersionApplication/components/ImmersionCondition";
 import { InformationNotification } from "src/app/pages/ImmersionApplication/components/InformationNotification";
+import { AddOrEditSubmitButton } from "src/app/pages/ImmersionApplication/components/SubmitButton";
 import { ValidationErrorFeedback } from "src/app/pages/ImmersionApplication/components/ValidationErrorFeedback";
 import { FrozenMessage } from "src/app/pages/ImmersionApplication/FrozenMessage";
 import {
@@ -28,12 +25,8 @@ import {
 import { ImmersionApplicationPresentation } from "src/app/pages/ImmersionApplication/ImmersionApplicationPage";
 import { PeConnect } from "src/app/pages/ImmersionApplication/PeConnect";
 import { SignOnlyMessage } from "src/app/pages/ImmersionApplication/SignOnlyMessage";
-import { AddOrEditSubmitButton } from "src/app/pages/ImmersionApplication/components/SubmitButton";
-import { useAppSelector } from "src/app/utils/reduxHooks";
-import { featureFlagsSelector } from "src/core-logic/domain/featureFlags/featureFlags.selector";
 import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
 import { SignatureOrRequestModification } from "./components/SignatureOrRequestModification";
-import { BeneficiaryCoordinates } from "./components/BeneficiaryCoordinates";
 
 type ImmersionApplicationFormProps = {
   properties: ImmersionApplicationPresentation;
@@ -79,7 +72,7 @@ export const ImmersionApplicationForm = ({
     submitForm,
     values,
   } = useFormikContext<ImmersionApplicationDto>();*/
-  const featureFlags = useAppSelector(featureFlagsSelector);
+  //const featureFlags = useAppSelector(featureFlagsSelector);
   //const isSiretFetcherDisabled = properties.status !== "DRAFT";
   /*  const { establishmentInfo, isFetchingSiret } = useSiretFetcher({
     fetchSirenApiEvenAlreadyInDb: true,
@@ -171,7 +164,7 @@ export const ImmersionApplicationForm = ({
 
                   <input type="hidden" name="peExternalIdentity" />
 
-                  <BeneficiaryCoordinates
+                  {/*  <BeneficiaryCoordinates
                     isFrozen={isFrozen || false}
                     values={{ agencyId: props.values.agencyId || "" }}
                   />
@@ -180,7 +173,7 @@ export const ImmersionApplicationForm = ({
                     isFrozen={isFrozen || false}
                     featureFlags={featureFlags}
                     isFetchingSiret={false}
-                  />
+                  />*/}
 
                   <ImmersionCondition
                     isFrozen={isFrozen || false}

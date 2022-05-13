@@ -499,7 +499,7 @@ const createUseCases = (
   const adresseAPI = new HttpAdresseAPI(noRateLimit, noRetries);
 
   return {
-    addImmersionApplication: new AddImmersionApplication(
+    addImmersionApplicationRequested: new AddImmersionApplication(
       uowPerformer,
       createNewEvent,
       getSiret,

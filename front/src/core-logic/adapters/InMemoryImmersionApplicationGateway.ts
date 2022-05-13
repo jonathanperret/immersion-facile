@@ -1,3 +1,4 @@
+import { Observable, Subject } from "rxjs";
 import { decodeJwt } from "src/core-logic/adapters/decodeJwt";
 import { ImmersionApplicationGateway } from "src/core-logic/ports/ImmersionApplicationGateway";
 import { AgencyId, AgencyInListDto } from "shared/src/agency/agency.dto";
@@ -16,6 +17,7 @@ import { sleep } from "shared/src/utils";
 export class InMemoryImmersionApplicationGateway
   implements ImmersionApplicationGateway
 {
+
   public constructor(private simulatedLatency?: number) {}
 
   public async add(
@@ -24,6 +26,14 @@ export class InMemoryImmersionApplicationGateway
     this.simulatedLatency && (await sleep(this.simulatedLatency));
     this._immersionApplications[immersionApplication.id] = immersionApplication;
     return immersionApplication.id;
+  }
+
+  public addResponse$ = new Subject<ImmersionApplicationId>()
+
+  public addObservable(
+      _: ImmersionApplicationDto,
+  ): Observable<ImmersionApplicationId> {
+   return this.addResponse$;
   }
 
   public async backofficeGet(

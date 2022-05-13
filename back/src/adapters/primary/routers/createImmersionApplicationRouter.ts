@@ -22,7 +22,7 @@ export const createImmersionApplicationRouter = (deps: AppDependencies) => {
     .route(`/${immersionApplicationsRoute}`)
     .post(async (req, res) =>
       sendHttpResponse(req, res, () =>
-        deps.useCases.addImmersionApplication.execute(req.body),
+        deps.useCases.addImmersionApplicationRequested.execute(req.body),
       ),
     )
     .get(async (req, res) =>

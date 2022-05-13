@@ -6,6 +6,8 @@ import {
   featureFlagsSlice,
   fetchFeatureFlagsEpic,
 } from "src/core-logic/domain/featureFlags/featureFlags.slice";
+import { immersionApplicationEpics } from "src/core-logic/domain/immersionApplication/immersionApplication.epic";
+import { immersionApplicationSlice } from "src/core-logic/domain/immersionApplication/immersionApplication.slice";
 import {
   romeAutocompleteEpic,
   romeAutocompleteSlice,
@@ -18,6 +20,7 @@ import { siretSlice } from "src/core-logic/domain/siret/siret.slice";
 const allEpics: any[] = [
   ...searchEpics,
   ...siretEpics,
+  ...immersionApplicationEpics,
   fetchFeatureFlagsEpic,
   romeAutocompleteEpic,
 ];
@@ -34,6 +37,7 @@ const rootEpic: Epic = (action$, store$, dependencies) =>
 const rootReducer = combineReducers({
   [searchSlice.name]: searchSlice.reducer,
   [featureFlagsSlice.name]: featureFlagsSlice.reducer,
+  [immersionApplicationSlice.name]: immersionApplicationSlice.reducer,
   [romeAutocompleteSlice.name]: romeAutocompleteSlice.reducer,
   [siretSlice.name]: siretSlice.reducer,
 });

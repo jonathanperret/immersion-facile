@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { AgencyId } from "shared/src/agency/agency.dto";
 import {
   ApplicationStatus,
@@ -9,8 +10,14 @@ import {
 import { ShareLinkByEmailDTO } from "shared/src/ShareLinkByEmailDTO";
 import { Role } from "shared/src/tokens/MagicLinkPayload";
 
+
+export type ApiError = { errorStatus: number, error: Error };
+export type ApiResponse<T> = T | ApiError;
+
 export interface ImmersionApplicationGateway {
   add(immersionApplicationDto: ImmersionApplicationDto): Promise<string>;
+
+  addObservable(immersionApplicationDto: ImmersionApplicationDto): Observable<ApiResponse<string>>;
 
   // Get an immersion application through backoffice, password-protected route.
   backofficeGet(id: ImmersionApplicationId): Promise<ImmersionApplicationDto>;
