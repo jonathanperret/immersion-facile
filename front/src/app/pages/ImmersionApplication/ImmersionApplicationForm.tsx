@@ -12,7 +12,6 @@ import {
   undefinedIfEmptyString,
 } from "src/app/pages/ImmersionApplication/immersionApplicationHelpers";
 import { ImmersionApplicationPresentation } from "src/app/pages/ImmersionApplication/ImmersionApplicationPage";
-import { PeConnect } from "src/app/pages/ImmersionApplication/PeConnect";
 import { ImmersionApplicationDto } from "shared/src/ImmersionApplication/ImmersionApplication.dto";
 import { immersionApplicationSchema } from "shared/src/ImmersionApplication/immersionApplication.schema";
 import { toDateString } from "shared/src/utils/date";
@@ -91,8 +90,6 @@ export const ImmersionApplicationForm = ({
             Ce formulaire vaut équivalence du CERFA 13912 * 04
           </p>
         </div>
-
-        <PeConnect />
 
         <Formik
           enableReinitialize={true}

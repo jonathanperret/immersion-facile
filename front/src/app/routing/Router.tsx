@@ -16,7 +16,7 @@ import { featureFlagsSelector } from "src/core-logic/domain/featureFlags/feature
 import { ENV } from "src/environmentVariables";
 import { RenewExpiredLinkPage } from "src/helpers/RenewExpiredLinkPage";
 import { EstablishmentFormPage } from "../pages/Establishment/EstablishmentFormPage";
-import { HomePage } from "../pages/home/HomePage";
+import { HomePage } from "src/app/pages/Home/HomePage";
 import { useRoute } from "./routes";
 
 const { frontEnvType } = ENV;

@@ -8,8 +8,8 @@ import { SiretDto } from "shared/src/siret";
 import { HomeButton } from "src/uiComponents/Button";
 import { ImmersionTextField } from "src/uiComponents/form/ImmersionTextField";
 import { Link } from "src/uiComponents/Link";
-import { EstablishmentSubTitle } from "../pages/home/components/EstablishmentSubTitle";
-import { EstablishmentTitle } from "../pages/home/components/EstablishmentTitle";
+import { EstablishmentSubTitle } from "../pages/Home/components/EstablishmentSubTitle";
+import { EstablishmentTitle } from "../pages/Home/components/EstablishmentTitle";
 import { routes } from "../routing/routes";
 import { useAppSelector } from "../utils/reduxHooks";
 

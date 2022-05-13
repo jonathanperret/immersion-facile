@@ -1,8 +1,9 @@
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
-import { EstablishmentSubTitle } from "../pages/home/components/EstablishmentSubTitle";
-import { EstablishmentTitle } from "../pages/home/components/EstablishmentTitle";
-import { routes } from "../routing/routes";
+import { PeConnect } from "src/app/components/PeConnect";
+import { EstablishmentSubTitle } from "src/app/pages/Home/components/EstablishmentSubTitle";
+import { EstablishmentTitle } from "src/app/pages/Home/components/EstablishmentTitle";
+import { routes } from "src/app/routing/routes";
 
 export const ImmersionHomeMenu = () => (
   <div
@@ -23,14 +24,16 @@ export const ImmersionHomeMenu = () => (
       >
         Trouver une entreprise accueillante <SearchIcon />
       </a>
+
+      <div>J'ai trouvé mon immersion : </div>
+
       <a
         {...routes.immersionApplication().link}
         className="no-underline shadow-none bg-immersionRed py-3 px-2 rounded-md text-white font-semibold  w-full text-center h-15 text-sm "
       >
-        J'ai trouvé mon immersion,
-        <br />
-        Initier une demande de convention
+        Initier une demande de convention libre
       </a>
+      <PeConnect />
     </div>
   </div>
 );

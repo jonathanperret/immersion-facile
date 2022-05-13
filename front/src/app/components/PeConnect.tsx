@@ -1,7 +1,7 @@
-import React from "react";
 import { useAppSelector } from "src/app/utils/reduxHooks";
 import { featureFlagsSelector } from "src/core-logic/domain/featureFlags/featureFlags.selector";
 import { loginPeConnect } from "shared/src/routes";
+import React from "react";
 
 export const PeConnect = () => {
   const featureFlags = useAppSelector(featureFlagsSelector);
@@ -12,8 +12,7 @@ export const PeConnect = () => {
       <div className="fr-text">
         <p>
           <b>
-            (Optionnel) Vous connecter avec votre identifiant Pôle emploi pour
-            accélérer le traitement de votre demande de convention.
+            Initier une demande de convention avec PeConnect
           </b>
         </p>
       </div>
