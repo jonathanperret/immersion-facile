@@ -24,6 +24,7 @@ export class AssociatePeConnectFederatedIdentity extends TransactionalUseCase<Co
     convention: ConventionDto,
     uow: UnitOfWork,
   ): Promise<void> {
+    if (await this.peConnectFeatureFlagDisabled(uow)) return;
     if (!isPeConnectIdentity(convention?.federatedIdentity)) {
       logger.info(
         `Convention ${convention.id} federated identity is not of format peConnect, aborting AssociatePeConnectFederatedIdentity use case`,
@@ -43,5 +44,11 @@ export class AssociatePeConnectFederatedIdentity extends TransactionalUseCase<Co
     });
 
     await uow.outboxRepo.save(event);
+  }
+
+  private async peConnectFeatureFlagDisabled(
+    uow: UnitOfWork,
+  ): Promise<boolean> {
+    return (await uow.getFeatureFlags()).enablePeConnectApi;
   }
 }
