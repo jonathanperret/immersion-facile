@@ -33,7 +33,7 @@ import {
   isRetryableError,
   PrettyAxiosResponseError,
 } from "../../utils/axiosUtils";
-import type { AxiosInstance } from "axios";
+import type { AxiosInstance, AxiosResponse } from "axios";
 import { createLogger } from "../../utils/logger";
 import { AccessTokenConfig } from "../primary/config/appConfig";
 import { validateAndParseZodSchema } from "../primary/helpers/httpErrors";
@@ -172,30 +172,28 @@ export class HttpPeConnectGateway implements PeConnectGateway {
     const trackId = stringToMd5(accessToken.value);
     return this.retryStrategy.apply(async () => {
       try {
-        const response = await createAxiosInstance()
+        const response: AxiosResponse | void = await createAxiosInstance()
           .get(this.ApiPeConnectUrls.PECONNECT_ADVISORS_INFO, {
             headers: headersWithAuthPeAccessToken(accessToken),
             timeout: secondsToMilliseconds(10),
           })
           .catch((error) => {
-            logger.error({ trackId, error }, "GetAdvisorsInfo PE Error");
-            if (getUndefinedErrorAdvisorFromPe(error))
-              throw new ManagedRedirectError("peConnectNoValidAdvisor", error);
-
-            throw PrettyAxiosResponseError(
-              "PeConnect Get Advisor Info Failure",
-              error,
-            );
+            logger.error({ trackId, error }, "getAdvisorsInfo PE Error");
           });
 
         logger.info(
-          { trackId, body: response.data },
+          {
+            trackId,
+            body:
+              response?.data ??
+              "An error has occured while fetching the advisor",
+          },
           "GetAdvisorsInfo PE Response",
         );
 
         const advisors: ExternalPeConnectAdvisor[] = validateAndParseZodSchema(
           externalPeConnectAdvisorsSchema,
-          response.data,
+          response?.data ?? [],
         );
 
         return advisors.map(toPeConnectAdvisorDto);

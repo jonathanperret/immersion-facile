@@ -7,6 +7,9 @@ import { TransactionalUseCase } from "../../core/UseCase";
 import {
   ConventionPeConnectFields,
   ConventionPoleEmploiUserAdvisorEntity,
+  PeConnectAdvisorDto,
+  PeConnectUserDto,
+  PeUserAndAdvisors,
   toPartialConventionDtoWithPeIdentity,
 } from "../dto/PeConnect.dto";
 import {
@@ -33,25 +36,43 @@ export class LinkPoleEmploiAdvisorAndRedirectToConvention extends TransactionalU
     authorizationCode: string,
     uow: UnitOfWork,
   ): Promise<AbsoluteUrl> {
-    const { user, advisors } = await this.peConnectGateway.getUserAndAdvisors(
+    const userAndAdvisors = await this.peConnectGateway.getUserAndAdvisors(
       authorizationCode,
     );
-    const poleEmploiUserAdvisorEntity: ConventionPoleEmploiUserAdvisorEntity =
-      conventionPoleEmploiUserAdvisorFromDto(
-        poleEmploiUserAdvisorDTOFromUserAndAdvisors({
-          user,
-          advisors,
-        }),
+
+    if (hasAdvisors(userAndAdvisors))
+      await openPoleEmploiUserAdvisorSlotForNextConvention(
+        userAndAdvisors,
+        uow,
       );
 
-    await uow.conventionPoleEmploiAdvisorRepo.openSlotForNextConvention(
-      poleEmploiUserAdvisorEntity,
-    );
-
     const peQueryParams = queryParamsAsString<ConventionPeConnectFields>(
-      toPartialConventionDtoWithPeIdentity(user),
+      toPartialConventionDtoWithPeIdentity(userAndAdvisors.user),
     );
 
     return `${this.baseUrlForRedirect}/${frontRoutes.conventionRoute}?${peQueryParams}`;
   }
 }
+
+const openPoleEmploiUserAdvisorSlotForNextConvention = async (
+  {
+    user,
+    advisors,
+  }: { user: PeConnectUserDto; advisors: PeConnectAdvisorDto[] },
+  uow: UnitOfWork,
+) => {
+  const poleEmploiUserAdvisorEntity: ConventionPoleEmploiUserAdvisorEntity =
+    conventionPoleEmploiUserAdvisorFromDto(
+      poleEmploiUserAdvisorDTOFromUserAndAdvisors({
+        user,
+        advisors,
+      }),
+    );
+
+  await uow.conventionPoleEmploiAdvisorRepo.openSlotForNextConvention(
+    poleEmploiUserAdvisorEntity,
+  );
+};
+
+const hasAdvisors = (userAndAdvisors: PeUserAndAdvisors) =>
+  userAndAdvisors.advisors.length > 0;
