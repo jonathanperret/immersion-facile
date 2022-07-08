@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ArrayDropdown, DsfrTitle } from "react-design-system/immersionFacile";
 import { AgencyId } from "shared/src/agency/agency.dto";
 import {
-  ConventionReadDto,
+  ConventionAdminReadDto,
   allConventionStatuses,
   ConventionStatus,
 } from "shared/src/convention/convention.dto";
@@ -17,7 +17,7 @@ import "./Admin.css";
 
 export const ConventionTab = ({ route }: { route: AdminRoute }) => {
   const adminToken = useAppSelector(adminSelectors.token);
-  const [conventions, setConventions] = useState<ConventionReadDto[]>([]);
+  const [conventions, setConventions] = useState<ConventionAdminReadDto[]>([]);
 
   const [statusFilter, setStatusFilter] = useState<
     ConventionStatus | undefined
@@ -36,7 +36,7 @@ export const ConventionTab = ({ route }: { route: AdminRoute }) => {
   useEffect(() => {
     conventionGateway
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .getAll(adminToken!, agency, statusFilter)
+      .getAllConventionAdminDtos(adminToken!, agency, statusFilter)
       .then(
         (applications) => setConventions(applications),
         (error: any) => {

@@ -2,11 +2,11 @@ import { Router } from "express";
 import { AgencyDto, AgencyId } from "shared/src/agency/agency.dto";
 import {
   generateMagicLinkRoute,
-  conventionsRoute,
   agenciesRoute,
   adminLogin,
   validateConventionRoute,
   emailRoute,
+  conventionsAdminRoute,
 } from "shared/src/routes";
 import type { AppDependencies } from "../../config/createAppDependencies";
 import { sendHttpResponse } from "../../helpers/sendHttpResponse";
@@ -39,10 +39,10 @@ export const createAdminRouter = (deps: AppDependencies) => {
   );
 
   adminRouter
-    .route(`/${conventionsRoute}/:id`)
+    .route(`/${conventionsAdminRoute}/:id`)
     .get(async (req, res) =>
       sendHttpResponse(req, res, () =>
-        deps.useCases.getConvention.execute(req.params),
+        deps.useCases.getConventionAdminReadDto.execute(req.params),
       ),
     );
 
@@ -66,7 +66,7 @@ export const createAdminRouter = (deps: AppDependencies) => {
 
   // GET admin/agencies?status=needsReview
   adminRouter
-    .route(`/${agenciesRoute}`)
+    .route(`/${conventionsAdminRoute}`)
     .get(async (req, res) =>
       sendHttpResponse(req, res, () =>
         deps.useCases.privateListAgencies.execute(req.query),
@@ -74,7 +74,7 @@ export const createAdminRouter = (deps: AppDependencies) => {
     );
 
   adminRouter
-    .route(`/${conventionsRoute}`)
+    .route(`/${conventionsAdminRoute}`)
     .get(async (req, res) =>
       sendHttpResponse(req, res, () =>
         deps.useCases.listAdminConventions.execute(req.query),

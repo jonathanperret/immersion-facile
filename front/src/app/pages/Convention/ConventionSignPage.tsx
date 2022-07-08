@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { ConventionReadDto } from "shared/src/convention/convention.dto";
+import { ConventionDto } from "shared/src/convention/convention.dto";
 import { conventionSchema } from "shared/src/convention/convention.schema";
 import {
   ConventionMagicLinkPayload,
@@ -30,7 +30,7 @@ interface SignFormProps {
 
 const extractRoleAndName = (
   jwt: string,
-  convention: ConventionReadDto,
+  convention: ConventionAdminReadDto,
 ): [Role, string] => {
   const payload = decodeJwt<ConventionMagicLinkPayload>(jwt);
   const role = payload.role;
@@ -91,14 +91,14 @@ export const ConventionSignPage = ({ route }: SignFormProps) => {
 };
 
 type SignFormSpecificProps = {
-  convention: ConventionReadDto | null;
+  convention: ConventionDto | null;
   jwt: string;
 };
 
 const SignFormSpecific = ({ convention, jwt }: SignFormSpecificProps) => {
   useExistingSiret(convention?.siret);
   const [initialValues, setInitialValues] =
-    useState<Partial<ConventionReadDto> | null>(null);
+    useState<Partial<ConventionDto> | null>(null);
   const [signeeName, setSigneeName] = useState<string | undefined>();
   const [signeeRole, setSigneeRole] = useState<Role | undefined>();
   const [alreadySigned, setAlreadySigned] = useState(false);

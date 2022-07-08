@@ -9,7 +9,7 @@ import {
   ConventionId,
   UpdateConventionStatusRequestDto,
   WithConventionId,
-  ConventionReadDto,
+  ConventionAdminReadDto,
 } from "shared/src/convention/convention.dto";
 import { ShareLinkByEmailDto } from "shared/src/ShareLinkByEmailDto";
 import {
@@ -35,14 +35,14 @@ export class InMemoryConventionGateway implements ConventionGateway {
   };
   private _agencies: { [id: string]: AgencyWithPositionDto } = {};
 
-  public convention$ = new Subject<ConventionReadDto | undefined>();
+  public convention$ = new Subject<ConventionDto | undefined>();
 
   public constructor(private simulatedLatency?: number) {}
 
-  retrieveFromToken(jwt: string): Observable<ConventionReadDto | undefined> {
-    return this.simulatedLatency
-      ? from(this.getMagicLink(jwt))
-      : this.convention$;
+  retrieveFromToken(
+    jwt: string,
+  ): Observable<ConventionAdminReadDto | undefined> {
+    return from(this.getConventionAdminReadDtoFromJwt(jwt));
   }
 
   public async add(convention: ConventionDto): Promise<ConventionId> {
@@ -51,38 +51,49 @@ export class InMemoryConventionGateway implements ConventionGateway {
     return convention.id;
   }
 
-  public async getById(id: ConventionId): Promise<ConventionReadDto> {
+  public async getConventionAdminDtoById(
+    id: ConventionId,
+  ): Promise<ConventionAdminReadDto> {
     this.simulatedLatency && (await sleep(this.simulatedLatency));
     return this.inferConventionReadDto(this._conventions[id]);
   }
 
   // Same as GET above, but using a magic link
-  public async getMagicLink(jwt: string): Promise<ConventionReadDto> {
+  public async getMagicLink(jwt: string): Promise<ConventionDto> {
     this.simulatedLatency && (await sleep(this.simulatedLatency));
     const payload = decodeJwt<ConventionMagicLinkPayload>(jwt);
-    return this.inferConventionReadDto(
-      this._conventions[payload.applicationId],
-    );
+    return this._conventions[payload.applicationId];
   }
 
-  public async getAll(
+  public async getConventionAdminReadDtoFromJwt(
+    jwt: string,
+  ): Promise<ConventionAdminReadDto> {
+    this.simulatedLatency && (await sleep(this.simulatedLatency));
+    const payload = decodeJwt<ConventionMagicLinkPayload>(jwt);
+    return this.toAdminReadDto(this._conventions[payload.applicationId]);
+  }
+
+  public async getAllConventionAdminDtos(
     _adminToken: AdminToken,
     agency?: AgencyId,
     status?: ConventionStatus,
-  ): Promise<Array<ConventionReadDto>> {
+  ): Promise<Array<ConventionAdminReadDto>> {
     this.simulatedLatency && (await sleep(this.simulatedLatency));
 
     return Object.values(this._conventions)
       .filter((convention) => !agency || convention.agencyId === agency)
       .filter((convention) => !status || convention.status === status)
-      .map((conventionDto) => ({
-        ...conventionDto,
-        dateValidation:
-          conventionDto.status === "ACCEPTED_BY_VALIDATOR"
-            ? conventionDto.dateSubmission
-            : undefined,
-        agencyName: `Agency name of ${conventionDto.agencyId}`,
-      }));
+      .map(this.toAdminReadDto);
+  }
+  private toAdminReadDto(conventionDto: ConventionDto): ConventionAdminReadDto {
+    return {
+      ...conventionDto,
+      dateValidation:
+        conventionDto.status === "ACCEPTED_BY_VALIDATOR"
+          ? conventionDto.dateSubmission
+          : undefined,
+      agencyName: `Agency name of ${conventionDto.agencyId}`,
+    };
   }
 
   public async update(convention: ConventionDto): Promise<ConventionId> {
@@ -162,7 +173,9 @@ export class InMemoryConventionGateway implements ConventionGateway {
     return true;
   }
 
-  private inferConventionReadDto(convention: ConventionDto): ConventionReadDto {
+  private inferConventionReadDto(
+    convention: ConventionDto,
+  ): ConventionAdminReadDto {
     return {
       ...convention,
       agencyName: this._agencies[convention.agencyId].name ?? "agency-name",

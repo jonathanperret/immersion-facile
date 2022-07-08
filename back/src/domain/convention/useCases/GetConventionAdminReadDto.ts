@@ -1,21 +1,27 @@
 import { NotFoundError } from "../../../adapters/primary/helpers/httpErrors";
 import { UseCase } from "../../core/UseCase";
 import {
-  ConventionDto,
+  ConventionAdminReadDto,
   WithConventionId,
 } from "shared/src/convention/convention.dto";
 import { withConventionIdSchema } from "shared/src/convention/convention.schema";
-import { ConventionRepository } from "../ports/ConventionRepository";
+import { ConventionQueries } from "../ports/ConventionQueries";
 
-export class GetConvention extends UseCase<WithConventionId, ConventionDto> {
-  constructor(readonly conventionRepo: ConventionRepository) {
+export class GetConventionAdminReadDto extends UseCase<
+  WithConventionId,
+  ConventionAdminReadDto
+> {
+  constructor(readonly conventionQueries: ConventionQueries) {
     super();
   }
 
   inputSchema = withConventionIdSchema;
 
-  public async _execute({ id }: WithConventionId): Promise<ConventionDto> {
-    const convention = await this.conventionRepo.getById(id);
+  public async _execute({
+    id,
+  }: WithConventionId): Promise<ConventionAdminReadDto> {
+    const convention =
+      await this.conventionQueries.getConventionAdminReadDtoById(id);
     if (!convention || convention.status === "CANCELLED")
       throw new NotFoundError(id);
     return convention;

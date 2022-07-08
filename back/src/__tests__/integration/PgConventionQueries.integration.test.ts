@@ -8,7 +8,7 @@ import { PgConventionQueries } from "../../adapters/secondary/pg/PgConventionQue
 import { PgConventionRepository } from "../../adapters/secondary/pg/PgConventionRepository";
 import {
   ConventionId,
-  ConventionReadDto,
+  ConventionAdminReadDto,
 } from "shared/src/convention/convention.dto";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
 import { PgOutboxRepository } from "../../adapters/secondary/pg/PgOutboxRepository";
@@ -106,7 +106,9 @@ describe("Pg implementation of ConventionQueries", () => {
   });
   describe("PG implementation of method getConventionById", () => {
     it("Returns undefined if no convention with such id", async () => {
-      expect(await conventionQueries.getConventionById(idA)).toBeUndefined();
+      expect(
+        await conventionQueries.getConventionAdminReadDtoById(idA),
+      ).toBeUndefined();
     });
     it("Retrieves a convention by id exists", async () => {
       // Prepare
@@ -117,7 +119,7 @@ describe("Pg implementation of ConventionQueries", () => {
       );
 
       // Act
-      const result = await conventionQueries.getConventionById(idA);
+      const result = await conventionQueries.getConventionAdminReadDtoById(idA);
 
       // Assert
       expectTypeToMatchAndEqual(result, expectedConventionRead);
@@ -131,7 +133,9 @@ describe("Pg implementation of ConventionQueries", () => {
         insertAgencyAndConvention(idB, idB, "agency B"),
       ]);
       // Act
-      const resultAll = await conventionQueries.getLatestConventions({});
+      const resultAll = await conventionQueries.getLatestConventionAdminDtos(
+        {},
+      );
 
       // Assert
       expectArraysToEqualIgnoringOrder(resultAll, insertedConventionReadDtos);
@@ -144,7 +148,7 @@ describe("Pg implementation of ConventionQueries", () => {
       ]);
 
       // Act
-      const resultAll = await conventionQueries.getLatestConventions({
+      const resultAll = await conventionQueries.getLatestConventionAdminDtos({
         agencyId: idA,
       });
 
@@ -229,7 +233,7 @@ describe("Pg implementation of ConventionQueries", () => {
     conventionId: ConventionId,
     agencyId: string,
     agencyName: string,
-  ): Promise<ConventionReadDto> => {
+  ): Promise<ConventionAdminReadDto> => {
     const agency = AgencyDtoBuilder.create()
       .withId(agencyId)
       .withName(agencyName)

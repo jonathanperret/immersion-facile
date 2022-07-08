@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { ConventionReadDto } from "shared/src/convention/convention.dto";
+import { ConventionAdminReadDto } from "shared/src/convention/convention.dto";
 import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
 import {
   calculateTotalImmersionHoursBetweenDate,
@@ -11,7 +11,7 @@ import { Accordion } from "react-design-system/immersionFacile";
 import { ConventionFormAccordionProps } from "./ConventionFormAccordion";
 import { TextCell } from "./TextCell";
 
-type ConventionField = keyof ConventionReadDto;
+type ConventionField = keyof ConventionAdminReadDto;
 type FieldsToLabel = Partial<Record<ConventionField, string>>;
 
 const enterpriseFields: FieldsToLabel = {
@@ -69,7 +69,7 @@ const allFields: FieldsAndTitle[] = [
   { listTitle: "Agence", fields: agencyFields },
 ];
 
-export const ConnventionFormDetails = ({
+export const ConventionFormDetails = ({
   convention,
 }: ConventionFormAccordionProps) => {
   const buildContent = (field: ConventionField): ReactNode => {

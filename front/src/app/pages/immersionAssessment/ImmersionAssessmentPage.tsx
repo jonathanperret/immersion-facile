@@ -2,7 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { Form, Formik } from "formik";
 import { identity } from "ramda";
 import React from "react";
-import { ConventionReadDto } from "shared/src/convention/convention.dto";
+import { ConventionDto } from "shared/src/convention/convention.dto";
 import {
   AssessmentStatus,
   assessmentStatuses,
@@ -146,7 +146,7 @@ export const ImmersionAssessmentPage = ({
 const ImmersionDescription = ({
   convention,
 }: {
-  convention: ConventionReadDto;
+  convention: ConventionDto;
 }) => (
   <p>
     L'immersion de{" "}

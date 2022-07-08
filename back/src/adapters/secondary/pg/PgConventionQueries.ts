@@ -2,7 +2,7 @@ import { PoolClient } from "pg";
 import format from "pg-format";
 import {
   ConventionId,
-  ConventionReadDto,
+  ConventionAdminReadDto,
   ListConventionsRequestDto,
   validatedConventionStatuses,
 } from "shared/src/convention/convention.dto";
@@ -54,10 +54,10 @@ export class PgConventionQueries implements ConventionQueries {
     }));
   }
 
-  public async getLatestConventions({
+  public async getLatestConventionAdminDtos({
     status,
     agencyId,
-  }: ListConventionsRequestDto): Promise<ConventionReadDto[]> {
+  }: ListConventionsRequestDto): Promise<ConventionAdminReadDto[]> {
     const filtersSQL = [
       status && format("c.status = %1$L", status),
       agencyId && format("c.agency_id::text = %1$L", agencyId),
@@ -70,9 +70,9 @@ export class PgConventionQueries implements ConventionQueries {
     return this.getConventionsWhere(whereClause, orderByClause, limit);
   }
 
-  public async getConventionById(
+  public async getConventionAdminReadDtoById(
     id: ConventionId,
-  ): Promise<ConventionReadDto | undefined> {
+  ): Promise<ConventionAdminReadDto | undefined> {
     return (
       await this.getConventionsWhere(format("WHERE c.id::text = %1$L", id))
     ).at(0);

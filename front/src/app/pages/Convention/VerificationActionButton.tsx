@@ -2,12 +2,12 @@ import React from "react";
 import { conventionGateway } from "src/app/config/dependencies";
 import {
   ConventionStatus,
-  ConventionReadDto,
+  ConventionDto,
 } from "shared/src/convention/convention.dto";
 import { Button } from "react-design-system/immersionFacile";
 
 export type VerificationActionButtonProps = {
-  convention?: ConventionReadDto;
+  convention?: ConventionDto;
   jwt: string;
   disabled?: boolean;
   messageToShowOnSuccess: string;

@@ -7,18 +7,20 @@ import {
   ConventionId,
   UpdateConventionStatusRequestDto,
   WithConventionId,
-  ConventionReadDto,
+  ConventionAdminReadDto,
 } from "shared/src/convention/convention.dto";
 import { ShareLinkByEmailDto } from "shared/src/ShareLinkByEmailDto";
 import { Role } from "shared/src/tokens/MagicLinkPayload";
 
 export interface ConventionGateway {
-  retrieveFromToken(payload: string): Observable<ConventionReadDto | undefined>;
+  retrieveFromToken(
+    payload: string,
+  ): Observable<ConventionAdminReadDto | undefined>;
   add(conventionDto: ConventionDto): Promise<string>;
 
   // Get an immersion application through backoffice, password-protected route.
-  getById(id: ConventionId): Promise<ConventionReadDto>;
-  getMagicLink(jwt: string): Promise<ConventionReadDto>;
+  getConventionAdminDtoById(id: ConventionId): Promise<ConventionAdminReadDto>;
+  getMagicLink(jwt: string): Promise<ConventionDto>;
 
   update(conventionDto: ConventionDto): Promise<string>;
   updateMagicLink(conventionDto: ConventionDto, jwt: string): Promise<string>;
@@ -32,11 +34,11 @@ export interface ConventionGateway {
 
   signApplication(jwt: string): Promise<WithConventionId>;
 
-  getAll(
+  getAllConventionAdminDtos(
     adminToken: AdminToken,
     agency?: AgencyId,
     status?: ConventionStatus,
-  ): Promise<Array<ConventionReadDto>>;
+  ): Promise<Array<ConventionAdminReadDto>>;
 
   generateMagicLink(
     adminToken: AdminToken,

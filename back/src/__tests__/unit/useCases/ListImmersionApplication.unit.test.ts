@@ -3,7 +3,7 @@ import { ListAdminConventions } from "../../../domain/convention/useCases/ListAd
 import { AgencyId } from "shared/src/agency/agency.dto";
 import { ConventionDtoBuilder } from "../../../../../shared/src/convention/ConventionDtoBuilder";
 import {
-  ConventionReadDto,
+  ConventionAdminReadDto,
   allConventionStatuses,
   ConventionDto,
 } from "shared/src/convention/convention.dto";
@@ -45,7 +45,7 @@ describe("List Immersion Applications", () => {
         status: undefined,
         agencyId: undefined,
       });
-      const expectedAdminConvention: ConventionReadDto[] = [
+      const expectedAdminConvention: ConventionAdminReadDto[] = [
         { ...convention, agencyName: "TEST_AGENCY_NAME" },
       ];
       expect(listedAdminConventions).toEqual(expectedAdminConvention);

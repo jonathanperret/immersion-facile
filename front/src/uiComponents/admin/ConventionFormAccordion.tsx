@@ -3,9 +3,9 @@ import { fr } from "date-fns/locale";
 import React from "react";
 import type {
   ConventionStatus,
-  ConventionReadDto,
+  ConventionAdminReadDto,
 } from "shared/src/convention/convention.dto";
-import { ConnventionFormDetails as ConventionFormDetails } from "./ConventionFormDetails";
+import { ConventionFormDetails as ConventionFormDetails } from "./ConventionFormDetails";
 
 const beforeAfterString = (date: string) => {
   const eventDate = new Date(date);
@@ -18,7 +18,7 @@ const beforeAfterString = (date: string) => {
 };
 
 export interface ConventionFormAccordionProps {
-  convention: ConventionReadDto;
+  convention: ConventionAdminReadDto;
 }
 
 const getPrefix = (status: ConventionStatus) => {

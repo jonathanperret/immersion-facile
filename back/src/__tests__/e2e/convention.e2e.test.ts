@@ -217,10 +217,7 @@ describe("convention e2e", () => {
           await request
             .get(`/auth/${conventionsRoute}/${convention.id}`)
             .set("Authorization", jwt)
-            .expect(200, {
-              ...convention,
-              agencyName: TEST_AGENCY_NAME,
-            });
+            .expect(200, convention);
         });
 
         it("redirects expired magic links to a renewal page", async () => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AdminToken } from "shared/src/admin/admin.dto";
 import { emailRoute } from "shared/src/routes";
-import { EmailSentDto } from "src/../../shared/email";
+import { EmailSentDto } from "shared/email";
 import { EmailGateway } from "src/core-logic/ports/EmailGateway";
 
 const prefix = "api";

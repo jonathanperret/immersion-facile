@@ -3,7 +3,7 @@ import {
   Accordion,
   DsfrTitle,
 } from "src/../../libs/react-design-system/immersionFacile";
-import { EmailSentDto } from "src/../../shared/email";
+import { EmailSentDto } from "shared/email";
 import { emailGateway } from "src/app/config/dependencies";
 import { useAdminToken } from "src/hooks/useAdminToken";
 import { TextCell } from "src/uiComponents/admin/TextCell";

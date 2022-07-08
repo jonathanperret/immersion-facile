@@ -8,7 +8,7 @@ import {
   UpdateConventionStatusRequestDto,
   WithConventionId,
   ConventionDto,
-  ConventionReadDto,
+  ConventionAdminReadDto,
 } from "shared/src/convention/convention.dto";
 import { withConventionIdSchema } from "shared/src/convention/convention.schema";
 import {
@@ -29,7 +29,7 @@ const prefix = "api";
 export class HttpConventionGateway implements ConventionGateway {
   retrieveFromToken(
     payload: string,
-  ): Observable<ConventionReadDto | undefined> {
+  ): Observable<ConventionAdminReadDto | undefined> {
     return from(this.getMagicLink(payload));
   }
 
@@ -43,23 +43,34 @@ export class HttpConventionGateway implements ConventionGateway {
     return addConventionResponse.id;
   }
 
-  public async getById(id: string): Promise<ConventionReadDto> {
+  public async getConventionAdminDtoById(
+    id: string,
+  ): Promise<ConventionAdminReadDto> {
     const response = await axios.get(`/${prefix}/${conventionsRoute}/${id}`);
     return response.data;
   }
 
-  public async getMagicLink(jwt: string): Promise<ConventionReadDto> {
+  public async getConventionAdminDtoFromJwt(
+    jwt: string,
+  ): Promise<ConventionAdminReadDto> {
     const response = await axios.get(`/${prefix}/auth/${conventionsRoute}/id`, {
       headers: { Authorization: jwt },
     });
     return response.data;
   }
 
-  public async getAll(
+  public async getMagicLink(jwt: string): Promise<ConventionDto> {
+    const response = await axios.get(`/${prefix}/auth/${conventionsRoute}/id`, {
+      headers: { Authorization: jwt },
+    });
+    return response.data;
+  }
+
+  public async getAllConventionAdminDtos(
     adminToken: AdminToken,
     agency?: AgencyId,
     status?: ConventionStatus,
-  ): Promise<Array<ConventionReadDto>> {
+  ): Promise<Array<ConventionAdminReadDto>> {
     const response = await axios.get(`/${prefix}/admin/${conventionsRoute}`, {
       params: {
         agency,

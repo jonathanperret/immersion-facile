@@ -3,7 +3,7 @@ import {
   validatedConventionStatuses,
   WithConventionId,
   ListConventionsRequestDto,
-  ConventionReadDto,
+  ConventionAdminReadDto,
   ConventionId,
 } from "shared/src/convention/convention.dto";
 import { ConventionQueries } from "../../domain/convention/ports/ConventionQueries";
@@ -22,10 +22,10 @@ export class InMemoryConventionQueries implements ConventionQueries {
     private readonly outboxRepository?: InMemoryOutboxRepository,
   ) {}
 
-  public async getLatestConventions({
+  public async getLatestConventionAdminDtos({
     status,
     agencyId,
-  }: ListConventionsRequestDto): Promise<ConventionReadDto[]> {
+  }: ListConventionsRequestDto): Promise<ConventionAdminReadDto[]> {
     logger.info("getAll");
     return Object.values(this.conventionRepository._conventions)
       .filter((dto) => !status || dto.status === status)
@@ -33,9 +33,9 @@ export class InMemoryConventionQueries implements ConventionQueries {
       .map((dto) => ({ ...dto, agencyName: TEST_AGENCY_NAME }));
   }
 
-  public async getConventionById(
+  public async getConventionAdminReadDtoById(
     id: ConventionId,
-  ): Promise<ConventionReadDto | undefined> {
+  ): Promise<ConventionAdminReadDto | undefined> {
     logger.info("getAll");
     const storedConvention = this.conventionRepository.conventions.find(
       propEq("id", id),

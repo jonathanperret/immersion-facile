@@ -1,5 +1,5 @@
 import {
-  ConventionReadDto,
+  ConventionAdminReadDto,
   ListConventionsRequestDto as ListConventionsForAdminRequestDto,
 } from "shared/src/convention/convention.dto";
 import { UseCase } from "../../core/UseCase";
@@ -8,7 +8,7 @@ import { ConventionQueries } from "../ports/ConventionQueries";
 
 export class ListAdminConventions extends UseCase<
   ListConventionsForAdminRequestDto,
-  ConventionReadDto[]
+  ConventionAdminReadDto[]
 > {
   constructor(private readonly conventionQueries: ConventionQueries) {
     super();
@@ -20,7 +20,7 @@ export class ListAdminConventions extends UseCase<
     status,
     agencyId,
   }: ListConventionsForAdminRequestDto) {
-    const entities = await this.conventionQueries.getLatestConventions({
+    const entities = await this.conventionQueries.getLatestConventionAdminDtos({
       status,
       agencyId,
     });

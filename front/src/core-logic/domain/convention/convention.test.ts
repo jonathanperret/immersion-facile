@@ -1,6 +1,6 @@
 import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
 import { expectObjectsToMatch } from "shared/src/expectToEqual";
-import { ConventionReadDto } from "src/../../shared/src/convention/convention.dto";
+import { ConventionDto } from "src/../../shared/src/convention/convention.dto";
 import { conventionSelectors } from "src/core-logic/domain/convention/convention.selectors";
 import {
   createTestStore,
@@ -74,9 +74,7 @@ describe("Convention slice", () => {
     dependencies.conventionGateway.convention$.error(error);
   };
 
-  const feedGatewayWithConvention = (
-    convention: ConventionReadDto | undefined,
-  ) => {
+  const feedGatewayWithConvention = (convention: ConventionDto | undefined) => {
     dependencies.conventionGateway.convention$.next(convention);
   };
 });

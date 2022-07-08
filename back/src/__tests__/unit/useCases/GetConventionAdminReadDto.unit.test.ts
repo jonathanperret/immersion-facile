@@ -1,19 +1,23 @@
+import { ConventionAdminReadDto } from "shared/src/convention/convention.dto";
 import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
 import { NotFoundError } from "../../../adapters/primary/helpers/httpErrors";
-import { InMemoryConventionQueries } from "../../../adapters/secondary/InMemoryConventionQueries";
+import {
+  InMemoryConventionQueries,
+  TEST_AGENCY_NAME,
+} from "../../../adapters/secondary/InMemoryConventionQueries";
 import { InMemoryConventionRepository } from "../../../adapters/secondary/InMemoryConventionRepository";
-import { GetConvention } from "../../../domain/convention/useCases/GetConvention";
+import { GetConventionAdminReadDto } from "../../../domain/convention/useCases/GetConventionAdminReadDto";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
 
 describe("Get Convention", () => {
-  let getConvention: GetConvention;
+  let getConvention: GetConventionAdminReadDto;
   let repo: InMemoryConventionRepository;
   let queries: InMemoryConventionQueries;
 
   beforeEach(() => {
     repo = new InMemoryConventionRepository();
     queries = new InMemoryConventionQueries(repo);
-    getConvention = new GetConvention(queries);
+    getConvention = new GetConventionAdminReadDto(queries);
   });
 
   describe("When the Convention does not exist", () => {
@@ -33,7 +37,11 @@ describe("Get Convention", () => {
       const convention = await getConvention.execute({
         id: entity.id,
       });
-      expect(convention).toEqual(entity);
+      const expectedAdminReadDto: ConventionAdminReadDto = {
+        ...entity,
+        agencyName: TEST_AGENCY_NAME,
+      };
+      expect(convention).toEqual(expectedAdminReadDto);
     });
   });
 });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Notification } from "react-design-system/immersionFacile";
-import { ConventionReadDto } from "shared/src/convention/convention.dto";
+import { ConventionAdminReadDto } from "shared/src/convention/convention.dto";
 import { conventionGateway } from "src/app/config/dependencies";
 import { routes } from "src/app/routing/routes";
 import { ConventionFormAccordion } from "src/uiComponents/admin/ConventionFormAccordion";
@@ -13,7 +13,9 @@ interface AdminVerificationProps {
 }
 
 export const AdminVerificationPage = ({ route }: AdminVerificationProps) => {
-  const [convention, setConvention] = useState<ConventionReadDto | null>(null);
+  const [convention, setConvention] = useState<ConventionAdminReadDto | null>(
+    null,
+  );
   const [error, setError] = useState<Error | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export const AdminVerificationPage = ({ route }: AdminVerificationProps) => {
     !convention || convention.status !== "IN_REVIEW";
   useEffect(() => {
     conventionGateway
-      .getById(id)
+      .getConventionAdminDtoById(id)
       .then((data) => {
         setConvention(data);
         if (convention) {

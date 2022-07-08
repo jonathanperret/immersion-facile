@@ -70,6 +70,7 @@ import { GenerateConventionMagicLink } from "./createGenerateConventionMagicLink
 import { makeGenerateEditFormEstablishmentUrl } from "./makeGenerateEditFormEstablishmentUrl";
 import { Repositories } from "./repositoriesConfig";
 import { GetSentEmails } from "../../../domain/generic/notifications/useCases/GetSentEmails";
+import { GetConventionAdminReadDto } from "../../../domain/convention/useCases/GetConventionAdminReadDto";
 
 export type UseCases = ReturnType<typeof createUseCases>;
 
@@ -116,7 +117,10 @@ export const createUseCases = (
       createNewEvent,
       getSiret,
     ),
-    getConvention: new GetConvention(repositories.conventionQueries),
+    getConvention: new GetConvention(repositories.convention),
+    getConventionAdminReadDto: new GetConventionAdminReadDto(
+      repositories.conventionQueries,
+    ),
     linkPoleEmploiAdvisorAndRedirectToConvention:
       new LinkPoleEmploiAdvisorAndRedirectToConvention(
         uowPerformer,
