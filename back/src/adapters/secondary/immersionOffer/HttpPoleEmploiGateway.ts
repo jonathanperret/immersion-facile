@@ -17,7 +17,10 @@ import {
   logAxiosError,
 } from "../../../utils/axiosUtils";
 import { createLogger } from "../../../utils/logger";
-import { notifyAndThrowErrorDiscord } from "../../../utils/notifyDiscord";
+import {
+  notifyAndThrowErrorDiscord,
+  notifyObjectDiscord,
+} from "../../../utils/notifyDiscord";
 
 const logger = createLogger(__filename);
 
@@ -57,7 +60,7 @@ export class HttpPoleEmploiGateway implements PoleEmploiGateway {
         logger.info(poleEmploiConvention, "Sending convention to PE");
         const response = await this.rateLimiter.whenReady(async () => {
           const accessToken = await this.accessTokenGateway.getAccessToken(
-            `echangespmsmp api_immersion-prov1`,
+            `application_${this.poleEmploiClientId} echangespmsmp api_immersion-prov1`,
           );
 
           const peResponse = await axios.post(
@@ -76,6 +79,7 @@ export class HttpPoleEmploiGateway implements PoleEmploiGateway {
         return response;
       } catch (error: any) {
         logger.info(error, "Error from PE");
+        notifyObjectDiscord(error);
         if (isRetryableError(logger, error)) throw new RetryableError(error);
         logAxiosError(logger, error);
         throw error;
