@@ -1,4 +1,4 @@
-import { isHttpClientError, isHttpServerError } from "../httpClient";
+import { isHttpClientError, isHttpServerError } from "../ports/httpClient";
 
 describe("Http Client Errors", () => {
   it.each([
@@ -14,7 +14,7 @@ describe("Http Client Errors", () => {
     "isHttpClientErrorStatus should detect HttpClient 4XX errors, expect: (%i to be %s)",
     (httpStatusCode: number, expected: boolean) => {
       expect(isHttpClientError(httpStatusCode)).toBe(expected);
-    },
+    }
   );
 });
 
@@ -34,6 +34,6 @@ describe("Http Server Errors", () => {
     "isHttpServerErrorStatus should detect Http Server 5XX errors, expect: (%i to be %s)",
     (httpStatusCode: number, expected: boolean) => {
       expect(isHttpServerError(httpStatusCode)).toBe(expected);
-    },
+    }
   );
 });

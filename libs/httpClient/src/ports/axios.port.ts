@@ -1,13 +1,13 @@
 //TODO Découpler les notions entre axios et client http générique ?
 
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { HttpClientError } from "../errors/4xxClientError.error";
-import { HttpServerError } from "../errors/5xxServerError.error";
 import {
   ConnectionRefusedError,
   isConnectionRefusedError,
 } from "../errors/ConnectionRefused.error";
-import { isHttpClientError, isHttpServerError } from "../httpClient";
+import { HttpClientError } from "../errors/HttpClientError.error";
+import { HttpServerError } from "../errors/HttpServerError.error";
+import { isHttpClientError, isHttpServerError } from "./httpClient";
 
 type AxiosErrorWithResponse = AxiosError & { response: AxiosResponse };
 
@@ -18,7 +18,7 @@ export const createManagedAxiosInstance = (): AxiosInstance => {
   const axiosInstance = axios.create(axiosRequestConfig);
   axiosInstance.interceptors.request.use(
     (request) => request,
-    axiosErrorRequestInterceptor,
+    axiosErrorRequestInterceptor
   );
 
   axiosInstance.interceptors.response.use((validResponse) => {
@@ -49,7 +49,7 @@ const axiosErrorRequestInterceptor = (error: any): never => {
 };
 
 export const isValidAxiosErrorResponse = (
-  response: AxiosResponse | undefined,
+  response: AxiosResponse | undefined
 ): response is AxiosResponse =>
   !!response &&
   isValidResponseBody(response.data) &&
@@ -75,7 +75,7 @@ const throwClientError = (error: AxiosErrorWithResponse): never => {
   throw new HttpClientError(
     `4XX Status Code ${toAxiosHttpErrorString(error)}`,
     error,
-    error.response.status,
+    error.response.status
   );
 };
 
@@ -83,7 +83,7 @@ const throwServerError = (error: AxiosErrorWithResponse): never => {
   throw new HttpServerError(
     `5XX Status Code ${toAxiosHttpErrorString(error)}`,
     error,
-    error.response.status,
+    error.response.status
   );
 };
 
@@ -91,23 +91,23 @@ const handleConnectionRefused = (error: AxiosError): never | void => {
   if (isConnectionRefusedError(error))
     throw new ConnectionRefusedError(
       `Could not connect to server : ${toRawErrorString(error)}`,
-      error,
+      error
     );
 };
 
 const validateAxiosErrorResponse = (
-  error: AxiosError,
+  error: AxiosError
 ): AxiosErrorWithResponse => {
   if (!axios.isAxiosError(error))
     throwUnhandledError(
       `error Response does not have the property isAxiosError set to true`,
-      error,
+      error
     );
 
   if (!isValidAxiosErrorResponse(error.response))
     throwUnhandledError(
       "error response objects does not have mandatory keys",
-      error,
+      error
     );
 
   return error as AxiosErrorWithResponse;
@@ -115,7 +115,7 @@ const validateAxiosErrorResponse = (
 
 export const throwUnhandledError = (
   details: string,
-  error: AxiosError,
+  error: AxiosError
 ): never => {
   let rawString: string;
   try {
@@ -133,7 +133,7 @@ export const throwUnhandledError = (
   }
   throw new Error(
     `Unhandled Http Client Error - ${details} - JSON Stringify tentative result -> ${rawString}`,
-    { cause: error },
+    { cause: error }
   );
 };
 
@@ -151,7 +151,7 @@ const toAxiosHttpErrorString = (error: AxiosError): string =>
       status: error.response?.status,
     },
     null,
-    2,
+    2
   );
 
 const toRawErrorString = (error: any): string =>
@@ -168,5 +168,5 @@ const toRawErrorString = (error: any): string =>
       },
     },
     null,
-    2,
+    2
   );
