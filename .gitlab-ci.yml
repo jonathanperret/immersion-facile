@@ -11,7 +11,7 @@ variables:
 image: node:16.15-buster
 
 stages:
-#  - build
+  #  - build
   - test
   - deploy
 
@@ -23,43 +23,43 @@ stages:
 #  script:
 #    - pnpm install --frozen-lockfile
 
-front:
-  stage: test
-  before_script:
-    - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
-    - pnpm config set store-dir .pnpm-store
-  script:
-    - pnpm install --frozen-lockfile
-    - cd shared
-    - pnpm includecheck
-    - cd ../front
-    - pnpm includecheck
-    - pnpm format:check
-    - pnpm lint
-    - pnpm test
-    - pnpm typecheck
-    - pnpm build
+# front:
+#   stage: test
+#   before_script:
+#     - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+#     - pnpm config set store-dir .pnpm-store
+#   script:
+#     - pnpm install --frozen-lockfile
+#     - cd shared
+#     - pnpm includecheck
+#     - cd ../front
+#     - pnpm includecheck
+#     - pnpm format:check
+#     - pnpm lint
+#     - pnpm test
+#     - pnpm typecheck
+#     - pnpm build
 
-back:
-  stage: test
-  before_script:
-    - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
-    - pnpm config set store-dir .pnpm-store
-  services:
-    - name: postgis/postgis:13-master
-      alias: postgres
-  script:
-    - pnpm install --frozen-lockfile
-    - cd back
-    - PWD=$(pwd)
-    - STORAGE_FULL_PATH=$PWD$STORAGE_ROOT
-    - mkdir -p $STORAGE_FULL_PATH/tmp/
-    - pnpm format:check
-    - pnpm lint
-    - pnpm includecheck
-    - pnpm typecheck
-    - NODE_ENV=test DATABASE_URL=$PG_TEST_URL npm run migrate up
-    - PG_URL=$PG_TEST_URL STORAGE_ROOT=$STORAGE_FULL_PATH pnpm run test:all
+# back:
+#   stage: test
+#   before_script:
+#     - curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+#     - pnpm config set store-dir .pnpm-store
+#   services:
+#     - name: postgis/postgis:13-master
+#       alias: postgres
+#   script:
+#     - pnpm install --frozen-lockfile
+#     - cd back
+#     - PWD=$(pwd)
+#     - STORAGE_FULL_PATH=$PWD$STORAGE_ROOT
+#     - mkdir -p $STORAGE_FULL_PATH/tmp/
+#     - pnpm format:check
+#     - pnpm lint
+#     - pnpm includecheck
+#     - pnpm typecheck
+#     - NODE_ENV=test DATABASE_URL=$PG_TEST_URL npm run migrate up
+#     - PG_URL=$PG_TEST_URL STORAGE_ROOT=$STORAGE_FULL_PATH pnpm run test:all
 
 #sonarqube-check:
 #  stage: test
