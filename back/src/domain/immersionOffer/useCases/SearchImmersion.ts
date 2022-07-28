@@ -36,6 +36,7 @@ export class SearchImmersion extends TransactionalUseCase<
     uow: UnitOfWork,
     apiConsumer: ApiConsumer,
   ): Promise<SearchImmersionResultDto[]> {
+    throw new Error("Trying to break the app by using a mocked error");
     const apiConsumerName = apiConsumer?.consumer;
 
     const searchMade: SearchMade = {
