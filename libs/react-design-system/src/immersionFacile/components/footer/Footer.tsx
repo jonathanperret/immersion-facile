@@ -41,8 +41,8 @@ export const Footer = ({
     <div className="fr-container">
       <div className="fr-footer__body">
         {ministereLogo}
-        {partnersLogos.map((logo) => (
-          <LogoPartner>{logo}</LogoPartner>
+        {partnersLogos.map((logo, i) => (
+          <LogoPartner key={i}>{logo}</LogoPartner>
         ))}
 
         <div className="fr-footer__content">
