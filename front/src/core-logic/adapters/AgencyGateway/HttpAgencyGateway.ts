@@ -117,7 +117,9 @@ export class HttpAgencyGateway implements AgencyGateway {
     await this.httpClient.patch<unknown>(
       `/admin/${agenciesRoute}/${agencyId}`,
       validateAgencyParams,
-      { headers: { authorization: adminToken } },
+      {
+        headers: { authorization: adminToken },
+      },
     );
   }
 

@@ -43,7 +43,9 @@ describe("Edit Form Establishment", () => {
           FormEstablishmentDtoBuilder.valid()
             .withSiret(siretInFormEstablishment)
             .build(),
-          { siret: siretInJwtPayload } as EstablishmentJwtPayload,
+          {
+            siret: siretInJwtPayload,
+          } as EstablishmentJwtPayload,
         ),
         new ForbiddenError(),
       );

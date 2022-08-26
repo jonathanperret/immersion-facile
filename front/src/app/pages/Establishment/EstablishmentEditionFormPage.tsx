@@ -27,8 +27,7 @@ export const EstablishmentEditionFormPage = ({
         route.params.jwt,
       )
     }
-    jwt={route.params.jwt}
-  >
+    jwt={route.params.jwt}>
     {(formEstablishment) => {
       if (!formEstablishment)
         return <p>Données de formulaire d'établissement indisponibles</p>;
@@ -44,8 +43,7 @@ export const EstablishmentEditionFormPage = ({
               route.params.jwt,
             )
           }
-          isEditing
-        >
+          isEditing>
           <EditionSiretRelatedInputs
             businessAddress={formEstablishment.businessAddress}
           />

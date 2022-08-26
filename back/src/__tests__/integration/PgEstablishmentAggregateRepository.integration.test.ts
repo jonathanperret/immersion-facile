@@ -82,7 +82,9 @@ describe("Postgres implementation of immersion offer repository", () => {
       // Act
       const searchWithNoRomeResult =
         await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-          { searchMade: searchMadeWithRome },
+          {
+            searchMade: searchMadeWithRome,
+          },
         );
       // Assert
       expect(searchWithNoRomeResult).toHaveLength(0);
@@ -185,7 +187,9 @@ describe("Postgres implementation of immersion offer repository", () => {
         // Act
         const searchResult: SearchImmersionResultDto[] =
           await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-            { searchMade: searchMadeWithoutRome },
+            {
+              searchMade: searchMadeWithoutRome,
+            },
           );
 
         // Assert : one match and defined contact details
@@ -239,7 +243,9 @@ describe("Postgres implementation of immersion offer repository", () => {
       // Act
       const searchWithNoRomeResult =
         await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-          { searchMade: searchMadeWithRome },
+          {
+            searchMade: searchMadeWithRome,
+          },
         );
       // Assert
       expect(searchWithNoRomeResult).toHaveLength(0);
@@ -269,7 +275,9 @@ describe("Postgres implementation of immersion offer repository", () => {
       // Act
       const searchWithNoRomeResult =
         await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-          { searchMade: searchMadeWithRome },
+          {
+            searchMade: searchMadeWithRome,
+          },
         );
       // Assert
       expect(searchWithNoRomeResult).toHaveLength(0);
@@ -368,7 +376,10 @@ describe("Postgres implementation of immersion offer repository", () => {
       // Act
       const searchResult =
         await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-          { searchMade: searchMadeWithRome, maxResults: 2 },
+          {
+            searchMade: searchMadeWithRome,
+            maxResults: 2,
+          },
         );
       // Assert
       expect(searchResult).toHaveLength(2);
@@ -479,7 +490,10 @@ describe("Postgres implementation of immersion offer repository", () => {
       // Act
       const searchResult: SearchImmersionResultDto[] =
         await pgEstablishmentAggregateRepository.getSearchImmersionResultDtoFromSearchMade(
-          { searchMade: searchMadeWithRome, withContactDetails: true },
+          {
+            searchMade: searchMadeWithRome,
+            withContactDetails: true,
+          },
         );
 
       // Assert : one match and defined contact details

@@ -138,7 +138,9 @@ export const throwUnhandledError = (
   }
   throw new Error(
     `Unhandled Http Client Error - ${details} - JSON Stringify tentative result -> ${rawString}`,
-    { cause: error },
+    {
+      cause: error,
+    },
   );
 };
 

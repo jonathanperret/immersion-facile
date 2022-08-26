@@ -131,4 +131,7 @@ export class ManagedAxios<TargetUrls extends string> implements HttpClient {
 const shallowMergeConfigs = (
   initialConfig: AdapterConfig,
   additionalConfig: HttpClientGetConfig,
-): AdapterConfig => ({ ...initialConfig, ...additionalConfig.adapterConfig });
+): AdapterConfig => ({
+  ...initialConfig,
+  ...additionalConfig.adapterConfig,
+});

@@ -104,7 +104,9 @@ export class HttpConventionGateway implements ConventionGateway {
     const { data } = await this.httpClient.post(
       `/auth/${conventionsRoute}/${jwt}`,
       conventionDto,
-      { headers: { authorization: jwt } },
+      {
+        headers: { authorization: jwt },
+      },
     );
     const withConventionId = withConventionIdSchema.parse(data);
     return withConventionId.id;
@@ -117,7 +119,9 @@ export class HttpConventionGateway implements ConventionGateway {
     const { data } = await this.httpClient.post(
       `/auth/${updateConventionStatusRoute}/${jwt}`,
       params,
-      { headers: { Authorization: jwt } },
+      {
+        headers: { Authorization: jwt },
+      },
     );
 
     const withConventionId = withConventionIdSchema.parse(data);
@@ -129,7 +133,9 @@ export class HttpConventionGateway implements ConventionGateway {
     const { data } = await this.httpClient.post<unknown>(
       `/auth/${signConventionRoute}/${jwt}`,
       undefined,
-      { headers: { authorization: jwt } },
+      {
+        headers: { authorization: jwt },
+      },
     );
 
     const withConventionIdDto = withConventionIdSchema.parse(data);
