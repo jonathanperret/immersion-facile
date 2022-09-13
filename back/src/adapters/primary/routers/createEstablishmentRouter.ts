@@ -8,7 +8,7 @@ import {
 import type { AppDependencies } from "../config/createAppDependencies";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createEstablishmentRouter = (deps: AppDependencies) => {
+export const createEstablishmentRouter = (deps: AppDependencies): Router => {
   const establishmentRouter = Router({ mergeParams: true });
 
   // Routes WITHOUT jwt auth

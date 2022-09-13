@@ -3,7 +3,7 @@ import { conventionShareRoute, conventionsRoute } from "shared/src/routes";
 import type { AppDependencies } from "../config/createAppDependencies";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createConventionRouter = (deps: AppDependencies) => {
+export const createConventionRouter = (deps: AppDependencies): Router => {
   const conventionRouter = Router();
 
   conventionRouter

@@ -12,7 +12,7 @@ import {
 import type { AppDependencies } from "../../config/createAppDependencies";
 import { sendHttpResponse } from "../../helpers/sendHttpResponse";
 
-export const createAddressRouter = (deps: AppDependencies) => {
+export const createAddressRouter = (deps: AppDependencies): Router => {
   const addressRouter = Router();
 
   addressRouter

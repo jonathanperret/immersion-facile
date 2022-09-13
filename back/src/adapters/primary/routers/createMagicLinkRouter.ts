@@ -10,7 +10,7 @@ import type { AppDependencies } from "../config/createAppDependencies";
 import { UnauthorizedError } from "../helpers/httpErrors";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createMagicLinkRouter = (deps: AppDependencies) => {
+export const createMagicLinkRouter = (deps: AppDependencies): Router => {
   const authenticatedRouter = Router({ mergeParams: true });
 
   authenticatedRouter.use(deps.applicationMagicLinkAuthMiddleware);

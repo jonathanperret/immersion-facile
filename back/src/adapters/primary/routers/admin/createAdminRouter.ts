@@ -13,7 +13,7 @@ import { sendHttpResponse } from "../../helpers/sendHttpResponse";
 import { sendZipResponse } from "../../helpers/sendZipResponse";
 import { ExportDataDto } from "shared/src/exportable";
 
-export const createAdminRouter = (deps: AppDependencies) => {
+export const createAdminRouter = (deps: AppDependencies): Router => {
   const adminRouter = Router({ mergeParams: true });
 
   adminRouter

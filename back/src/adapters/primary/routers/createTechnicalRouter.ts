@@ -10,7 +10,7 @@ import type { AppDependencies } from "../config/createAppDependencies";
 import { BadRequestError, FeatureDisabledError } from "../helpers/httpErrors";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createTechnicalRouter = (deps: AppDependencies) => {
+export const createTechnicalRouter = (deps: AppDependencies): Router => {
   const technicalRouter = Router();
   technicalRouter
     .route(`/${renewMagicLinkRoute}`)

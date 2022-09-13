@@ -10,7 +10,7 @@ import type { AppDependencies } from "../config/createAppDependencies";
 import { validateAndParseZodSchema } from "../helpers/httpErrors";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createFormCompletionRouter = (deps: AppDependencies) => {
+export const createFormCompletionRouter = (deps: AppDependencies): Router => {
   const formCompletionRouter = Router();
 
   formCompletionRouter

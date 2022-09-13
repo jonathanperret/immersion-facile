@@ -3,7 +3,7 @@ import { immersionOffersRoute } from "shared/src/routes";
 import type { AppDependencies } from "../config/createAppDependencies";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createSearchImmersionRouter = (deps: AppDependencies) => {
+export const createSearchImmersionRouter = (deps: AppDependencies): Router => {
   const searchImmersionRouter = Router();
 
   searchImmersionRouter

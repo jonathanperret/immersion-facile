@@ -23,7 +23,7 @@ const counterFormEstablishmentCaller = new promClient.Counter({
   labelNames: ["referer"],
 });
 
-export const createApiKeyAuthRouter = (deps: AppDependencies) => {
+export const createApiKeyAuthRouter = (deps: AppDependencies): Router => {
   const authenticatedRouter = Router({ mergeParams: true });
 
   authenticatedRouter.use(deps.apiKeyAuthMiddlewareV0);

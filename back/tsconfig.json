@@ -1,18 +1,71 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["esNext"],
-    "outDir": "dist",
-    "module": "CommonJS",
-    "strict": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "noImplicitOverride": true,
-    "skipLibCheck": true /* Skip type checking of declaration files. */,
-    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
-    "typeRoots": ["./src/types", "./node_modules/@types"],
+    /* Emit */
+    "outDir": "../lib",
+    //    "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
+    //    "declarationMap": true,
+
+    /* Modules */
+    "module": "es2022" /* Specify what module code is generated. */,
+    "lib": [
+      /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+      "esNext"
+    ],
+    "moduleResolution": "Node",
+
+    /* Project */
+    //"composite": true,
+
+    /* Language and Environment */
+    "target": "es2021",
+
+    /* Interop Constraints */
+    "esModuleInterop": true /* https://www.typescriptlang.org/tsconfig#esModuleInterop */,
+    "forceConsistentCasingInFileNames": true,
+
+    /* "strict": true,
+     "strictNullChecks": true,
+     "esModuleInterop": true,
+     "noImplicitOverride": true,
+     "skipLibCheck": true */ /* Skip type checking of declaration files. */ /*,
+      "forceConsistentCasingInFileNames": true */ /* Disallow inconsistently-cased references to the same file. */
+
+    /* Type Checking */
+    "strict": true /* Enable all strict type-checking options. */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "noImplicitOverride": true /* Ensure overriding members in derived classes are marked with an override modifier. */,
     "paths": {
-      "shared/*": ["./../../shared/*"]
-    }
+      "shared": ["./../../shared/*"]
+    },
+    //
+    //    "allowUnusedLabels": false /* https://www.typescriptlang.org/tsconfig#allowUnusedLabels */,
+    //    "allowUnreachableCode": false /* https://www.typescriptlang.org/tsconfig#allowUnreachableCode */,
+    //    //      "exactOptionalPropertyTypes": true, /* https://www.typescriptlang.org/tsconfig#exactOptionalPropertyTypes */
+    //    "noFallthroughCasesInSwitch": true /* https://www.typescriptlang.org/tsconfig#noFallthroughCasesInSwitch */,
+    //
+    //    "noPropertyAccessFromIndexSignature": true /* https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature */,
+    //    // "noUncheckedIndexedAccess": true /* https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess */,
+    //    "noUnusedLocals": true /* https://www.typescriptlang.org/tsconfig#noUnusedLocals */,
+    //    "noUnusedParameters": true /* https://www.typescriptlang.org/tsconfig#noUnusedParameters */,
+    //    // "importsNotUsedAsValues": "error" /* https://www.typescriptlang.org/tsconfig#importsNotUsedAsValues */,
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   }
+  //"references": [{ "path": "../shared" }],
+
+  //  "compilerOptions": {
+  //    "target": "es6",
+  //    "lib": ["esNext"],
+  //    "outDir": "dist",
+  //    "module": "CommonJS",
+  //    "strict": true,
+  //    "strictNullChecks": true,
+  //    "esModuleInterop": true,
+  //    "noImplicitOverride": true,
+  //    "skipLibCheck": true /* Skip type checking of declaration files. */,
+  //    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+  //    "typeRoots": ["./src/types", "./node_modules/@types"],
+  //    "paths": {
+  //      "shared": ["./../../shared/*"]
+  //    }
+  //  }
 }

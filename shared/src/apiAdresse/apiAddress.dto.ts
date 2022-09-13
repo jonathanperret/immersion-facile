@@ -5,7 +5,7 @@ export type GeoJsonFeatureCollection = {
   features: GeoJsonFeature[];
 };
 
-export type GeoJsonGeometry = Record<string, unknown>;
+export type GeoJsonGeometry = { coordinates: [number, number] };
 
 export type GeoJsonFeature = {
   type: "Feature";

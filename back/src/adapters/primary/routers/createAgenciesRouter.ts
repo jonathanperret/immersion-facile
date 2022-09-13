@@ -7,7 +7,7 @@ import {
 import type { AppDependencies } from "../config/createAppDependencies";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";
 
-export const createAgenciesRouter = (deps: AppDependencies) => {
+export const createAgenciesRouter = (deps: AppDependencies): Router => {
   const agenciesRouter = Router();
 
   agenciesRouter

@@ -5,7 +5,7 @@ import { FeatureDisabledError } from "../helpers/httpErrors";
 import { ManagedRedirectError } from "../helpers/redirectErrors";
 import { sendRedirectResponse } from "../helpers/sendRedirectResponse";
 
-export const createPeConnectRouter = (deps: AppDependencies) => {
+export const createPeConnectRouter = (deps: AppDependencies): Router => {
   const peConnectRouter = Router({ mergeParams: true });
 
   peConnectRouter.route(`/${loginPeConnect}`).get(async (req, res) =>

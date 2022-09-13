@@ -11,10 +11,9 @@ export const featuresSchemaResponse: z.Schema<{ features: unknown[] }> =
     features: z.array(z.unknown()),
   });
 
-const geoJsonGeometrySchema: z.Schema<GeoJsonGeometry> = z.record(
-  z.string(),
-  z.unknown(),
-);
+const geoJsonGeometrySchema: z.Schema<GeoJsonGeometry> = z.object({
+  coordinates: z.tuple([z.number(), z.number()]),
+});
 
 const geoJsonFeatureProperties: z.Schema<GeoJsonFeatureApiAddressProperties> =
   z.object({
