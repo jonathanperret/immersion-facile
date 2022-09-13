@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Pool } from "pg";
+import pg from "pg";
 import {
   ManagedAxios,
   onFullfilledDefaultResponseInterceptorMaker,
@@ -56,9 +56,9 @@ const logger = createLogger(__filename);
 
 const AXIOS_TIMEOUT_FIVE_SECOND = 5000;
 
-export type GetPgPoolFn = () => Pool;
+export type GetPgPoolFn = () => pg.Pool;
 export const createGetPgPoolFn = (config: AppConfig): GetPgPoolFn => {
-  let pgPool: Pool;
+  let pgPool: pg.Pool;
   return () => {
     if (config.repositories !== "PG" && config.romeRepository !== "PG")
       throw new Error(
@@ -68,7 +68,7 @@ export const createGetPgPoolFn = (config: AppConfig): GetPgPoolFn => {
     if (!pgPool) {
       const { host, pathname } = new URL(config.pgImmersionDbUrl);
       logger.info({ host, pathname }, "creating postgresql connection pool");
-      pgPool = new Pool({
+      pgPool = new pg.Pool({
         connectionString: config.pgImmersionDbUrl,
         application_name: "Immersion Backend",
         max: 25,

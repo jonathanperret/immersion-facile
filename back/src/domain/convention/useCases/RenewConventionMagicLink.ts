@@ -1,4 +1,4 @@
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import {
   Beneficiary,
   ConventionId,
@@ -84,7 +84,7 @@ export class RenewConventionMagicLink extends TransactionalUseCase<
       payloadToExtract = verifyJwt(expiredJwt);
     } catch (err: any) {
       // If this JWT is signed by us but expired, deal with it.
-      if (err instanceof TokenExpiredError) {
+      if (err instanceof jwt.TokenExpiredError) {
         payloadToExtract = jwt.decode(expiredJwt) as ConventionMagicLinkPayload;
       } else {
         // Perhaps this is a JWT that is signed by a compromised key.
