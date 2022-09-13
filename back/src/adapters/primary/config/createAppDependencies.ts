@@ -33,7 +33,9 @@ export type AppDependencies = ReturnType<
   ? T
   : never;
 
-export const createAppDependencies = async (config: AppConfig) => {
+export const createAppDependencies = async (
+  config: AppConfig,
+): Promise<any> => {
   const getPgPoolFn = createGetPgPoolFn(config);
   const gateways = await createGateways(config, clock);
 

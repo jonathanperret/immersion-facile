@@ -1,7 +1,7 @@
 import { keys } from "shared/src/utils";
 import { z } from "zod";
 import { NarrowEvent } from "../../domain/core/eventBus/EventBus";
-import { DomainTopic } from "../../domain/core/eventBus/events";
+import { DomainEvent, DomainTopic } from "../../domain/core/eventBus/events";
 import type { AppDependencies } from "./config/createAppDependencies";
 import { UseCases } from "./config/createUseCases";
 
@@ -102,9 +102,13 @@ export const subscribeToEvents = (deps: AppDependencies) => {
     useCases.forEach((useCase) => {
       // the provided key for each use case is needed in order to follow the acknowledgments
       const subscriptionId = useCase.constructor.name; // careful this is fragile, because the subscription id is stored in DB when failing
-      deps.eventBus.subscribe(topic, subscriptionId, async (event) => {
-        await useCase.execute(event.payload as any);
-      });
+      deps.eventBus.subscribe(
+        topic,
+        subscriptionId,
+        async (event: DomainEvent) => {
+          await useCase.execute(event.payload as any);
+        },
+      );
     });
   });
 };

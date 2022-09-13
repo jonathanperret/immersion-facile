@@ -4,12 +4,12 @@
 
   "compilerOptions": {
     /* Emit */
-    "outDir": "../lib",
+    "outDir": "lib",
     "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
     "declarationMap": true,
 
     /* Modules */
-    "module": "es2022" /* Specify what module code is generated. */,
+    "module": "commonjs" /* Specify what module code is generated. */,
     "lib": [
       /* Specify a set of bundled library declaration files that describe the target runtime environment. */
       "esNext"
@@ -17,7 +17,7 @@
     "moduleResolution": "node",
 
     /* Project */
-    //"composite": true,
+    "composite": true,
 
     /* Language and Environment */
     "target": "es2021",

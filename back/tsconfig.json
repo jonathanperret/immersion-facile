@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     /* Emit */
-    "outDir": "../lib",
-    //    "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
-    //    "declarationMap": true,
+    "outDir": "dist",
+    "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
+    "declarationMap": true,
 
     /* Modules */
     "module": "es2022" /* Specify what module code is generated. */,
@@ -14,7 +14,7 @@
     "moduleResolution": "Node",
 
     /* Project */
-    //"composite": true,
+    "composite": true,
 
     /* Language and Environment */
     "target": "es2021",
@@ -49,8 +49,8 @@
     //    "noUnusedParameters": true /* https://www.typescriptlang.org/tsconfig#noUnusedParameters */,
     //    // "importsNotUsedAsValues": "error" /* https://www.typescriptlang.org/tsconfig#importsNotUsedAsValues */,
     "typeRoots": ["./src/types", "./node_modules/@types"]
-  }
-  //"references": [{ "path": "../shared" }],
+  },
+  "references": [{ "path": "../shared" }]
 
   //  "compilerOptions": {
   //    "target": "es6",
