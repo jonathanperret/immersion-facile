@@ -1,7 +1,10 @@
 import { Pool, PoolClient } from "pg";
-import { activeAgencyStatuses, AgencyDto } from "shared/src/agency/agency.dto";
-import { AgencyDtoBuilder } from "shared/src/agency/AgencyDtoBuilder";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
+import {
+  activeAgencyStatuses,
+  AgencyDto,
+  AgencyDtoBuilder,
+  GeoPositionDto,
+} from "shared";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
 import { expectTypeToMatchAndEqual } from "../../_testBuilders/test.helpers";
 import { PgAgencyRepository } from "../../adapters/secondary/pg/PgAgencyRepository";

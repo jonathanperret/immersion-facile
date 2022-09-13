@@ -1,9 +1,13 @@
-import { geoPositionSchema } from "shared/src/geoPosition/geoPosition.schema";
-import { romeCodeSchema } from "shared/src/rome";
-import { appellationDtoSchema } from "shared/src/romeAndAppellationDtos/romeAndAppellation.schema";
-import { siretSchema } from "shared/src/siret";
-import { phoneRegExp } from "shared/src/utils";
-import { zEmail, zString, zTrimmedString } from "shared/src/zodUtils";
+import {
+  appellationDtoSchema,
+  geoPositionSchema,
+  phoneRegExp,
+  romeCodeSchemaV0,
+  siretSchema,
+  zEmail,
+  zString,
+  zTrimmedString,
+} from "shared";
 import { z } from "zod";
 import { SearchImmersionResultPublicV0 } from "./SearchImmersionResultPublicV0.dto";
 
@@ -24,7 +28,7 @@ export const immersionOfferIdSchema: z.ZodSchema<string> = zTrimmedString;
 export const searchImmersionResultPublicV0Schema: z.Schema<SearchImmersionResultPublicV0> =
   z.object({
     id: immersionOfferIdSchema,
-    rome: romeCodeSchema,
+    rome: romeCodeSchemaV0,
     romeLabel: z.string(),
     naf: z.string(),
     nafLabel: z.string(),

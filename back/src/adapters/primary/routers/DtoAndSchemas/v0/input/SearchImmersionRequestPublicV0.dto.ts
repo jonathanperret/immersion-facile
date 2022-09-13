@@ -1,6 +1,8 @@
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
-import { RomeCode } from "shared/src/rome";
-import { SearchImmersionQueryParamsDto } from "shared/src/searchImmersion/SearchImmersionQueryParams.dto";
+import {
+  GeoPositionDto,
+  RomeCode,
+  SearchImmersionQueryParamsDto,
+} from "shared";
 
 export type SearchImmersionRequestPublicV0 = {
   rome?: RomeCode;

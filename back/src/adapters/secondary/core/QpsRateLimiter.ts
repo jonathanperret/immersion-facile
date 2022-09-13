@@ -1,10 +1,5 @@
-import {
-  addMilliseconds,
-  differenceInMilliseconds,
-  max,
-  secondsToMilliseconds,
-} from "date-fns";
-import { SleepFn } from "shared/src/utils";
+import { addMilliseconds, differenceInMilliseconds, max, secondsToMilliseconds, } from "date-fns";
+import { SleepFn } from "shared";
 import { Clock } from "../../../domain/core/ports/Clock";
 import { RateLimiter } from "../../../domain/core/ports/RateLimiter";
 

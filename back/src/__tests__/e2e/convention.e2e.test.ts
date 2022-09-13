@@ -1,16 +1,14 @@
-import { AdminToken } from "shared/src/admin/admin.dto";
-import { ConventionDto } from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
 import {
+  AdminToken,
+  ConventionDto,
+  ConventionDtoBuilder,
   conventionsRoute,
-  updateConventionStatusRoute,
-} from "shared/src/routes";
-import {
   createConventionMagicLinkPayload,
   currentJwtVersions,
   Role,
   stringToMd5,
-} from "shared/src/tokens/MagicLinkPayload";
+  updateConventionStatusRoute,
+} from "shared";
 import { SuperTest, Test } from "supertest";
 import { AppConfigBuilder } from "../../_testBuilders/AppConfigBuilder";
 import {

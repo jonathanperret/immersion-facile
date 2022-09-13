@@ -1,5 +1,4 @@
-import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
+import { AppellationDto, FormEstablishmentDto } from "shared";
 import { Clock } from "../domain/core/ports/Clock";
 import { UuidGenerator } from "../domain/core/ports/UuidGenerator";
 import { ContactEntityV2 } from "../domain/immersionOffer/entities/ContactEntity";

@@ -1,10 +1,10 @@
 import {
   Beneficiary,
   ConventionDto,
-} from "shared/src/convention/convention.dto";
-import { conventionSchema } from "shared/src/convention/convention.schema";
-import { frontRoutes } from "shared/src/routes";
-import { Role } from "shared/src/tokens/MagicLinkPayload";
+  conventionSchema,
+  frontRoutes,
+  Role,
+} from "shared";
 import { GenerateConventionMagicLink } from "../../../../adapters/primary/config/createGenerateConventionMagicLink";
 import { NotFoundError } from "../../../../adapters/primary/helpers/httpErrors";
 import {

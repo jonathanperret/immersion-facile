@@ -3,7 +3,7 @@ import { Pool } from "pg";
 import {
   ManagedAxios,
   onFullfilledDefaultResponseInterceptorMaker,
-} from "shared/src/serenity-http-client";
+} from "shared";
 
 import { EmailGateway } from "../../../domain/convention/ports/EmailGateway";
 import { Clock } from "../../../domain/core/ports/Clock";
@@ -33,10 +33,10 @@ import { InMemoryAccessTokenGateway } from "../../secondary/immersionOffer/InMem
 import { InMemoryLaBonneBoiteAPI } from "../../secondary/immersionOffer/InMemoryLaBonneBoiteAPI";
 import { InMemoryPassEmploiGateway } from "../../secondary/immersionOffer/InMemoryPassEmploiGateway";
 import { PoleEmploiAccessTokenGateway } from "../../secondary/immersionOffer/PoleEmploiAccessTokenGateway";
-import { NotImplementedDocumentGateway } from "../../secondary/NotImplementedDocumentGateway";
 import { InMemoryPoleEmploiGateway } from "../../secondary/InMemoryPoleEmploiGateway";
 import { InMemorySireneGateway } from "../../secondary/InMemorySireneGateway";
 import { MinioDocumentGateway } from "../../secondary/MinioDocumentGateway";
+import { NotImplementedDocumentGateway } from "../../secondary/NotImplementedDocumentGateway";
 import {
   HttpPeConnectGateway,
   PeConnectUrlTargets,

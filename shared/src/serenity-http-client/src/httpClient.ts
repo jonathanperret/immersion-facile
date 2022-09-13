@@ -12,8 +12,8 @@ export interface HttpClient {
 }
 
 export const getTargetFromPredicate = (
-  predicate: (params: any) => AbsoluteUrl,
-  targetsUrls: Record<string, (params: any) => AbsoluteUrl>,
+  predicate: (params: any) => Url,
+  targetsUrls: Record<string, (params: any) => Url>,
 ): string | never => {
   const target: string | undefined = Object.keys(targetsUrls).find(
     (targetsUrlKey) => targetsUrls[targetsUrlKey] === predicate,
@@ -31,7 +31,7 @@ export const isHttpError = (
   error instanceof HttpClientError || error instanceof HttpServerError;
 
 type Http = "http://" | "https://";
-export type AbsoluteUrl = `${Http}${string}`;
+export type Url = `${Http}${string}`;
 
 export const isHttpClientError = (status: number): boolean =>
   status >= 400 && status < 500;
@@ -41,7 +41,7 @@ export const isHttpServerError = (status: number): boolean =>
 
 export type TargetUrlsMapper<TargetUrls extends string> = Record<
   TargetUrls,
-  (params: any) => AbsoluteUrl
+  (params: any) => Url
 >;
 
 export type ErrorMapper<TargetUrls extends string> = Partial<
@@ -59,14 +59,14 @@ export interface HttpResponse {
 }
 
 export type HttpClientPostConfig = {
-  target: (params: any) => AbsoluteUrl;
+  target: (params: any) => Url;
   targetParams?: any;
   data?: string | undefined;
   adapterConfig?: AdapterConfig;
 };
 
 export type HttpClientGetConfig = {
-  target: (params: any) => AbsoluteUrl;
+  target: (params: any) => Url;
   targetParams?: any;
   adapterConfig?: AdapterConfig;
 };

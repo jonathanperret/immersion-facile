@@ -1,5 +1,4 @@
-import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { formEstablishmentSchema } from "shared/src/formEstablishment/FormEstablishment.schema";
+import { FormEstablishmentDto, formEstablishmentSchema } from "shared";
 import { EmailGateway } from "../../../convention/ports/EmailGateway";
 import { UseCase } from "../../../core/UseCase";
 

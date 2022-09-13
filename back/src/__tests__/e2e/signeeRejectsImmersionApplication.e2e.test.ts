@@ -1,13 +1,11 @@
 import {
+  ConventionDtoBuilder,
   ConventionDtoWithoutExternalId,
+  conventionsRoute,
   ConventionStatus,
   UpdateConventionStatusRequestDto,
-} from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
-import {
-  conventionsRoute,
   updateConventionStatusRoute,
-} from "shared/src/routes";
+} from "shared";
 import { buildTestApp, TestAppAndDeps } from "../../_testBuilders/buildTestApp";
 import {
   expectEmailOfType,

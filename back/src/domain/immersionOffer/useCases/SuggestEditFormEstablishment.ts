@@ -1,5 +1,8 @@
-import { SiretDto, siretSchema } from "shared/src/siret";
-import { createEstablishmentMagicLinkPayload } from "shared/src/tokens/MagicLinkPayload";
+import {
+  createEstablishmentMagicLinkPayload,
+  SiretDto,
+  siretSchema,
+} from "shared";
 import { notifyObjectDiscord } from "../../../utils/notifyDiscord";
 import { GenerateEditFormEstablishmentUrl } from "../../auth/jwt";
 import { EmailGateway } from "../../convention/ports/EmailGateway";

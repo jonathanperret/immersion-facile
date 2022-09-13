@@ -1,17 +1,15 @@
 import { Point } from "geojson";
 import {
+  AbsoluteUrl,
   AddressAndPosition,
   AddressDto,
   DepartmentCode,
-} from "shared/src/address/address.dto";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
-import {
-  AbsoluteUrl,
+  GeoPositionDto,
   HttpResponse,
   ManagedAxios,
+  queryParamsAsString,
   TargetUrlsMapper,
-} from "shared/src/serenity-http-client";
-import { queryParamsAsString } from "shared/src/utils/queryParams";
+} from "shared";
 import { AddressGateway } from "../../../domain/immersionOffer/ports/AddressGateway";
 
 export type OpenCageDataTargetUrls =

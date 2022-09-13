@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { romeAutocompleteInputSchema } from "shared/src/romeAndAppellationDtos/romeAndAppellation.schema";
 import {
   appellationRoute,
   getSiretIfNotSavedRoute,
+  romeAutocompleteInputSchema,
   romeRoute,
   siretRoute,
-} from "shared/src/routes";
+} from "shared";
 import type { AppDependencies } from "../config/createAppDependencies";
 import { validateAndParseZodSchema } from "../helpers/httpErrors";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";

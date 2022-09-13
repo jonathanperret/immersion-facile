@@ -1,7 +1,6 @@
 import { PoolClient } from "pg";
 import { groupBy, map, prop, values } from "ramda";
-import { pipeWithValue } from "shared/src/pipeWithValue";
-import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
+import { EstablishmentJwtPayload, pipeWithValue } from "shared";
 import { DomainEvent, DomainTopic } from "../../../domain/core/eventBus/events";
 import { OutboxQueries } from "../../../domain/core/ports/OutboxQueries";
 import { storedEventRowsToDomainEvent } from "./PgOutboxRepository";

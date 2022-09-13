@@ -1,14 +1,12 @@
 import {
   allConventionStatuses,
   ConventionDto,
-  ConventionStatus,
-  immersionMaximumCalendarDays,
-} from "shared/src/convention/convention.dto";
-import { conventionSchema } from "shared/src/convention/convention.schema";
-import {
   ConventionDtoBuilder,
+  conventionSchema,
+  ConventionStatus,
   DATE_START,
-} from "shared/src/convention/ConventionDtoBuilder";
+  immersionMaximumCalendarDays,
+} from "shared";
 import {
   addDays,
   splitCasesBetweenPassingAndFailing,

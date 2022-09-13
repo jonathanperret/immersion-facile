@@ -1,6 +1,4 @@
-import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
-import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
-import { SiretDto } from "shared/src/siret";
+import { AppellationDto, SearchImmersionResultDto, SiretDto } from "shared";
 import {
   DataSource,
   EstablishmentAggregate,

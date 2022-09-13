@@ -1,6 +1,8 @@
-import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { FormEstablishmentDtoBuilder } from "shared/src/formEstablishment/FormEstablishmentDtoBuilder";
-import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
+import {
+  EstablishmentJwtPayload,
+  FormEstablishmentDto,
+  FormEstablishmentDtoBuilder,
+} from "shared";
 import { expectPromiseToFailWithError } from "../../../_testBuilders/test.helpers";
 import { createInMemoryUow } from "../../../adapters/primary/config/uowConfig";
 import {

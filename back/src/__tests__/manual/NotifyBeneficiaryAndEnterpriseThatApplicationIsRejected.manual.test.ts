@@ -1,6 +1,5 @@
 import axios from "axios";
-import { AgencyDtoBuilder } from "shared/src/agency/AgencyDtoBuilder";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
+import { AgencyDtoBuilder, ConventionDtoBuilder } from "shared";
 import { AppConfig } from "../../adapters/primary/config/appConfig";
 import { createInMemoryUow } from "../../adapters/primary/config/uowConfig";
 import { SendinblueEmailGateway } from "../../adapters/secondary/emailGateway/SendinblueEmailGateway";

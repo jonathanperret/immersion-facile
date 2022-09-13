@@ -1,6 +1,9 @@
-import { AdminToken } from "shared/src/admin/admin.dto";
-import { AgencyDtoBuilder } from "shared/src/agency/AgencyDtoBuilder";
-import { agenciesRoute } from "shared/src/routes";
+import {
+  AddressDto,
+  AdminToken,
+  agenciesRoute,
+  AgencyDtoBuilder,
+} from "shared";
 import { SuperTest, Test } from "supertest";
 import {
   buildTestApp,
@@ -9,7 +12,6 @@ import {
 import { AppConfig } from "../../adapters/primary/config/appConfig";
 import { InMemoryUnitOfWork } from "../../adapters/primary/config/uowConfig";
 import { BasicEventCrawler } from "../../adapters/secondary/core/EventCrawlerImplementations";
-import { AddressDto } from "shared/src/address/address.dto";
 
 const defaultAddress: AddressDto = {
   streetNumberAndAddress: "",

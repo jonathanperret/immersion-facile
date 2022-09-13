@@ -1,12 +1,12 @@
-import { AgencyDto } from "shared/src/agency/agency.dto";
 import {
+  AgencyDto,
   Beneficiary,
   ConventionDto,
+  conventionSchema,
   ConventionStatus,
-} from "shared/src/convention/convention.dto";
-import { conventionSchema } from "shared/src/convention/convention.schema";
-import { frontRoutes } from "shared/src/routes";
-import { Role } from "shared/src/tokens/MagicLinkPayload";
+  frontRoutes,
+  Role,
+} from "shared";
 import { GenerateConventionMagicLink } from "../../../../adapters/primary/config/createGenerateConventionMagicLink";
 import { createLogger } from "../../../../utils/logger";
 import {

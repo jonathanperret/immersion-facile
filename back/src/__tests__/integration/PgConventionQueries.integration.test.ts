@@ -1,10 +1,10 @@
 import { Pool, PoolClient } from "pg";
-import { AgencyDtoBuilder } from "shared/src/agency/AgencyDtoBuilder";
 import {
+  AgencyDtoBuilder,
+  ConventionDtoBuilder,
   ConventionId,
   ConventionReadDto,
-} from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
+} from "shared";
 import { getTestPgPool } from "../../_testBuilders/getTestPgPool";
 import {
   expectArraysToEqualIgnoringOrder,

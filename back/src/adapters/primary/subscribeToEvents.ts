@@ -1,4 +1,4 @@
-import { keys } from "shared/src/utils";
+import { keys } from "shared";
 import { z } from "zod";
 import { NarrowEvent } from "../../domain/core/eventBus/EventBus";
 import { DomainEvent, DomainTopic } from "../../domain/core/eventBus/events";

@@ -1,10 +1,12 @@
 import { PoolClient } from "pg";
 import format from "pg-format";
 import { equals } from "ramda";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
-import { AppellationDto } from "shared/src/romeAndAppellationDtos/romeAndAppellation.dto";
-import { SearchImmersionResultDto } from "shared/src/searchImmersion/SearchImmersionResult.dto";
-import { SiretDto } from "shared/src/siret";
+import {
+  AppellationDto,
+  GeoPositionDto,
+  SearchImmersionResultDto,
+  SiretDto,
+} from "shared";
 import { ContactEntityV2 } from "../../../domain/immersionOffer/entities/ContactEntity";
 import {
   DataSource,

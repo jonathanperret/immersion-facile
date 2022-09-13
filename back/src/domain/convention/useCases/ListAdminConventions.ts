@@ -1,8 +1,8 @@
 import {
   ConventionReadDto,
   ListConventionsRequestDto as ListConventionsForAdminRequestDto,
-} from "shared/src/convention/convention.dto";
-import { listConventionsRequestSchema } from "shared/src/convention/convention.schema";
+  listConventionsRequestSchema,
+} from "shared";
 import { UnitOfWork, UnitOfWorkPerformer } from "../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../core/UseCase";
 

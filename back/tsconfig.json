@@ -6,7 +6,7 @@
     "declarationMap": true,
 
     /* Modules */
-    "module": "es2022" /* Specify what module code is generated. */,
+    "module": "esNext" /* Specify what module code is generated. */,
     "lib": [
       /* Specify a set of bundled library declaration files that describe the target runtime environment. */
       "esNext"

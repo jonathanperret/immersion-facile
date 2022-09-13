@@ -1,10 +1,10 @@
 import {
   allConventionStatuses,
   ConventionDto,
+  ConventionDtoBuilder,
   ConventionId,
-} from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
-import { makeStubGetFeatureFlags } from "shared/src/featureFlags";
+  makeStubGetFeatureFlags,
+} from "shared";
 import {
   expectPromiseToFailWithError,
   expectTypeToMatchAndEqual,

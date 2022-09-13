@@ -1,18 +1,14 @@
 import {
   ConventionDto,
-  Signatories,
-  UpdateConventionStatusRequestDto,
-} from "shared/src/convention/convention.dto";
-import {
   ConventionDtoBuilder,
-  VALID_EMAILS,
-} from "shared/src/convention/ConventionDtoBuilder";
-import { TemplatedEmail } from "shared/src/email/email";
-import {
   conventionsRoute,
+  Signatories,
   signConventionRoute,
+  TemplatedEmail,
+  UpdateConventionStatusRequestDto,
   updateConventionStatusRoute,
-} from "shared/src/routes";
+  VALID_EMAILS,
+} from "shared";
 import supertest from "supertest";
 import { buildTestApp, TestAppAndDeps } from "../../_testBuilders/buildTestApp";
 import {

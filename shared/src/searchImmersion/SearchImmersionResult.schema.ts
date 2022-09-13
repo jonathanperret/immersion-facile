@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { addressSchema } from "../address/address.schema";
 import { geoPositionSchema } from "../geoPosition/geoPosition.schema";
-import { romeCodeSchema } from "../rome";
+import { romeCodeSchemaV0 } from "../rome";
 import { siretSchema } from "../siret";
 import { zStringPossiblyEmpty } from "../zodUtils";
 import {
@@ -20,7 +20,7 @@ export const contactDetailsSchema: z.Schema<SearchContactDto> = z.object({
 
 export const searchImmersionResultSchema: z.Schema<SearchImmersionResultDto> =
   z.object({
-    rome: romeCodeSchema,
+    rome: romeCodeSchemaV0,
     romeLabel: z.string(),
     appellationLabels: z.array(z.string()),
     naf: z.string(),

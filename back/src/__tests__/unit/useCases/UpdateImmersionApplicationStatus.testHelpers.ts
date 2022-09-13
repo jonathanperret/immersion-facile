@@ -1,15 +1,13 @@
 import {
   allConventionStatuses,
+  allRoles,
   ConventionDto,
+  ConventionDtoBuilder,
   ConventionId,
   ConventionStatus,
-} from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
-import {
-  allRoles,
   createConventionMagicLinkPayload,
   Role,
-} from "shared/src/tokens/MagicLinkPayload";
+} from "shared";
 import {
   expectPromiseToFailWithError,
   splitCasesBetweenPassingAndFailing,

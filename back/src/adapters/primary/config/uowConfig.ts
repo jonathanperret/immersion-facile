@@ -1,5 +1,5 @@
 import { PoolClient } from "pg";
-import { makeStubGetFeatureFlags } from "shared/src/featureFlags";
+import { makeStubGetFeatureFlags } from "shared";
 import {
   UnitOfWork,
   UnitOfWorkPerformer,

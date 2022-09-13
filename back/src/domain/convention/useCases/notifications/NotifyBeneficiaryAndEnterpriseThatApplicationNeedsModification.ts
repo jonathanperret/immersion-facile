@@ -1,14 +1,7 @@
-import { Beneficiary, Mentor } from "shared/src/convention/convention.dto";
-import { conventionSchema } from "shared/src/convention/convention.schema";
-import { frontRoutes } from "shared/src/routes";
-import { allRoles } from "shared/src/tokens/MagicLinkPayload";
-import { zTrimmedString } from "shared/src/zodUtils";
+import { allRoles, Beneficiary, conventionSchema, frontRoutes, Mentor, zTrimmedString } from "shared";
 import { z } from "zod";
 import { GenerateConventionMagicLink } from "../../../../adapters/primary/config/createGenerateConventionMagicLink";
-import {
-  UnitOfWork,
-  UnitOfWorkPerformer,
-} from "../../../core/ports/UnitOfWork";
+import { UnitOfWork, UnitOfWorkPerformer, } from "../../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../../core/UseCase";
 import { EmailGateway } from "../../ports/EmailGateway";
 

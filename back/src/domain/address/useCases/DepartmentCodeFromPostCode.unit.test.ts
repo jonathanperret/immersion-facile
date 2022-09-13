@@ -1,6 +1,6 @@
-import { DepartmentCodeFromPostcodeQuery } from "shared/src/address/address.query";
-import { InMemoryAddressGateway } from "../../../adapters/secondary/addressGateway/InMemoryAddressGateway";
+import { DepartmentCodeFromPostcodeQuery } from "shared";
 import { expectTypeToMatchAndEqual } from "../../../_testBuilders/test.helpers";
+import { InMemoryAddressGateway } from "../../../adapters/secondary/addressGateway/InMemoryAddressGateway";
 import { DepartmentCodeFromPostcode } from "./DepartmentCodeFromPostCode";
 
 describe("Department Code From Postcode", () => {

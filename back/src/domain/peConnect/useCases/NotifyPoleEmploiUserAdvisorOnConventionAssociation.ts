@@ -1,5 +1,4 @@
-import { ConventionDto } from "shared/src/convention/convention.dto";
-import { frontRoutes } from "shared/src/routes";
+import { ConventionDto, frontRoutes } from "shared";
 import { GenerateConventionMagicLink } from "../../../adapters/primary/config/createGenerateConventionMagicLink";
 import { NotFoundError } from "../../../adapters/primary/helpers/httpErrors";
 import { EmailGateway } from "../../convention/ports/EmailGateway";

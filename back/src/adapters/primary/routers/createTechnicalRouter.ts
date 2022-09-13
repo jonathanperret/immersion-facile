@@ -1,11 +1,7 @@
 import { Router } from "express";
-import * as path from "path";
 import multer from "multer";
-import {
-  getFeatureFlags,
-  renewMagicLinkRoute,
-  uploadFileRoute,
-} from "shared/src/routes";
+import * as path from "path";
+import { getFeatureFlags, renewMagicLinkRoute, uploadFileRoute } from "shared";
 import type { AppDependencies } from "../config/createAppDependencies";
 import { BadRequestError, FeatureDisabledError } from "../helpers/httpErrors";
 import { sendHttpResponse } from "../helpers/sendHttpResponse";

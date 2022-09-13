@@ -1,5 +1,4 @@
-import { CreateAgencyDto } from "shared/src/agency/agency.dto";
-import { agenciesRoute } from "shared/src/routes";
+import { agenciesRoute, CreateAgencyDto } from "shared";
 import { buildTestApp } from "../../_testBuilders/buildTestApp";
 import { expectTypeToMatchAndEqual } from "../../_testBuilders/test.helpers";
 

@@ -1,9 +1,9 @@
 // <<< --- Tracing SDK should be the first thing to run - KEEP IT FIRST in import list !
-import { tracingSdk, tracerExporterUrl } from "./tracing";
 // Tracing SDK should be the first thing to run --->>>
 import { createLogger } from "../../../utils/logger";
 import { AppConfig } from "../config/appConfig";
 import { createApp } from "../server";
+import { tracerExporterUrl, tracingSdk } from "./tracing";
 
 const logger = createLogger(__filename);
 

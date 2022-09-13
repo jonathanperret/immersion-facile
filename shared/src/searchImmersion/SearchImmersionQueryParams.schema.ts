@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { siretSchema } from "../siret";
-import { romeCodeSchema } from "../rome";
+import { romeCodeSchemaV0 } from "../rome";
 import { zPreprocessedBoolean, zPreprocessedNumber } from "../zodUtils";
 import { SearchImmersionQueryParamsDto } from "./SearchImmersionQueryParams.dto";
 
 export const searchImmersionQueryParamsSchema: z.Schema<SearchImmersionQueryParamsDto> =
   z.object({
-    rome: romeCodeSchema.optional(),
+    rome: romeCodeSchemaV0.optional(),
     siret: siretSchema.optional(),
     latitude: zPreprocessedNumber(),
     longitude: zPreprocessedNumber(),

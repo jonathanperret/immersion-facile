@@ -1,13 +1,13 @@
-import { AgencyDto } from "shared/src/agency/agency.dto";
-import { ContactEstablishmentRequestDto } from "shared/src/contactEstablishment";
 import {
+  AgencyDto,
+  ContactEstablishmentRequestDto,
   ConventionDto,
+  EstablishmentJwtPayload,
+  Flavor,
+  FormEstablishmentDto,
+  ImmersionAssessmentDto,
   WithConventionId,
-} from "shared/src/convention/convention.dto";
-import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { ImmersionAssessmentDto } from "shared/src/immersionAssessment/ImmersionAssessmentDto";
-import { EstablishmentJwtPayload } from "shared/src/tokens/MagicLinkPayload";
-import { Flavor } from "shared/src/typeFlavors";
+} from "shared";
 import {
   ConventionRequiresModificationPayload,
   RenewMagicLinkPayload,

@@ -1,8 +1,10 @@
-import { AddressDto } from "shared/src/address/address.dto";
-import { FormEstablishmentSource } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
-import { NafDto } from "shared/src/naf";
-import { SiretDto } from "shared/src/siret";
+import {
+  AddressDto,
+  FormEstablishmentSource,
+  GeoPositionDto,
+  NafDto,
+  SiretDto,
+} from "shared";
 import { ContactEntityV2 } from "./ContactEntity";
 import { ImmersionOfferEntityV2 } from "./ImmersionOfferEntity";
 

@@ -1,7 +1,7 @@
 import { HttpClientError } from "../errors";
 
 import {
-  AbsoluteUrl,
+  Url,
   ErrorMapper,
   HttpClient,
   HttpResponse,
@@ -10,7 +10,7 @@ import {
 import { ManagedAxios } from "./axios.adapter";
 
 describe("httpClient with axios concrete adapter", () => {
-  const targetToValidSearchUrl = (rawQueryString: string): AbsoluteUrl =>
+  const targetToValidSearchUrl = (rawQueryString: string): Url =>
     `https://api-adresse.data.gouv.fr/search/?q=${encodeURI(
       rawQueryString,
     )}&limit=1`;
@@ -76,7 +76,7 @@ describe("httpClient with axios concrete adapter", () => {
   it("should call API Adresse with invalid address and throw HttpClientError", async () => {
     type TargetUrls = "ADDRESS_API_SEARCH_ENDPOINT";
 
-    const targetToInvalidSearchUrl = (rawQueryString: string): AbsoluteUrl =>
+    const targetToInvalidSearchUrl = (rawQueryString: string): Url =>
       `https://api-adresse.data.gouv.fr/search/?d=${rawQueryString}&limit=1`;
 
     const targetUrls: TargetUrlsMapper<TargetUrls> = {
@@ -102,7 +102,7 @@ describe("httpClient with axios concrete adapter", () => {
 
     type TargetUrls = "ADDRESS_API_SEARCH_ENDPOINT";
 
-    const targetToInvalidSearchUrl = (rawQueryString: string): AbsoluteUrl =>
+    const targetToInvalidSearchUrl = (rawQueryString: string): Url =>
       `https://api-adresse.data.gouv.fr/search/?d=${rawQueryString}&limit=1`;
 
     const targetUrls: TargetUrlsMapper<TargetUrls> = {
@@ -137,7 +137,7 @@ describe("httpClient with axios concrete adapter", () => {
   it("Error log should contain enough info to help debug", async () => {
     type TargetUrls = "ADDRESS_API_SEARCH_ENDPOINT";
 
-    const targetToInvalidSearchUrl = (rawQueryString: string): AbsoluteUrl =>
+    const targetToInvalidSearchUrl = (rawQueryString: string): Url =>
       `https://api-adresse.data.gouv.fr/search/?d=${rawQueryString}&limit=1`;
 
     const targetUrls: TargetUrlsMapper<TargetUrls> = {

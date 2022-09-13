@@ -1,5 +1,4 @@
-import { AdminToken } from "shared/src/admin/admin.dto";
-import { conventionsRoute } from "shared/src/routes";
+import { AdminToken, conventionsRoute } from "shared";
 import { SuperTest, Test } from "supertest";
 import { AppConfigBuilder } from "../../_testBuilders/AppConfigBuilder";
 import { buildTestApp } from "../../_testBuilders/buildTestApp";

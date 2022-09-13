@@ -1,9 +1,9 @@
-import { pipeWithValue } from "shared/src/pipeWithValue";
 import {
   GetSiretRequestDto,
   getSiretRequestSchema,
   GetSiretResponseDto,
-} from "shared/src/siret";
+  pipeWithValue,
+} from "shared";
 import { UseCase } from "../../core/UseCase";
 import { SireneGateway } from "../ports/SireneGateway";
 import {

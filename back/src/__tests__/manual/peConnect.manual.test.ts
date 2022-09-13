@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { AxiosResponse } from "axios";
 import secondsToMilliseconds from "date-fns/secondsToMilliseconds";
-import { FeatureFlags } from "shared/src/featureFlags";
 import {
+  FeatureFlags,
   HttpResponse,
   ManagedAxios,
   onFullfilledDefaultResponseInterceptorMaker,
-} from "shared/src/serenity-http-client";
-import { queryParamsAsString } from "shared/src/utils/queryParams";
+  queryParamsAsString,
+} from "shared";
 import supertest, { SuperTest, Test } from "supertest";
 // Those are mocked test because real calls to pole emploi api can only be made thought production domain registered with pole emploi
 import { AppConfigBuilder } from "../../_testBuilders/AppConfigBuilder";

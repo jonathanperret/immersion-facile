@@ -3,15 +3,13 @@ import {
   AddressAndPosition,
   AddressDto,
   DepartmentCode,
+  featureToAddressDto,
   featureToAddressWithPosition,
-} from "shared/src/address/address.dto";
-import { featureToAddressDto } from "shared/src/apiAdresse/apiAddress.dto";
-import { toFeatureCollection } from "shared/src/apiAdresse/apiAddress.schema";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
-import {
+  GeoPositionDto,
   ManagedAxios,
   TargetUrlsMapper,
-} from "shared/src/serenity-http-client";
+  toFeatureCollection,
+} from "shared";
 import { AddressGateway } from "../../../domain/immersionOffer/ports/AddressGateway";
 import { createLogger } from "../../../utils/logger";
 

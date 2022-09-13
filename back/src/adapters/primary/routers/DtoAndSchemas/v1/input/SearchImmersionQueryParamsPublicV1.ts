@@ -1,5 +1,4 @@
-import { RomeCode } from "shared/src/rome";
-import { SearchImmersionQueryParamsDto } from "shared/src/searchImmersion/SearchImmersionQueryParams.dto";
+import { RomeCode, SearchImmersionQueryParamsDto } from "shared";
 
 export type SearchImmersionRequestPublicV1 = {
   rome?: RomeCode;

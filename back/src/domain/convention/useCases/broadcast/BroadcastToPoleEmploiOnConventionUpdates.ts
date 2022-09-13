@@ -1,9 +1,9 @@
 import {
+  calculateTotalImmersionHoursBetweenDate,
   ConventionDto,
   ConventionStatus,
   ImmersionObjective,
-} from "shared/src/convention/convention.dto";
-import { calculateTotalImmersionHoursBetweenDate } from "shared/src/schedule/ScheduleUtils";
+} from "shared";
 import { z } from "zod";
 import {
   UnitOfWork,

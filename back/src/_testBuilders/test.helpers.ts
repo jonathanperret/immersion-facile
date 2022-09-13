@@ -1,8 +1,6 @@
 import { addDays as dateFnsAddDays, format } from "date-fns";
 import { partition } from "ramda";
-import { EmailType, TemplatedEmail } from "shared/src/email/email";
-import { ConventionId } from "shared/src/convention/convention.dto";
-import { Role } from "shared/src/tokens/MagicLinkPayload";
+import { ConventionId, EmailType, Role, TemplatedEmail } from "shared";
 import { GenerateConventionMagicLink } from "../adapters/primary/config/createGenerateConventionMagicLink";
 import { CustomClock } from "../adapters/secondary/core/ClockImplementations";
 import { TestUuidGenerator } from "../adapters/secondary/core/UuidGeneratorImplementations";

@@ -1,5 +1,5 @@
 import { PoolClient } from "pg";
-import { FeatureFlags } from "shared/src/featureFlags";
+import { FeatureFlags } from "shared";
 import { GetFeatureFlags } from "../../../domain/core/ports/GetFeatureFlags";
 
 const rawPgToFeatureFlags = (raw: any[]): FeatureFlags =>

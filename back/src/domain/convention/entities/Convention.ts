@@ -2,9 +2,9 @@ import {
   ConventionDto,
   ConventionId,
   ConventionStatus,
-} from "shared/src/convention/convention.dto";
-import { statusTransitionConfigs } from "shared/src/convention/conventionStatusTransitions";
-import { Role } from "shared/src/tokens/MagicLinkPayload";
+  Role,
+  statusTransitionConfigs,
+} from "shared";
 import {
   BadRequestError,
   ForbiddenError,

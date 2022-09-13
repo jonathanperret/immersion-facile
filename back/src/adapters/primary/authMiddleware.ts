@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import * as jsonwebtoken from "jsonwebtoken";
 import promClient from "prom-client";
 import {
   ConventionMagicLinkPayload,
@@ -7,7 +8,7 @@ import {
   EstablishmentJwtPayload,
   PayloadKey,
   PayloadOption,
-} from "shared/src/tokens/MagicLinkPayload";
+} from "shared";
 import { makeVerifyJwtES256 } from "../../domain/auth/jwt";
 import { Clock } from "../../domain/core/ports/Clock";
 import { GetApiConsumerById } from "../../domain/core/ports/GetApiConsumerById";
@@ -193,7 +194,7 @@ export const makeMagicLinkAuthMiddleware = (
       if (!payload.version || payload.version < currentJwtVersion) {
         return sendNeedsRenewedLinkError(
           res,
-          new TokenExpiredError(
+          new jsonwebtoken.TokenExpiredError(
             "Token corresponds to an old version, please renew",
             new Date(currentJwtVersions[payloadKey]),
           ),
@@ -222,7 +223,7 @@ export const makeMagicLinkAuthMiddleware = (
       next();
     } catch (err: any) {
       const unsafePayload = jwt.decode(maybeJwt) as ConventionMagicLinkPayload;
-      if (err instanceof TokenExpiredError) {
+      if (err instanceof jsonwebtoken.TokenExpiredError) {
         logger.warn(
           { token: maybeJwt, payload: unsafePayload },
           "token expired",

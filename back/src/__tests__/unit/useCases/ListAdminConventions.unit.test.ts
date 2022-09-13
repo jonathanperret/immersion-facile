@@ -1,10 +1,10 @@
-import { AgencyId } from "shared/src/agency/agency.dto";
 import {
+  AgencyId,
   allConventionStatuses,
   ConventionDto,
+  ConventionDtoBuilder,
   ConventionReadDto,
-} from "shared/src/convention/convention.dto";
-import { ConventionDtoBuilder } from "shared/src/convention/ConventionDtoBuilder";
+} from "shared";
 import { createInMemoryUow } from "../../../adapters/primary/config/uowConfig";
 import { InMemoryConventionRepository } from "../../../adapters/secondary/InMemoryConventionRepository";
 import { InMemoryUowPerformer } from "../../../adapters/secondary/InMemoryUowPerformer";

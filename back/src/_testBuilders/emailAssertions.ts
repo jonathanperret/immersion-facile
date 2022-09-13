@@ -1,14 +1,14 @@
-import { TemplatedEmail } from "shared/src/email/email";
-import { AgencyDto } from "shared/src/agency/agency.dto";
 import {
+  addressDtoToString,
+  AgencyDto,
   ContactEstablishmentByMailDto,
   ContactEstablishmentByPhoneDto,
   ContactEstablishmentInPersonDto,
-} from "shared/src/contactEstablishment";
-import { ConventionDto } from "shared/src/convention/convention.dto";
-import { FormEstablishmentDto } from "shared/src/formEstablishment/FormEstablishment.dto";
-import { frontRoutes } from "shared/src/routes";
-import { addressDtoToString } from "shared/src/utils/address";
+  ConventionDto,
+  FormEstablishmentDto,
+  frontRoutes,
+  TemplatedEmail,
+} from "shared";
 import { getValidatedApplicationFinalConfirmationParams } from "../domain/convention/useCases/notifications/NotifyAllActorsOfFinalApplicationValidation";
 import { ContactEntityV2 } from "../domain/immersionOffer/entities/ContactEntity";
 import { EstablishmentEntityV2 } from "../domain/immersionOffer/entities/EstablishmentEntity";

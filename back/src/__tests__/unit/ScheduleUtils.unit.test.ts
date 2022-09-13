@@ -1,14 +1,15 @@
-import { DayPeriodsDto, weekdays } from "shared/src/schedule/Schedule.dto";
-import { isoStringSchema } from "shared/src/schedule/Schedule.schema";
-import { ScheduleDtoBuilder } from "shared/src/schedule/ScheduleDtoBuilder";
 import {
   calculateTotalImmersionHoursBetweenDate,
   convertToFrenchNamedDays,
+  DayPeriodsDto,
   dayPeriodsFromComplexSchedule,
   isArrayOfWeekdays,
+  isoStringSchema,
   makeDailySchedule,
   prettyPrintSchedule,
-} from "shared/src/schedule/ScheduleUtils";
+  ScheduleDtoBuilder,
+  weekdays,
+} from "shared";
 
 describe("ScheduleUtils", () => {
   describe("complexScheduleFromRegularSchedule", () => {

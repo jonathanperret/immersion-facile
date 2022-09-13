@@ -1,8 +1,8 @@
 import {
+  addressDtoToString,
   ContactEstablishmentRequestDto,
   contactEstablishmentRequestSchema,
-} from "shared/src/contactEstablishment";
-import { addressDtoToString } from "shared/src/utils/address";
+} from "shared";
 import { EmailGateway } from "../../../convention/ports/EmailGateway";
 import {
   UnitOfWork,

@@ -1,11 +1,7 @@
 import type { AxiosInstance } from "axios";
 import promClient from "prom-client";
 import { keys } from "ramda";
-import {
-  EmailSentDto,
-  EmailType,
-  TemplatedEmail,
-} from "shared/src/email/email";
+import { EmailSentDto, EmailType, TemplatedEmail } from "shared";
 import { EmailGateway } from "../../../domain/convention/ports/EmailGateway";
 import { createLogger } from "../../../utils/logger";
 import { notifyObjectDiscord } from "../../../utils/notifyDiscord";

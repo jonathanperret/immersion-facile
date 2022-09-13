@@ -1,14 +1,5 @@
-import {
-  ConventionStatus,
-  UpdateConventionRequestDto,
-  WithConventionId,
-} from "shared/src/convention/convention.dto";
-import { updateConventionRequestSchema } from "shared/src/convention/convention.schema";
-import {
-  BadRequestError,
-  ForbiddenError,
-  NotFoundError,
-} from "../../../adapters/primary/helpers/httpErrors";
+import { ConventionStatus, UpdateConventionRequestDto, updateConventionRequestSchema, WithConventionId, } from "shared";
+import { BadRequestError, ForbiddenError, NotFoundError, } from "../../../adapters/primary/helpers/httpErrors";
 import { CreateNewEvent } from "../../core/eventBus/EventBus";
 import { UnitOfWork, UnitOfWorkPerformer } from "../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../core/UseCase";

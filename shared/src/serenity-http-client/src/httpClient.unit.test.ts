@@ -1,5 +1,5 @@
 import {
-  AbsoluteUrl,
+  Url,
   getTargetFromPredicate,
   isHttpClientError,
   isHttpServerError,
@@ -48,13 +48,12 @@ describe("find target from callback", () => {
   it("getTargetFromPredicate should return", () => {
     type TargetUrls = "ADDRESS_API_SEARCH" | "ADDRESS_API_GEOLOCATE";
 
-    const targetToValidSearchUrl = (rawQueryString: string): AbsoluteUrl =>
+    const targetToValidSearchUrl = (rawQueryString: string): Url =>
       `https://api-adresse.data.gouv.fr/search/?q=${encodeURI(
         rawQueryString,
       )}&limit=1`;
 
-    const targetToGeolocateUrl = (): AbsoluteUrl =>
-      `https://geo.api.gouv.fr/communes`;
+    const targetToGeolocateUrl = (): Url => `https://geo.api.gouv.fr/communes`;
 
     const targetUrls: TargetUrlsMapper<TargetUrls> = {
       ADDRESS_API_SEARCH: targetToValidSearchUrl,

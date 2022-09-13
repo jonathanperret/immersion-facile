@@ -1,9 +1,16 @@
-import { nafSchema } from "shared/src/naf";
-import { appellationSchema, romeCodeSchema } from "shared/src/rome";
-import { siretSchema } from "shared/src/siret";
-import { NotEmptyArray, phoneRegExp } from "shared/src/utils";
-import { addressWithPostalCodeSchema } from "shared/src/utils/postalCode";
-import { zBoolean, zEmail, zString, zTrimmedString } from "shared/src/zodUtils";
+import {
+  addressWithPostalCodeSchema,
+  appellationSchemaV0,
+  nafSchema,
+  NotEmptyArray,
+  phoneRegExp,
+  romeCodeSchemaV0,
+  siretSchema,
+  zBoolean,
+  zEmail,
+  zString,
+  zTrimmedString,
+} from "shared";
 import { z } from "zod";
 import {
   BusinessContactDtoPublicV0,
@@ -34,8 +41,8 @@ export type ProfessionDtoPublicV0 = {
 
 export const professionSchemaPublicV0: z.Schema<ProfessionDtoPublicV0> =
   z.object({
-    romeCodeMetier: romeCodeSchema,
-    romeCodeAppellation: appellationSchema.optional(),
+    romeCodeMetier: romeCodeSchemaV0,
+    romeCodeAppellation: appellationSchemaV0.optional(),
     description: zTrimmedString,
   });
 

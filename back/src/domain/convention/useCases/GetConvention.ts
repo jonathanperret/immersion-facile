@@ -1,8 +1,8 @@
 import {
   ConventionReadDto,
   WithConventionId,
-} from "shared/src/convention/convention.dto";
-import { withConventionIdSchema } from "shared/src/convention/convention.schema";
+  withConventionIdSchema,
+} from "shared";
 import { NotFoundError } from "../../../adapters/primary/helpers/httpErrors";
 import { UnitOfWork, UnitOfWorkPerformer } from "../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../core/UseCase";

@@ -1,12 +1,12 @@
 import * as dotenv from "dotenv";
 import { trim } from "ramda";
 import {
+  AbsoluteUrl,
   makeGetBooleanVariable,
   makeThrowIfNotAbsoluteUrl,
   makeThrowIfNotDefined,
   ProcessEnv,
   throwIfNotInArray,
-  AbsoluteUrl,
 } from "shared";
 import { DomainTopic } from "../../../domain/core/eventBus/events";
 import type { MinioParams } from "../../secondary/MinioDocumentGateway";

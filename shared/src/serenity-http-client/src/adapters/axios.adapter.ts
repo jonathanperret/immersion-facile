@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 
 import {
-  AbsoluteUrl,
+  Url,
   AdapterConfig,
   ErrorMapper,
   getTargetFromPredicate,
@@ -38,7 +38,7 @@ export type ContextType<TargetUrls extends string> = {
 export class ManagedAxios<TargetUrls extends string> implements HttpClient {
   constructor(
     //prettier-ignore
-    public readonly targetsUrls: Record<TargetUrls, (params?: any) => AbsoluteUrl>,
+    public readonly targetsUrls: Record<TargetUrls, (params?: any) => Url>,
     //prettier-ignore
     private readonly targetsErrorMapper: ErrorMapper<TargetUrls> = {},
     //prettier-ignore

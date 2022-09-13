@@ -1,5 +1,4 @@
-import { UpdateAgencyRequestDto } from "shared/src/agency/agency.dto";
-import { updateAgencyRequestSchema } from "shared/src/agency/agency.schema";
+import { UpdateAgencyRequestDto, updateAgencyRequestSchema } from "shared";
 import { CreateNewEvent } from "../../core/eventBus/EventBus";
 import { UnitOfWork, UnitOfWorkPerformer } from "../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../core/UseCase";

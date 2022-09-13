@@ -1,3 +1,3 @@
-import { FeatureFlags } from "shared/src/featureFlags";
+import { FeatureFlags } from "shared";
 
 export type GetFeatureFlags = () => Promise<FeatureFlags>;

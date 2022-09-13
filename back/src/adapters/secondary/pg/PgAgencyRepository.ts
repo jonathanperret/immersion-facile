@@ -1,16 +1,16 @@
 import { PoolClient } from "pg";
 import format from "pg-format";
-import { DepartmentCode } from "shared/src/address/address.dto";
 import {
   AgencyDto,
   AgencyId,
   AgencyKindFilter,
   AgencyPositionFilter,
   AgencyStatus,
+  DepartmentCode,
+  GeoPositionDto,
   GetAgenciesFilter,
   PartialAgencyDto,
-} from "shared/src/agency/agency.dto";
-import { GeoPositionDto } from "shared/src/geoPosition/geoPosition.dto";
+} from "shared";
 import { AgencyRepository } from "../../../domain/convention/ports/AgencyRepository";
 import { createLogger } from "../../../utils/logger";
 import { optional } from "./pgUtils";

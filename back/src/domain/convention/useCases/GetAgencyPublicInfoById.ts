@@ -1,9 +1,9 @@
-import { toAgencyPublicDisplayDto } from "shared/src/agency/agency";
 import {
   AgencyPublicDisplayDto,
+  toAgencyPublicDisplayDto,
   WithAgencyId,
-} from "shared/src/agency/agency.dto";
-import { withAgencyIdSchema } from "shared/src/agency/agency.schema";
+  withAgencyIdSchema,
+} from "shared";
 import { NotFoundError } from "../../../adapters/primary/helpers/httpErrors";
 import { UnitOfWork, UnitOfWorkPerformer } from "../../core/ports/UnitOfWork";
 import { TransactionalUseCase } from "../../core/UseCase";

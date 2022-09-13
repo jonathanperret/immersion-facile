@@ -1,8 +1,12 @@
-import * as opentelemetry from "@opentelemetry/sdk-node";
+import {
+  diag,
+  DiagConsoleLogger,
+  DiagLogLevel,
+  trace as opentelemetryTrace,
+} from "@opentelemetry/api";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
 import { ZipkinExporter } from "@opentelemetry/exporter-zipkin";
-import { trace as opentelemetryTrace } from "@opentelemetry/api";
+import * as opentelemetry from "@opentelemetry/sdk-node";
 
 type AttributeValue = string | number | boolean;
 
