@@ -1,13 +1,13 @@
 import * as dotenv from "dotenv";
 import { trim } from "ramda";
-import { AbsoluteUrl } from "shared/src/AbsoluteUrl";
 import {
   makeGetBooleanVariable,
   makeThrowIfNotAbsoluteUrl,
   makeThrowIfNotDefined,
   ProcessEnv,
   throwIfNotInArray,
-} from "shared/src/envHelpers";
+  AbsoluteUrl,
+} from "shared";
 import { DomainTopic } from "../../../domain/core/eventBus/events";
 import type { MinioParams } from "../../secondary/MinioDocumentGateway";
 import { S3Params } from "../../secondary/S3DocumentGateway";

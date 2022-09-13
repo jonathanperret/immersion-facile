@@ -1,6 +1,9 @@
 {
   "name": "shared",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest --testRegex=.unit.test.ts",
     "includecheck": "./check_includes.sh",
     "typecheck": "tsc --noEmit",
