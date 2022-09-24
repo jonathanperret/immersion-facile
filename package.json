@@ -18,6 +18,7 @@
     "shared": "pnpm --dir shared",
     "react-design-system": "pnpm --dir libs/react-design-system",
     "cypress": "pnpm --dir cypress cypress:open",
+    "cypress:install": "pnpm --dir cypress cypress:install",
     "lint:back": "pnpm back lint",
     "lint:front": "pnpm front lint",
     "lint:shared": "pnpm shared lint",

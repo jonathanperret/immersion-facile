@@ -25,7 +25,7 @@ export const Input = ({
   disabled,
 }: InputProperties): JSX.Element => (
   <input
-    id={name}
+    id={name.replaceAll(".", "_")}
     value={value}
     type={type}
     name={name}
