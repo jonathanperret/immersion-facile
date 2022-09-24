@@ -5,4 +5,3 @@ node_modules/
 .git/
 vite.config.ts
 cypress
-*.spec.cy.ts
