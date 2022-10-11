@@ -10,6 +10,7 @@ import {
   AgencyPublicDisplayDto,
   CreateAgencyDto,
   DepartmentCode,
+  ListAgenciesRequestDto,
   propEq,
   propNotEq,
   toAgencyPublicDisplayDto,
@@ -75,7 +76,7 @@ export class InMemoryAgencyGateway implements AgencyGateway {
     };
   }
 
-  async listAgencies(
+  async listAgenciesByDepartmentCode(
     _departmentCode: DepartmentCode,
   ): Promise<AgencyIdAndName[]> {
     return values(this._agencies);
@@ -113,8 +114,8 @@ export class InMemoryAgencyGateway implements AgencyGateway {
     return of("agency-id-with-immersion-facile-kind");
   }
 
-  listAgencies$(
-    _departmentCode: DepartmentCode,
+  listAgenciesByFilter$(
+    _filter: ListAgenciesRequestDto,
   ): Observable<AgencyIdAndName[]> {
     return of([
       {
@@ -128,7 +129,29 @@ export class InMemoryAgencyGateway implements AgencyGateway {
     ]);
   }
 
+  listAgenciesByName$(name: DepartmentCode): Observable<AgencyIdAndName[]> {
+    return of(
+      [
+        {
+          id: "2",
+          name: "Agence 2",
+        },
+        {
+          id: "3",
+          name: "Agence 3",
+        },
+      ].filter((agency) => agency.name.includes(name)),
+    );
+  }
+
   getImmersionFacileAgencyId$(): Observable<AgencyId> {
     return of("agency-id-with-immersion-facile-kind");
+  }
+
+  getAgencyAdminById$(
+    _agencyId: AgencyId,
+    _adminToken: AdminToken,
+  ): Observable<AgencyDto> {
+    return undefined as unknown as Observable<AgencyDto>;
   }
 }

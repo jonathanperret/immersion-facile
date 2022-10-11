@@ -47,6 +47,11 @@ const makeAgencyKindFiterSQL = (
     : "kind != 'pole-emploi'";
 };
 
+const makeNameFilterSQL = (name?: string): string | undefined => {
+  if (!name) return;
+  return format("name ILIKE '%' || $1 || '%'", name);
+};
+
 const makeDepartmentCodeFilterSQL = (
   departmentCode?: DepartmentCode,
 ): string | undefined => {
@@ -65,7 +70,7 @@ const makePositionFiterSQL = (
   )}, position) <= ${positionFilter.distance_km * 1000}`;
 };
 
-const makeStatusFiterSQL = (
+const makeStatusFilterSQL = (
   statusFilter?: AgencyStatus[],
 ): string | undefined => {
   if (!statusFilter) return;
@@ -84,9 +89,10 @@ export class PgAgencyRepository implements AgencyRepository {
   }): Promise<AgencyDto[]> {
     const filtersSQL = [
       makeDepartmentCodeFilterSQL(filters.departmentCode),
+      makeNameFilterSQL(filters.name),
       makeAgencyKindFiterSQL(filters.kind),
       makePositionFiterSQL(filters.position),
-      makeStatusFiterSQL(filters.status),
+      makeStatusFilterSQL(filters.status),
     ].filter((clause) => !!clause);
 
     const whereClause =

@@ -47,15 +47,22 @@ export const createAdminRouter = (deps: AppDependencies) => {
       ),
     );
 
-  // PATCH admin/agencies/:id
-  adminRouter.route(`/${agenciesRoute}/:agencyId`).patch(async (req, res) =>
-    sendHttpResponse(req, res, () => {
-      const useCaseParams: Partial<Pick<AgencyDto, "status">> & {
-        id: AgencyId;
-      } = { id: req.params.agencyId, ...req.body };
-      return deps.useCases.updateAgency.execute(useCaseParams);
-    }),
-  );
+  // GET,PATCH admin/agencies/:id
+  adminRouter
+    .route(`/${agenciesRoute}/:agencyId`)
+    .get(async (req, res) =>
+      sendHttpResponse(req, res, async () =>
+        deps.useCases.getAgencyById.execute(req.params.agencyId),
+      ),
+    )
+    .patch(async (req, res) =>
+      sendHttpResponse(req, res, () => {
+        const useCaseParams: Partial<Pick<AgencyDto, "status">> & {
+          id: AgencyId;
+        } = { id: req.params.agencyId, ...req.body };
+        return deps.useCases.updateAgency.execute(useCaseParams);
+      }),
+    );
 
   // GET admin/agencies?status=needsReview
   adminRouter

@@ -69,14 +69,16 @@ export type AgencyPositionFilter = {
 };
 
 export type GetAgenciesFilter = {
+  name?: string;
   position?: AgencyPositionFilter;
   departmentCode?: DepartmentCode;
   kind?: AgencyKindFilter;
   status?: AgencyStatus[];
 };
 
-export type ListAgenciesByDepartmentCodeRequestDto = {
-  departmentCode: DepartmentCode;
+export type ListAgenciesRequestDto = {
+  name?: string;
+  departmentCode?: DepartmentCode;
   filter?: AgencyKindFilter;
 };
 

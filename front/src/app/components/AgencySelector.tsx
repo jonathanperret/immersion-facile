@@ -51,7 +51,7 @@ export const AgencySelector = ({
       departmentCode,
       connectedWith,
     })
-      .then((agencies) => {
+      .then((agencies: any) => {
         setAgencies([emptyAgency, ...agencies]);
         if (
           defaultAgencyId &&
@@ -65,7 +65,7 @@ export const AgencySelector = ({
         setLoaded(true);
         setLoadingError(false);
       })
-      .catch((e) => {
+      .catch((e: any) => {
         //eslint-disable-next-line no-console
         console.log("AgencySelector", e);
         setAgencies([]);
@@ -137,10 +137,11 @@ const agenciesRetriever = ({
   shouldListAll: boolean;
   connectedWith: FederatedIdentity | null;
 }) => {
-  if (shouldListAll) return agencyGateway.listAgencies(departmentCode);
+  if (shouldListAll)
+    return agencyGateway.listAgenciesByDepartmentCode(departmentCode);
   return connectedWith && isPeConnectIdentity(connectedWith)
     ? agencyGateway.listPeAgencies(departmentCode)
-    : agencyGateway.listAgencies(departmentCode);
+    : agencyGateway.listAgenciesByDepartmentCode(departmentCode);
   // : agencyGateway.listNonPeAgencies(position);
   // -> for easy revert when new page is ready
 };

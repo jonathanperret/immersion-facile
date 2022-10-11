@@ -9,7 +9,7 @@ import { TechnicalOptions } from "src/app/pages/admin/TechnicalOptions";
 import { AdminTab } from "src/app/routing/route-params";
 import { routes } from "src/app/routing/routes";
 import { Route } from "type-route";
-import "./Admin.css";
+import "src/assets/admin.css";
 
 const getNavLinks = (currentTab: AdminTab): NavLink[] => [
   {
