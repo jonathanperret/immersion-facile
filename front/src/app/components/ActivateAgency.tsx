@@ -95,13 +95,15 @@ export const ActivateAgency = () => {
                 numberOfAgenciesToReview === 1 ? "" : "s"
               } en attente d'activation`
             : "Aucune agence en attente d'activation"}
-          <ArrayDropdown
-            label="Sélectionner une agence"
-            options={agenciesNeedingReview.map(prop("name"))}
-            onSelect={filterChanged}
-            allowEmpty={true}
-            defaultSelectedOption={selectedAgency?.name}
-          />
+          {numberOfAgenciesToReview > 0 && (
+            <ArrayDropdown
+              label="Sélectionner une agence"
+              options={agenciesNeedingReview.map(prop("name"))}
+              onSelect={filterChanged}
+              allowEmpty={true}
+              defaultSelectedOption={selectedAgency?.name}
+            />
+          )}
         </div>
       </WithBackground>
       {selectedAgency && (
