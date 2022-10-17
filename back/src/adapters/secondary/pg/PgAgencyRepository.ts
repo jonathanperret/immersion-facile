@@ -17,6 +17,8 @@ import { optional } from "./pgUtils";
 
 const logger = createLogger(__filename);
 
+const MAX_AGENCIES_RETURNED = 100;
+
 type AgencyColumns =
   | "admin_emails"
   | "agency_siret"
@@ -97,7 +99,10 @@ export class PgAgencyRepository implements AgencyRepository {
 
     const whereClause =
       filtersSQL.length > 0 ? `WHERE ${filtersSQL.join(" AND ")}` : "";
-    const limitClause = limit ? `LIMIT ${limit}` : "";
+    const limitClause = `LIMIT ${Math.min(
+      limit ?? MAX_AGENCIES_RETURNED,
+      MAX_AGENCIES_RETURNED,
+    )}`;
     const sortClause = filters.position
       ? `ORDER BY ST_Distance(${STPointStringFromPosition(
           filters.position.position,

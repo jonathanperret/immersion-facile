@@ -25,9 +25,11 @@ export interface AgencyGateway {
     agencyId: AgencyId,
     adminToken: AdminToken,
   ): Observable<AgencyDto>;
+
   getAgencyPublicInfoById(
     agencyId: WithAgencyId,
   ): Promise<AgencyPublicDisplayDto>;
+
   listAgenciesByFilter$(
     filter: ListAgenciesRequestDto,
   ): Observable<AgencyIdAndName[]>;

@@ -4,7 +4,8 @@ import "src/assets/admin.css";
 import { AgencyAutocomplete } from "./AgencyAutocomplete";
 
 export const EditAgency = () => {
-  const _fake = "3";
+  const _selectedAgency = 3;
+
   return (
     <>
       <DsfrTitle level={5} text="Editer une agence" />

@@ -49,9 +49,8 @@ export class HttpAgencyGateway implements AgencyGateway {
     adminToken: AdminToken,
   ): Promise<AgencyDto> {
     const response = await this.httpClient.get<unknown>(
-      `/admin/${agenciesRoute}`,
+      `/admin/${agenciesRoute}/${agencyId}`,
       {
-        params: { id: agencyId },
         headers: { authorization: adminToken },
       },
     );
