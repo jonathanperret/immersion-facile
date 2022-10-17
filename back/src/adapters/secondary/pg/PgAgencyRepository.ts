@@ -49,7 +49,7 @@ const makeAgencyKindFiterSQL = (
 
 const makeNameFilterSQL = (name?: string): string | undefined => {
   if (!name) return;
-  return format("name ILIKE '%' || $1 || '%'", name);
+  return format("name ILIKE '%' || %1$L || '%'", name);
 };
 
 const makeDepartmentCodeFilterSQL = (
