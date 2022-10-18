@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AgencyDto, AgencyIdAndName } from "shared";
+import { AgencySubmitFeedback } from "src/app/components/agency/AgencySubmitFeedback";
 
 interface AgencyAutocompleteState {
   agencySearchText: string;
@@ -7,6 +8,7 @@ interface AgencyAutocompleteState {
   selectedAgency: AgencyIdAndName | null;
   agency: AgencyDto | null;
   isSearching: boolean;
+  feedback: AgencySubmitFeedback;
 }
 
 const initialState: AgencyAutocompleteState = {
@@ -15,10 +17,11 @@ const initialState: AgencyAutocompleteState = {
   selectedAgency: null,
   agency: null,
   isSearching: false,
+  feedback: { kind: "idle" },
 };
 
-export const agencyAutocompleteSlice = createSlice({
-  name: "agencyAutocomplete",
+export const agencyAdminSlice = createSlice({
+  name: "agencyAdmin",
   initialState,
   reducers: {
     setAgencySearchText: (state, action: PayloadAction<string>) => {
@@ -37,6 +40,18 @@ export const agencyAutocompleteSlice = createSlice({
     },
     setAgency: (state, action: PayloadAction<AgencyDto | null>) => {
       state.agency = action.payload ?? null;
+    },
+    editAgencyRequested: (state, action: PayloadAction<AgencyDto>) => {
+      state.agency = action.payload ?? null;
+    },
+    editAgencySucceeded: (state) => {
+      state.feedback = { kind: "agencyUpdated" };
+    },
+    editAgencyFailed: (state, action: PayloadAction<string>) => {
+      state.feedback = {
+        kind: "errored",
+        errorMessage: action.payload,
+      };
     },
   },
 });

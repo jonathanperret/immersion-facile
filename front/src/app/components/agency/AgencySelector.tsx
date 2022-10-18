@@ -9,7 +9,7 @@ import {
   FederatedIdentity,
   isPeConnectIdentity,
 } from "shared";
-import { Agencies } from "src/app/components/Agency";
+import { Agencies } from "src/app/components/agency/Agency";
 import { agencyGateway } from "src/app/config/dependencies";
 import { useConnectedWith } from "src/hooks/connectedWith";
 import { PostcodeAutocomplete } from "src/uiComponents/form/PostcodeAutocomplete";

@@ -8,6 +8,8 @@ import {
 } from "../../../domain/auth/jwt";
 import { ExportData } from "../../../domain/backoffice/useCases/ExportData";
 import { SetFeatureFlag } from "../../../domain/backoffice/useCases/SetFeatureFlag";
+import { UpdateAgencyAdmin } from "../../../domain/backoffice/useCases/UpdateAgencyAdmin";
+import { AddAgency } from "../../../domain/convention/useCases/AddAgency";
 import { AddConvention } from "../../../domain/convention/useCases/AddConvention";
 import { AddAgency } from "../../../domain/convention/useCases/agencies/AddAgency";
 import { ListAgenciesByDepartmentCode } from "../../../domain/convention/useCases/agencies/ListAgenciesByDepartmentCode";
@@ -288,6 +290,7 @@ export const createUseCases = (
         config.defaultAdminEmail,
       ),
       updateAgency: new UpdateAgency(uowPerformer, createNewEvent),
+      updateAgencyAdmin: new UpdateAgencyAdmin(uowPerformer, createNewEvent),
       setFeatureFlag: new SetFeatureFlag(uowPerformer),
     }),
     ...instantiatedUseCasesFromFunctions({

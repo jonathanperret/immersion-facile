@@ -128,6 +128,24 @@ export class HttpAgencyGateway implements AgencyGateway {
     return agenciesDto;
   }
 
+  public updateAgency$(
+    agencyDto: AgencyDto,
+    adminToken: AdminToken,
+  ): Observable<void> {
+    return from(this.updateAgency(agencyDto, adminToken));
+  }
+
+  private updateAgency(
+    agencyDto: AgencyDto,
+    adminToken: AdminToken,
+  ): Promise<void> {
+    return this.httpClient
+      .put<unknown>(`/admin/${agenciesRoute}/${agencyDto.id}`, agencyDto, {
+        headers: { authorization: adminToken },
+      })
+      .then(() => undefined);
+  }
+
   // TODO Mieux identifier l'admin
   public async validateAgency(
     adminToken: AdminToken,

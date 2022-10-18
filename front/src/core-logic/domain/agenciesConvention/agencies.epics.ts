@@ -9,7 +9,7 @@ import { agenciesSlice } from "./agencies.slice";
 
 type AgencyAction = ActionOfSlice<typeof agenciesSlice>;
 
-const getAgenciesByDepartmentCodeUseCase: AppEpic<AgencyAction> = (
+const getAgenciesByDepartmentCodeEpic: AppEpic<AgencyAction> = (
   action$,
   _state$,
   dependencies,
@@ -24,4 +24,4 @@ const getAgenciesByDepartmentCodeUseCase: AppEpic<AgencyAction> = (
     map(agenciesSlice.actions.fetchAgenciesByDepartmentCodeSucceeded),
   );
 
-export const agenciesEpics = [getAgenciesByDepartmentCodeUseCase];
+export const agenciesEpics = [getAgenciesByDepartmentCodeEpic];

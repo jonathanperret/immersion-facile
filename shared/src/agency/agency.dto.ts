@@ -91,6 +91,7 @@ export type AgencyPublicDisplayDto = Pick<
   "id" | "name" | "address" | "position" | "logoUrl"
 >;
 
+// TODO Rename into UpdateAgencyRequestStatusDto ?
 export type UpdateAgencyRequestDto = Partial<Pick<AgencyDto, "status">> & {
   // | "name" | "logoUrl" | "address" (coming soon.)
   id: AgencyId;

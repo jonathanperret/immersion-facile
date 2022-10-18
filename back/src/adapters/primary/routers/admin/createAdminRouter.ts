@@ -47,7 +47,10 @@ export const createAdminRouter = (deps: AppDependencies) => {
       ),
     );
 
-  // GET,PATCH admin/agencies/:id
+  // GET,
+  // PATCH Update on status to activate
+  // PUT Full update following admin edit
+  // admin/agencies/:id
   adminRouter
     .route(`/${agenciesRoute}/:agencyId`)
     .get(async (req, res) =>
@@ -60,8 +63,14 @@ export const createAdminRouter = (deps: AppDependencies) => {
         const useCaseParams: Partial<Pick<AgencyDto, "status">> & {
           id: AgencyId;
         } = { id: req.params.agencyId, ...req.body };
+        // TODO Est ce que l'on peut renommer ce UseCase sans conséquences ?
         return deps.useCases.updateAgency.execute(useCaseParams);
       }),
+    )
+    .put(async (req, res) =>
+      sendHttpResponse(req, res, () =>
+        deps.useCases.updateAgencyAdmin.execute(req.body),
+      ),
     );
 
   // GET admin/agencies?status=needsReview

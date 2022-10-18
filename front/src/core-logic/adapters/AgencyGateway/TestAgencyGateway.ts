@@ -85,4 +85,11 @@ export class TestAgencyGateway implements AgencyGateway {
   ): Observable<AgencyDto> {
     return undefined as unknown as Observable<AgencyDto>;
   }
+
+  updateAgency$(
+    _agencyDto: AgencyDto,
+    _adminToken: AdminToken,
+  ): Observable<void> {
+    return undefined as unknown as Observable<void>;
+  }
 }

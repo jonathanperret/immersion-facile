@@ -8,7 +8,8 @@ import { dashboardUrlsEpics } from "src/core-logic/domain/admin/dashboardUrls/da
 import { dashboardUrlsSlice } from "src/core-logic/domain/admin/dashboardUrls/dashboardUrls.slice";
 import { sentEmailsEpics } from "src/core-logic/domain/admin/sentEmails/sentEmails.epics";
 import { sentEmailsSlice } from "src/core-logic/domain/admin/sentEmails/sentEmails.slice";
-import { agencyAutocompleteSlice } from "src/core-logic/domain/agenciesAutocomplete/agencyAutocomplete.slice";
+import { agenciesAdminEpics } from "src/core-logic/domain/agenciesAdmin/agencyAdmin.epics";
+import { agencyAdminSlice } from "src/core-logic/domain/agenciesAdmin/agencyAdmin.slice";
 import { authSlice } from "src/core-logic/domain/auth/auth.slice";
 import { establishmentEpics } from "src/core-logic/domain/establishmentPath/establishment.epics";
 import { featureFlagEpics } from "src/core-logic/domain/featureFlags/featureFlags.epics";
@@ -19,9 +20,8 @@ import { searchEpics } from "src/core-logic/domain/search/search.epics";
 import { searchSlice } from "src/core-logic/domain/search/search.slice";
 import { siretEpics } from "src/core-logic/domain/siret/siret.epics";
 import { siretSlice } from "src/core-logic/domain/siret/siret.slice";
-import { agenciesEpics } from "../domain/agencies/agencies.epics";
-import { agenciesSlice } from "../domain/agencies/agencies.slice";
-import { agenciesAutocompleteEpics } from "../domain/agenciesAutocomplete/agencyAutocomplete.epics";
+import { agenciesEpics } from "../domain/agenciesConvention/agencies.epics";
+import { agenciesSlice } from "../domain/agenciesConvention/agencies.slice";
 import { authEpics } from "../domain/auth/auth.epics";
 import { conventionEpics } from "../domain/convention/convention.epics";
 import { conventionSlice } from "../domain/convention/convention.slice";
@@ -39,7 +39,7 @@ const allEpics: any[] = [
   ...searchEpics,
   ...siretEpics,
   ...featureFlagEpics,
-  ...agenciesAutocompleteEpics,
+  ...agenciesAdminEpics,
   romeAutocompleteEpic,
   ...conventionEpics,
   ...immersionAssessmentEpics,
@@ -50,7 +50,7 @@ const rootReducer = combineReducers({
   [searchSlice.name]: searchSlice.reducer,
   [featureFlagsSlice.name]: featureFlagsSlice.reducer,
   [romeAutocompleteSlice.name]: romeAutocompleteSlice.reducer,
-  [agencyAutocompleteSlice.name]: agencyAutocompleteSlice.reducer,
+  [agencyAdminSlice.name]: agencyAdminSlice.reducer,
   [siretSlice.name]: siretSlice.reducer,
   [establishmentSlice.name]: establishmentSlice.reducer,
   [conventionSlice.name]: conventionSlice.reducer,
