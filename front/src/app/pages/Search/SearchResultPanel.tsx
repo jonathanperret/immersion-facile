@@ -57,6 +57,7 @@ export const SearchResultPanel = () => {
                 siret: searchResult.siret,
                 romeLabel: searchResult.romeLabel,
                 contactMethod: searchResult.contactMode,
+                searchResultData: searchResult,
               },
             })
           }
