@@ -146,6 +146,7 @@ $typesTints: (
     position: relative;
     top: 0;
     transition: all 1s ease;
+    height: 100%;
     @include for-screen-min($bp-lg) {
       flex-direction: column;
     }
