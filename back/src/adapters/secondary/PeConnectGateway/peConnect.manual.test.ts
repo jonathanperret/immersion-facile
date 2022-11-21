@@ -2,19 +2,15 @@
 import { AxiosResponse } from "axios";
 import secondsToMilliseconds from "date-fns/secondsToMilliseconds";
 import {
+  expectToEqual,
   HttpResponse,
   ManagedAxios,
   onFullfilledDefaultResponseInterceptorMaker,
   queryParamsAsString,
 } from "shared";
 import supertest, { SuperTest, Test } from "supertest";
-import {
-  AccessTokenDto,
-  ExternalAccessToken,
-  toAccessToken,
-} from "../../../domain/peConnect/dto/AccessToken.dto";
+import { AccessTokenDto } from "../../../domain/peConnect/dto/AccessToken.dto";
 import { ExternalPeConnectOAuthGetTokenWithCodeGrantPayload } from "../../../domain/peConnect/dto/PeConnect.dto";
-import { externalAccessTokenSchema } from "../../../domain/peConnect/port/AccessToken.schema";
 import {
   createAxiosInstance,
   PrettyAxiosResponseError,
@@ -27,6 +23,9 @@ import {
   HttpPeConnectGateway,
   PeConnectUrlTargets,
   peConnectheadersWithBearerAuthToken,
+  toAccessToken,
+  ExternalAccessToken,
+  externalAccessTokenSchema,
 } from "./HttpPeConnectGateway";
 import {
   httpPeConnectGatewayTargetMapperMaker,
@@ -79,9 +78,7 @@ const mockedBehavioursWithHttpError =
         throw PrettyAxiosResponseError("PeConnect Failure", error);
       });
 
-    const externalAccessToken: ExternalAccessToken =
-      externalAccessTokenSchema.parse(response.data);
-    return toAccessToken(externalAccessToken);
+    return toAccessToken(externalAccessTokenSchema.parse(response.data));
   };
 
 const prepareAppWithMockedPeConnect = async (
@@ -105,7 +102,7 @@ const prepareAppWithMockedPeConnect = async (
 };
 const createAppWithMockedGateway = async () => {
   const { app, gateways, inMemoryUow } = await createApp(
-    new AppConfigBuilder().build(),
+    new AppConfigBuilder().withTestPresetPreviousKeys().build(),
   );
   gateways.peConnectGateway = {
     ...gateways.peConnectGateway,
@@ -187,5 +184,69 @@ describe("/pe-connect", () => {
     });
 
     await expect(responsePromise).rejects.toThrow(ManagedRedirectError);
+  });
+});
+
+describe("HttpPeConnectGateway", () => {
+  const httpClient: ManagedAxios<PeConnectUrlTargets> =
+    new ManagedAxios<PeConnectUrlTargets>(
+      httpPeConnectGatewayTargetMapperMaker({
+        peAuthCandidatUrl: "https://",
+        immersionFacileBaseUrl: "https://",
+        peApiUrl: "https://api.pole-emploi.io",
+      }),
+      peConnectApiErrorsToDomainErrors,
+      {
+        timeout: 5000,
+      },
+      onFullfilledDefaultResponseInterceptorMaker,
+      onRejectPeSpecificResponseInterceptorMaker,
+    );
+  const httpPeConnectGateway = new HttpPeConnectGateway(
+    {
+      clientId: "",
+      clientSecret: "",
+    },
+    httpClient,
+  );
+
+  it("oAuthGetAuthorizationCodeRedirectUrl", async () => {
+    expectToEqual(
+      await httpPeConnectGateway.oAuthGetAuthorizationCodeRedirectUrl(),
+      "https:///connexion/oauth2/authorize?response_type=code&client_id=&realm=/individu&redirect_uri=https:///api/pe-connect&scope=application_%20api_peconnect-individuv1%20api_peconnect-conseillersv1%20individu%20openid%20profile%20email",
+    );
+  });
+
+  describe("getUserAndAdvisors", () => {
+    it("OK", async () => {
+      const authorizationCode = "000000";
+      expectToEqual(
+        await httpPeConnectGateway.getUserAndAdvisors(authorizationCode),
+        {
+          advisors: [],
+          user: {
+            email: "",
+            firstName: "",
+            lastName: "",
+            peExternalId: "",
+          },
+        },
+      );
+    });
+    it("Bad Code", async () => {
+      const authorizationCode = "000000";
+      expectToEqual(
+        await httpPeConnectGateway.getUserAndAdvisors(authorizationCode),
+        {
+          advisors: [],
+          user: {
+            email: "",
+            firstName: "",
+            lastName: "",
+            peExternalId: "",
+          },
+        },
+      );
+    });
   });
 });

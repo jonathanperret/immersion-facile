@@ -42,6 +42,8 @@ export const httpPeConnectGatewayTargetMapperMaker = (config: {
     `${config.peApiUrl}/partenaire/peconnect-individu/v1/userinfo`,
   PECONNECT_ADVISORS_INFO: () =>
     `${config.peApiUrl}/partenaire/peconnect-conseillers/v1/contactspe/conseillers`,
+  PECONNECT_STATUT: () =>
+    `${config.peApiUrl}/partenaire/peconnect-statut/v1/statut`,
 });
 
 // TODO Improve with default mappers to reduce repetition

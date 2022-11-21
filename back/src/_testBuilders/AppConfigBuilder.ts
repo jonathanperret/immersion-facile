@@ -7,6 +7,7 @@ const defaultConfigParams = {
   LA_BONNE_BOITE_GATEWAY: "IN_MEMORY",
   PASS_EMPLOI_GATEWAY: "IN_MEMORY",
   POLE_EMPLOI_GATEWAY: "IN_MEMORY",
+  ADDRESS_API_GATEWAY: "IN_MEMORY",
 
   // Test-only keys, do not use in production environments!
   JWT_PRIVATE_KEY:
