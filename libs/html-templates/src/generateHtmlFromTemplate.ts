@@ -33,7 +33,6 @@ export const generateHtmlFromTemplate = <N extends keyof TemplateByName>(
   options: GenerateHtmlOptions = {},
 ): { subject: string; htmlContent: string; tags?: string[] } => {
   const { createEmailVariables, tags } = templateByName[templateName];
-  const emailRecipient = "test@test.com";
   const {
     subject,
     agencyLogoUrl,
@@ -65,7 +64,7 @@ export const generateHtmlFromTemplate = <N extends keyof TemplateByName>(
                 renderHighlight(highlight),
                 renderContent(subContent),
                 renderLegals(legals),
-                renderFooter(emailRecipient),
+                renderFooter(),
               ]
                 .map(renderHTMLRow)
                 .join("")}       
