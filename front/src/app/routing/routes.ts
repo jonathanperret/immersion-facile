@@ -85,4 +85,10 @@ export const { RouteProvider, useRoute, routes } = createRouter({
     },
     () => `/${frontRoutes.search}`,
   ),
+  pages: defineRoute(
+    {
+      pageSlug: param.path.string,
+    },
+    (p) => `/pages/${p.pageSlug}`,
+  ),
 });
