@@ -16,9 +16,11 @@ import { StatsPage } from "src/app/pages/StatsPage";
 import { PrivateRoute } from "src/app/routing/PrivateRoute";
 import { ENV } from "src/environmentVariables";
 import { RenewExpiredLinkPage } from "src/helpers/RenewExpiredLinkPage";
+import { PageStandard } from "../components/PageStandard";
 import { EstablishmentFormPage } from "../pages/Establishment/EstablishmentFormPage";
 import { HomePage } from "../pages/home/HomePage";
 import { ImmersionAssessmentPage } from "../pages/immersionAssessment/ImmersionAssessmentPage";
+import { standardPageSlugs } from "./route-params";
 import { routes, useRoute } from "./routes";
 
 const NotAvailable = () => <div>Cette page n'est pas disponible.</div>;
@@ -75,6 +77,12 @@ export const Router = () => {
       )}
       {route.name === "search" && <SearchPage route={route} />}
       {route.name === "stats" && <StatsPage />}
+      {route.name === "pages" &&
+        standardPageSlugs.includes(route.params.pageSlug) && (
+          <PageStandard route={route} />
+        )}
+      {route.name === "pages" &&
+        !standardPageSlugs.includes(route.params.pageSlug) && <NotAvailable />}
       {ENV.envType !== "production" && route.name === "searchDebug" && (
         <SearchDebugPage />
       )}
