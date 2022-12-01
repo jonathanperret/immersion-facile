@@ -4,10 +4,10 @@ import { ButtonHome, Link } from "react-design-system/immersionFacile";
 import { useDispatch } from "react-redux";
 import { Section } from "src/app/components/Section";
 import { establishmentSlice } from "src/core-logic/domain/establishmentPath/establishment.slice";
-import { EstablishmentSubTitle } from "../pages/home/components/EstablishmentSubTitle";
-import { EstablishmentTitle } from "../pages/home/components/EstablishmentTitle";
-import { routes } from "../routing/routes";
-import { useEstablishmentSiret } from "src/hooks/siret.hooks";
+import { EstablishmentSubTitle } from "./forms/establishment/EstablishmentSubTitle";
+import { EstablishmentTitle } from "./forms/establishment/EstablishmentTitle";
+import { routes } from "../routes/routes";
+import { useEstablishmentSiret } from "src/app/hooks/siret.hooks";
 import { SiretFetcherInput } from "src/app/components/SiretFetcherInput";
 
 export const EstablishmentHomeMenu = () => {

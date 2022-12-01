@@ -13,12 +13,12 @@ import {
   Signatories,
   toDateString,
 } from "shared";
-import { deviceRepository } from "src/app/config/dependencies";
+import { deviceRepository } from "src/config/dependencies";
 import { ConventionImmersionPageRoute } from "src/app/pages/Convention/ConventionImmersionPage";
 import { ConventionMiniStagePageRoute } from "src/app/pages/Convention/ConventionMiniStagePage";
 import { ConventionUkrainePageRoute } from "src/app/pages/Convention/ConventionPageForUkraine";
-import { ConventionInUrl } from "src/app/routing/route-params";
-import { ENV } from "src/environmentVariables";
+import { ConventionInUrl } from "src/app/routes/route-params";
+import { ENV } from "src/config/environmentVariables";
 import { v4 as uuidV4 } from "uuid";
 
 export const isConventionFrozen = (

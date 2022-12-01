@@ -11,11 +11,11 @@ import {
   Title,
 } from "react-design-system/immersionFacile";
 import arrow from "/img/fleche.svg";
-import { HeaderFooterLayout } from "src/app/layouts/HeaderFooterLayout";
-import { routes } from "src/app/routing/routes";
-import { EstablishmentImmersionHowTo } from "src/uiComponents/ImmersionHowTo";
-import { Statistic } from "src/uiComponents/Statistic";
-import { useFeatureFlags } from "src/app/utils/useFeatureFlags";
+import { HeaderFooterLayout } from "src/app/components/layout/HeaderFooterLayout";
+import { routes } from "src/app/routes/routes";
+import { EstablishmentImmersionHowTo } from "src/app/components/ImmersionHowTo";
+import { Statistic } from "src/app/components/Statistic";
+import { useFeatureFlags } from "src/app/hooks/useFeatureFlags";
 import { establishmentSlice } from "src/core-logic/domain/establishmentPath/establishment.slice";
 import { useDispatch } from "react-redux";
 import { PushLeMoisLesEntreprisesSEngagent } from "src/app/components/PushLeMoisLesEntreprisesSEngagent";

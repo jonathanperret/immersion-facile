@@ -15,8 +15,8 @@ import {
   WithJustification,
   withJustificationSchema,
 } from "shared";
-import { TextInput } from "src/uiComponents/form/TextInput";
-import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
+import { TextInput } from "src/app/components/forms/commons/TextInput";
+import { toFormikValidationSchema } from "src/app/components/forms/commons/zodValidate";
 
 type JustificationModalProps = {
   title: React.ReactNode;

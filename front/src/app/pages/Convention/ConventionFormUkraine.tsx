@@ -4,12 +4,12 @@ import { Title } from "react-design-system/immersionFacile";
 import { useDispatch } from "react-redux";
 import { conventionUkraineSchema } from "shared";
 import { ConventionFeedbackNotification } from "src/app/components/ConventionFeedbackNotification";
-import { ConventionFormFieldsUkraine } from "src/app/pages/Convention/ConventionFields/ConventionFormFieldsUkraine";
+import { ConventionFormFieldsUkraine } from "src/app/components/forms/convention/sections/ConventionFormFieldsUkraine";
 import { ConventionPresentation } from "src/app/pages/Convention/conventionHelpers";
-import { useAppSelector } from "src/app/utils/reduxHooks";
+import { useAppSelector } from "src/app/hooks/reduxHooks";
 import { conventionSelectors } from "src/core-logic/domain/convention/convention.selectors";
 import { conventionSlice } from "src/core-logic/domain/convention/convention.slice";
-import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
+import { toFormikValidationSchema } from "src/app/components/forms/commons/zodValidate";
 
 type ConventionFormProps = {
   properties: ConventionPresentation;

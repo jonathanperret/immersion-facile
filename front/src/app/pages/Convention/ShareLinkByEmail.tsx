@@ -3,11 +3,11 @@ import { IconButton, Tooltip } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import React, { useState } from "react";
-import { useConventionTextsFromFormikContext } from "src/app/pages/Convention/texts/textSetup";
+import { useConventionTextsFromFormikContext } from "src/app/contents/convention/textSetup";
 import {
   ElementModalContainer,
   useElementContainerModal,
-} from "src/uiComponents/FormModal/ElementModalContainer";
+} from "src/app/components/forms/commons/FormModal/ElementModalContainer";
 import { ShareForm } from "./ShareForm";
 
 const iconColor = "#3458a2";

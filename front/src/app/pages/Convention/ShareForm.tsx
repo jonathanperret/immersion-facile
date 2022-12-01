@@ -6,9 +6,9 @@ import {
   ShareLinkByEmailDto,
   shareLinkByEmailSchema,
 } from "shared";
-import { conventionGateway } from "src/app/config/dependencies";
-import { TextInput } from "src/uiComponents/form/TextInput";
-import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
+import { conventionGateway } from "src/config/dependencies";
+import { TextInput } from "src/app/components/forms/commons/TextInput";
+import { toFormikValidationSchema } from "src/app/components/forms/commons/zodValidate";
 
 type ShareFormProps = {
   onSuccess: () => void;

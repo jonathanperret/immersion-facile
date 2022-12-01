@@ -1,9 +1,9 @@
 import React from "react";
-import { ConventionForm } from "src/app/pages/Convention/ConventionForm";
-import { ConventionFormContainerLayout } from "src/app/pages/Convention/ConventionFormContainerLayout";
-import { conventionInitialValuesFromUrl } from "src/app/pages/Convention/conventionHelpers";
-import { routes } from "src/app/routing/routes";
+import { routes } from "src/app/routes/routes";
 import { Route } from "type-route";
+import { ConventionForm } from "./ConventionForm";
+import { ConventionFormContainerLayout } from "./ConventionFormContainerLayout";
+import { conventionInitialValuesFromUrl } from "./conventionHelpers";
 
 export type ConventionMiniStagePageRoute = Route<
   typeof routes.conventionMiniStage

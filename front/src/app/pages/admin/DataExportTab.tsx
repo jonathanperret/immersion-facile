@@ -15,8 +15,8 @@ import {
   EstablishmentsWithFlattenOffersExportableParams,
 } from "shared";
 import { HttpExcelExportGateway } from "src/core-logic/adapters/ExcelExportGateway/HttpExcelExportGateway";
-import { useAdminToken } from "src/hooks/useAdminToken";
-import { WithBackground } from "src/uiComponents/admin/WithBackground";
+import { useAdminToken } from "src/app/hooks/useAdminToken";
+import { WithBackground } from "src/app/components/admin/WithBackground";
 
 // TODO Mettre dans les dépendances ?
 export const excelExportGateway = new HttpExcelExportGateway(

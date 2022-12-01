@@ -14,14 +14,14 @@ import {
   isConventionFrozen,
   undefinedIfEmptyString,
 } from "src/app/pages/Convention/conventionHelpers";
-import { useConventionTexts } from "src/app/pages/Convention/texts/textSetup";
-import { useAppSelector } from "src/app/utils/reduxHooks";
+import { useConventionTexts } from "src/app/contents/convention/textSetup";
+import { useAppSelector } from "src/app/hooks/reduxHooks";
 import { authSelectors } from "src/core-logic/domain/auth/auth.selectors";
 import { conventionSelectors } from "src/core-logic/domain/convention/convention.selectors";
 import { conventionSlice } from "src/core-logic/domain/convention/convention.slice";
-import { useExistingSiret } from "src/hooks/siret.hooks";
-import { toFormikValidationSchema } from "src/uiComponents/form/zodValidate";
-import { ConventionFormFields } from "./ConventionFields/ConventionFormFields";
+import { useExistingSiret } from "src/app/hooks/siret.hooks";
+import { toFormikValidationSchema } from "src/app/components/forms/commons/zodValidate";
+import { ConventionFormFields } from "src/app/components/forms/convention/ConventionFormFields";
 
 const useClearConventionSubmitFeedbackOnUnmount = () => {
   const dispatch = useDispatch();
