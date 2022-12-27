@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { deleteFileAndParentFolder } from "../../../utils/filesystemUtils";
 import { createLogger } from "../../../utils/logger";
 import { notifyObjectDiscord } from "../../../utils/notifyDiscord";
 import { handleHttpJsonResponseError } from "./handleHttpJsonResponseError";
@@ -17,7 +18,7 @@ export const sendZipResponse = async (
     expressResponse.setHeader("content-type", "application/zip");
     return expressResponse.download(archivePath, (err?: Error) => {
       if (err) notifyObjectDiscord(err);
-      // deleteFileAndParentFolder(archivePath);
+      deleteFileAndParentFolder(archivePath);
     });
   } catch (error: any) {
     handleZipResponseError(expressRequest, expressResponse, error);

@@ -14,16 +14,20 @@ describe("Filesystem utils", () => {
     expect(fse.pathExistsSync(tempPath)).toBe(true);
 
     fse.removeSync(tempPath);
+    expect(fse.pathExistsSync(tempPath)).toBe(false);
   });
 
   it("should return the filepath located temporary storage directory", async () => {
     const filename = "myfile";
     const pathResult = await makeTemporaryStorageFile(filename);
+    const parentDirectory = path.dirname(pathResult);
     fse.writeFileSync(pathResult, "Hey there!");
 
     expect(fse.pathExistsSync(pathResult)).toBe(true);
     fse.unlinkSync(pathResult);
-    //fse.removeSync(pathResult);
+    fse.removeSync(parentDirectory);
+    expect(fse.pathExistsSync(pathResult)).toBe(false);
+    expect(fse.pathExistsSync(parentDirectory)).toBe(false);
   });
 
   it("should remove the filepath and randomized temporary storage directory", async () => {

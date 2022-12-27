@@ -7,7 +7,6 @@ import {
   AgencyId,
   conventionsRoute,
   emailRoute,
-  ExportDataDto,
   exportRoute,
   featureFlagsRoute,
   generateMagicLinkRoute,
@@ -124,15 +123,13 @@ export const createAdminRouter = (
       sendHttpResponse(req, res, deps.useCases.getSentEmails.execute),
     );
 
-  adminRouter.route(`/${exportRoute}`).post(async (req, res) =>
-    sendZipResponse(req, res, async () => {
-      const exportDataParams: ExportDataDto = req.body;
-      const archivePath = await deps.useCases.exportData.execute(
-        exportDataParams,
-      );
-      return archivePath;
-    }),
-  );
+  adminRouter
+    .route(`/${exportRoute}`)
+    .post(async (req, res) =>
+      sendZipResponse(req, res, () =>
+        deps.useCases.exportData.execute(req.body),
+      ),
+    );
 
   // POST admin/feature-flags
   adminRouter
