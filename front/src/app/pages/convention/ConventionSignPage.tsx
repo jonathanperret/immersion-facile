@@ -262,7 +262,7 @@ const ConventionNeedsModificationMessage = (props: { jwt: string }) => (
   </SignPageLayout>
 );
 
-const SignPageLayout: React.FC = ({ children }) => (
+const SignPageLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="fr-grid-row fr-grid-row--center fr-grid-row--gutters">
     <div className="fr-col-lg-8 fr-p-2w">{children}</div>
   </div>
