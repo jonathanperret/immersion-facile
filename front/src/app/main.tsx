@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { App } from "src/app/App";
 import { store } from "src/config/dependencies";
 import { MetaContent } from "./components/layout/MetaContent";
+import { HelmetProvider } from "react-helmet-async";
 
 import { startReactDsfr } from "@codegouvfr/react-dsfr/spa";
 
@@ -20,10 +21,12 @@ const root = createRoot(container as HTMLElement);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouteProvider>
-        <MetaContent />
-        <App />
-      </RouteProvider>
+      <HelmetProvider>
+        <RouteProvider>
+          <MetaContent />
+          <App />
+        </RouteProvider>
+      </HelmetProvider>
     </Provider>
   </React.StrictMode>,
 );
