@@ -1,7 +1,7 @@
 import React from "react";
 import { routes, useRoute } from "src/app/routes/routes";
 import { Route } from "type-route";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { StandardPageSlugs } from "src/app/routes/route-params";
 import {
   adminMetaContent,
