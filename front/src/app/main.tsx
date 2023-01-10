@@ -3,7 +3,6 @@ import "src/assets/dsfr/dsfr.min.css";
 import "src/assets/dsfr/utility/icons/icons.min.css";
 
 import React from "react";
-//import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { App } from "src/app/App";
@@ -31,15 +30,3 @@ root.render(
     </HelmetProvider>
   </React.StrictMode>,
 );
-
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <Provider store={store}>
-//       <RouteProvider>
-//         <MetaContent />
-//         <App />
-//       </RouteProvider>
-//     </Provider>
-//   </React.StrictMode>,
-//   document.getElementById("root"),
-// );

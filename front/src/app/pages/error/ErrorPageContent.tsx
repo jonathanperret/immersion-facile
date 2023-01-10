@@ -1,5 +1,5 @@
-import ovoidSprite from "@gouvfr/dsfr/dist/artwork/background/ovoid.svg";
-import technicalErrorSprite from "@gouvfr/dsfr/dist/artwork/pictograms/system/technical-error.svg";
+import ovoidSprite from "../../../assets/dsfr/artwork/background/ovoid.svg";
+import technicalErrorSprite from "../../../assets/dsfr/artwork/pictograms/system/technical-error.svg";
 import React from "react";
 import { ManagedErrorKind } from "shared";
 import {
