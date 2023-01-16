@@ -3,6 +3,7 @@ import { trim } from "ramda";
 import {
   AbsoluteUrl,
   makeGetBooleanVariable,
+  makeThrowIfNotOpenCageGeosearchKey,
   makeThrowIfNotAbsoluteUrl,
   makeThrowIfNotDefined,
   makeThrowIfNotInArray,
@@ -34,7 +35,7 @@ export class AppConfig {
   private readonly throwIfNotDefined;
   private readonly throwIfNotAbsoluteUrl;
   private readonly getBooleanVariable;
-
+  private readonly throwIfNotGeosearchApiKey;
   public static createFromEnv(
     readDotEnv = true,
     configParams = process.env,
@@ -48,6 +49,7 @@ export class AppConfig {
     this.throwIfNotDefined = makeThrowIfNotDefined(env);
     this.throwIfNotAbsoluteUrl = makeThrowIfNotAbsoluteUrl(env);
     this.getBooleanVariable = makeGetBooleanVariable(env);
+    this.throwIfNotGeosearchApiKey = makeThrowIfNotOpenCageGeosearchKey(env);
   }
 
   public get reporting() {
@@ -201,8 +203,12 @@ export class AppConfig {
     });
   }
 
-  public get apiKeyOpenCageData() {
-    return this.throwIfNotDefined("API_KEY_OPEN_CAGE_DATA");
+  public get apiKeyOpenCageDataGeocoding() {
+    return this.throwIfNotDefined("API_KEY_OPEN_CAGE_DATA_GEOCODING");
+  }
+
+  public get apiKeyOpenCageDataGeosearch() {
+    return this.throwIfNotGeosearchApiKey("API_KEY_OPEN_CAGE_DATA_GEOSEARCH");
   }
 
   // == Rome gateway ==
