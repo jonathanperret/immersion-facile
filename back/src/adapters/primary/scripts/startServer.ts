@@ -4,7 +4,7 @@ import { createApp } from "../server";
 
 const logger = createLogger(__filename);
 
-const port = 1234;
+const port = process.env.PORT;
 
 const appConfig = AppConfig.createFromEnv();
 
