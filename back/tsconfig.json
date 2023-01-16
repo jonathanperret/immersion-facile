@@ -15,5 +15,10 @@
       "html-templates": ["../libs/html-templates/src/index.ts"],
       "http-client": ["../libs/http-client/src/index.ts"]
     }
+  },
+  "ts-node": {
+    // It is faster to skip typechecking.
+    // Remove if you want ts-node to do typechecking.
+    "transpileOnly": true
   }
 }
