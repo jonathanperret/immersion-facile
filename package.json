@@ -11,6 +11,7 @@
     "node": "^16.15.0"
   },
   "scripts": {
+    "heroku-prebuild": "rm -rf cypress front libs/react-design-system",
     "generate-front-envfile": "grep 'VITE_' .env > ./front/.env",
     "prettier": "pnpm prettier:glob --write ./**/src/",
     "prettier:check": "pnpm prettier:glob --check ./**/src/",
