@@ -17,6 +17,7 @@ export type SelectProps = {
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 };
 
 export const Select = ({
@@ -29,6 +30,7 @@ export const Select = ({
   hideLabel,
   className,
   placeholder,
+  disabled,
 }: SelectProps) => (
   <div className={`fr-select-group ${className ?? ""}`}>
     {!hideLabel && (
@@ -43,6 +45,7 @@ export const Select = ({
       name={name}
       onChange={onChange}
       value={value}
+      disabled={disabled}
     >
       {placeholder && (
         <option value="" disabled selected>
