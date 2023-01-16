@@ -10,7 +10,7 @@ const appConfig = AppConfig.createFromEnv();
 
 createApp(appConfig).then(
   ({ app }) => {
-    app.listen(port, () => {
+    app.listen(port, "0.0.0.0", () => {
       logger.info(`server started at http://localhost:${port}`);
     });
   },
