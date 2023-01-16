@@ -1,1 +1,2 @@
-web: cd back && pnpm migrate up && pnpm start-prod
+web: cd back && pnpm start-prod
+postdeploy: cd back && pnpm migrate up
